@@ -961,7 +961,7 @@ body {
       <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
       <button class="lang-btn" onclick="setLang('ko')" id="lang-ko">한</button>
     </div>
-    <button class="header-btn primary" onclick="openReport()">+ <span data-zh="제報" data-en="Report" data-ko="제보" id="reportBtnText">제報</span></button>
+    <button class="header-btn primary" onclick="openReport()">+ <span data-zh="提報" data-en="Report" data-ko="제보" id="reportBtnText">提報</span></button>
   </div>
 </div>
 
@@ -1149,7 +1149,7 @@ body {
 <!-- 제보 폼 -->
 <div class="report-overlay" id="reportOverlay" onclick="closeReportIfBg(event)">
   <div class="report-sheet">
-    <div class="report-title" data-zh="제報 💰" data-en="Report a Place 💰" data-ko="제보하기 💰">제報 💰</div>
+    <div class="report-title" data-zh="提報 💰" data-en="Report a Place 💰" data-ko="제보하기 💰">提報 💰</div>
     <div class="report-sub" data-zh="HKD 100以下嘅平價食肆" data-en="Share a budget eat under HKD 100" data-ko="HKD 100 이하 가성비 식당">HKD 100以下平價食肆</div>
 
     <!-- 단계 표시 -->
@@ -2028,7 +2028,7 @@ async function submitReport() {
     }
   }
 
-  showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : currentLang === 'ko' ? '제보 감사합니다! 🙏' : '多謝제보！審核後上線 🙏');
+  showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : currentLang === 'ko' ? '제보 감사합니다! 🙏' : '多謝提報！審核後上線 🙏');
   closeReport();
   // 폼 초기화
   ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary'].forEach(id => {
