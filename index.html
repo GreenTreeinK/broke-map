@@ -568,6 +568,65 @@ body {
 }
 .submit-btn:hover { background: var(--red-dark); }
 
+/* ===== MTR 필터 ===== */
+.mtr-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+.mtr-select {
+  background: rgba(255,255,255,0.1);
+  border: 1.5px solid rgba(255,255,255,0.25);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Noto Sans HK', sans-serif;
+  padding: 5px 10px;
+  outline: none;
+  cursor: pointer;
+  max-width: 160px;
+  transition: border-color 0.15s;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23ffffff80'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 22px;
+}
+.mtr-select.active {
+  border-color: var(--yellow);
+  background-color: rgba(245,196,0,0.15);
+  color: var(--yellow);
+}
+.mtr-select option { background: #2d1515; color: #fff; }
+.mtr-select optgroup { color: rgba(255,255,255,0.5); font-size: 10px; }
+.mtr-clear-btn {
+  background: rgba(255,255,255,0.15);
+  border: none;
+  color: #fff;
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  font-size: 10px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+.mtr-clear-btn:hover { background: rgba(255,255,255,0.3); }
+.mtr-radius-chip {
+  font-size: 10px !important;
+  padding: 4px 8px !important;
+}
+/* MTR 반경 원 (지도 위) */
+.mtr-station-marker {
+  background: var(--yellow);
+  border: 3px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+}
+
 /* ===== CTA 버튼 ===== */
 .cta-btn-wrap {
   position: absolute;
@@ -819,6 +878,15 @@ body {
   font-family: 'Noto Sans HK', sans-serif;
   text-align: center;
 }
+.mtr-tooltip {
+  background: var(--yellow) !important;
+  color: var(--dark) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: 700 !important;
+  font-size: 11px !important;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+}
 </style>
 </head>
 <body>
@@ -876,6 +944,97 @@ body {
   <div class="fchip pay-chip" onclick="setPayment(this, 'cash')" data-zh="現金" data-en="Cash" data-ko="현금">💵 現金</div>
   <div class="fchip pay-chip" onclick="setPayment(this, 'octopus')" data-zh="八達通" data-en="Octopus" data-ko="옥토퍼스">🐙 八達通</div>
   <div class="fchip pay-chip" onclick="setPayment(this, 'alipay_hk')" data-zh="AlipayHK" data-en="AlipayHK" data-ko="AlipayHK">📱 Alipay</div>
+  <div class="filter-sep"></div>
+  <span class="filter-label" data-zh="MTR" data-en="MTR" data-ko="MTR">🚇 MTR</span>
+  <div class="mtr-select-wrap">
+    <select class="mtr-select" id="mtrSelect" onchange="setMTR(this.value)">
+      <option value="">-- 역 선택 --</option>
+      <optgroup label="港島線 Island Line">
+        <option value="Kennedy Town|22.2814|114.1288">堅尼地城 Kennedy Town</option>
+        <option value="HKU|22.2840|114.1371">香港大學 HKU</option>
+        <option value="Sai Ying Pun|22.2856|114.1436">西營盤 Sai Ying Pun</option>
+        <option value="Sheung Wan|22.2866|114.1502">上環 Sheung Wan</option>
+        <option value="Central|22.2820|114.1577">中環 Central</option>
+        <option value="Admiralty|22.2791|114.1653">金鐘 Admiralty</option>
+        <option value="Wan Chai|22.2775|114.1729">灣仔 Wan Chai</option>
+        <option value="Causeway Bay|22.2801|114.1841">銅鑼灣 Causeway Bay</option>
+        <option value="Tin Hau|22.2821|114.1919">天后 Tin Hau</option>
+        <option value="Fortress Hill|22.2870|114.1938">炮台山 Fortress Hill</option>
+        <option value="North Point|22.2911|114.1994">北角 North Point</option>
+        <option value="Quarry Bay|22.2879|114.2097">鰂魚涌 Quarry Bay</option>
+        <option value="Tai Koo|22.2843|114.2164">太古 Tai Koo</option>
+        <option value="Sai Wan Ho|22.2810|114.2222">西灣河 Sai Wan Ho</option>
+        <option value="Shau Kei Wan|22.2789|114.2289">筲箕灣 Shau Kei Wan</option>
+        <option value="Heng Fa Chuen|22.2737|114.2401">杏花邨 Heng Fa Chuen</option>
+        <option value="Chai Wan|22.2645|114.2373">柴灣 Chai Wan</option>
+      </optgroup>
+      <optgroup label="荃灣線 Tsuen Wan Line">
+        <option value="Tsuen Wan|22.3714|114.1082">荃灣 Tsuen Wan</option>
+        <option value="Tai Wo Hau|22.3713|114.1213">大窩口 Tai Wo Hau</option>
+        <option value="Kwai Hing|22.3635|114.1310">葵興 Kwai Hing</option>
+        <option value="Kwai Fong|22.3568|114.1272">葵芳 Kwai Fong</option>
+        <option value="Lai King|22.3482|114.1251">荔景 Lai King</option>
+        <option value="Mei Foo|22.3375|114.1377">美孚 Mei Foo</option>
+        <option value="Lai Chi Kok|22.3344|114.1480">荔枝角 Lai Chi Kok</option>
+        <option value="Cheung Sha Wan|22.3308|114.1563">長沙灣 Cheung Sha Wan</option>
+        <option value="Sham Shui Po|22.3306|114.1624">深水埗 Sham Shui Po</option>
+        <option value="Prince Edward|22.3244|114.1681">太子 Prince Edward</option>
+        <option value="Mong Kok|22.3193|114.1694">旺角 Mong Kok</option>
+        <option value="Yau Ma Tei|22.3130|114.1706">油麻地 Yau Ma Tei</option>
+        <option value="Jordan|22.3050|114.1717">佐敦 Jordan</option>
+        <option value="Tsim Sha Tsui|22.2975|114.1722">尖沙咀 Tsim Sha Tsui</option>
+      </optgroup>
+      <optgroup label="觀塘線 Kwun Tong Line">
+        <option value="Whampoa|22.3047|114.1892">黃埔 Whampoa</option>
+        <option value="Ho Man Tin|22.3107|114.1839">何文田 Ho Man Tin</option>
+        <option value="Hung Hom|22.3028|114.1826">紅磡 Hung Hom</option>
+        <option value="To Kwa Wan|22.3180|114.1878">土瓜灣 To Kwa Wan</option>
+        <option value="Kowloon City|22.3282|114.1916">九龍城 Kowloon City</option>
+        <option value="Lok Fu|22.3378|114.1874">樂富 Lok Fu</option>
+        <option value="Wong Tai Sin|22.3425|114.1947">黃大仙 Wong Tai Sin</option>
+        <option value="Diamond Hill|22.3385|114.2087">鑽石山 Diamond Hill</option>
+        <option value="Choi Hung|22.3351|114.2143">彩虹 Choi Hung</option>
+        <option value="Kowloon Bay|22.3236|114.2133">九龍灣 Kowloon Bay</option>
+        <option value="Ngau Tau Kok|22.3154|114.2185">牛頭角 Ngau Tau Kok</option>
+        <option value="Kwun Tong|22.3115|114.2261">觀塘 Kwun Tong</option>
+        <option value="Lam Tin|22.3068|114.2331">藍田 Lam Tin</option>
+        <option value="Yau Tong|22.2983|114.2378">油塘 Yau Tong</option>
+        <option value="Tseung Kwan O|22.3073|114.2595">將軍澳 TKO</option>
+        <option value="Lohas Park|22.2958|114.2697">康城 Lohas Park</option>
+      </optgroup>
+      <optgroup label="東鐵線 East Rail Line">
+        <option value="Hung Hom|22.3028|114.1826">紅磡 Hung Hom</option>
+        <option value="Mong Kok East|22.3224|114.1727">旺角東 MK East</option>
+        <option value="Sha Tin|22.3817|114.1879">沙田 Sha Tin</option>
+        <option value="Tai Po Market|22.4498|114.1645">大埔墟 Tai Po</option>
+        <option value="Sheung Shui|22.5015|114.1277">上水 Sheung Shui</option>
+        <option value="Fanling|22.4918|114.1401">粉嶺 Fanling</option>
+      </optgroup>
+      <optgroup label="南港島線 South Island Line">
+        <option value="Ocean Park|22.2485|114.1745">海洋公園 Ocean Park</option>
+        <option value="Wong Chuk Hang|22.2479|114.1680">黃竹坑 WCH</option>
+        <option value="Lei Tung|22.2413|114.1548">利東 Lei Tung</option>
+        <option value="South Horizons|22.2419|114.1485">海怡半島 S. Horizons</option>
+      </optgroup>
+      <optgroup label="屯馬線 Tuen Ma Line">
+        <option value="Wu Kai Sha|22.4290|114.2444">烏溪沙 Wu Kai Sha</option>
+        <option value="Ma On Shan|22.4254|114.2316">馬鞍山 MOS</option>
+        <option value="Heng On|22.4166|114.2253">恆安 Heng On</option>
+        <option value="Tai Shui Hang|22.4108|114.2183">大水坑 TSH</option>
+        <option value="Che Kung Temple|22.3791|114.1958">車公廟 CKT</option>
+        <option value="Tai Wai|22.3729|114.1789">大圍 Tai Wai</option>
+        <option value="Hin Keng|22.3628|114.1680">顯徑 Hin Keng</option>
+        <option value="Diamond Hill|22.3385|114.2087">鑽石山 Diamond Hill</option>
+        <option value="Kai Tak|22.3292|114.2099">啟德 Kai Tak</option>
+        <option value="Tuen Mun|22.3908|113.9770">屯門 Tuen Mun</option>
+        <option value="Yuen Long|22.4450|114.0228">元朗 Yuen Long</option>
+        <option value="Tin Shui Wai|22.4591|114.0024">天水圍 TSW</option>
+      </optgroup>
+    </select>
+    <button class="mtr-clear-btn" id="mtrClearBtn" onclick="clearMTR()" style="display:none">✕</button>
+  </div>
+  <div class="fchip mtr-radius-chip active" onclick="setMTRRadius(this, 300)" id="mtr-r300">300m</div>
+  <div class="fchip mtr-radius-chip" onclick="setMTRRadius(this, 500)" id="mtr-r500">500m</div>
 </div>
 
 <!-- 메인 레이아웃 -->
@@ -1080,6 +1239,10 @@ let priceFilter = 'all';
 let categoryFilter = null;
 let timeFilter = null;
 let paymentFilter = null;
+let mtrFilter = null;      // { name, lat, lng }
+let mtrRadius = 300;       // 기본 300m
+let mtrCircle = null;      // 지도에 표시되는 원
+let mtrMarker = null;      // 역 마커
 let activeMarkerId = null;
 
 // ===== INIT =====
@@ -1149,6 +1312,10 @@ function renderPlaces() {
       if (timeFilter === 'afternoon' && !isOpenAtTime(hours, 15)) return false;
       if (timeFilter === 'latenight' && !isOpenLateNight(hours)) return false;
     }
+    if (mtrFilter) {
+      const dist = getDistanceMeters(mtrFilter.lat, mtrFilter.lng, p.lat, p.lng);
+      if (dist > mtrRadius) return false;
+    }
     return true;
   });
 
@@ -1175,6 +1342,79 @@ function isOpenLateNight(hours) {
   return closeH >= 22 || closeH <= 4;
 }
 
+// ===== 거리 계산 (Haversine) =====
+function getDistanceMeters(lat1, lng1, lat2, lng2) {
+  const R = 6371000;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// ===== MTR 필터 =====
+function setMTR(val) {
+  if (!val) { clearMTR(); return; }
+  const parts = val.split('|');
+  const name = parts[0];
+  const lat = parseFloat(parts[1]);
+  const lng = parseFloat(parts[2]);
+
+  mtrFilter = { name, lat, lng };
+
+  // 지도에 원 표시
+  if (mtrCircle) map.removeLayer(mtrCircle);
+  if (mtrMarker) map.removeLayer(mtrMarker);
+
+  mtrCircle = L.circle([lat, lng], {
+    radius: mtrRadius,
+    color: '#f5c400',
+    fillColor: '#f5c400',
+    fillOpacity: 0.1,
+    weight: 2,
+    dashArray: '6 4'
+  }).addTo(map);
+
+  const mtrIcon = L.divIcon({
+    className: '',
+    html: `<div style="background:#f5c400;border:3px solid #fff;border-radius:50%;width:20px;height:20px;box-shadow:0 2px 8px rgba(0,0,0,0.4);display:flex;align-items:center;justify-content:center;font-size:10px;">🚇</div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
+  });
+  mtrMarker = L.marker([lat, lng], { icon: mtrIcon })
+    .addTo(map)
+    .bindTooltip(name, { permanent: true, direction: 'top', className: 'mtr-tooltip' });
+
+  // 지도 이동
+  map.flyTo([lat, lng], 16, { duration: 0.8 });
+
+  // 셀렉트 스타일
+  document.getElementById('mtrSelect').classList.add('active');
+  document.getElementById('mtrClearBtn').style.display = 'flex';
+
+  renderPlaces();
+}
+
+function clearMTR() {
+  mtrFilter = null;
+  document.getElementById('mtrSelect').value = '';
+  document.getElementById('mtrSelect').classList.remove('active');
+  document.getElementById('mtrClearBtn').style.display = 'none';
+  if (mtrCircle) { map.removeLayer(mtrCircle); mtrCircle = null; }
+  if (mtrMarker) { map.removeLayer(mtrMarker); mtrMarker = null; }
+  renderPlaces();
+}
+
+function setMTRRadius(el, radius) {
+  mtrRadius = radius;
+  document.querySelectorAll('.mtr-radius-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  // 원 반경 업데이트
+  if (mtrCircle) mtrCircle.setRadius(radius);
+  if (mtrFilter) renderPlaces();
+}
+
 function updateFilterStatus() {
   const status = document.getElementById('filterStatus');
   const text = document.getElementById('filterStatusText');
@@ -1191,6 +1431,9 @@ function updateFilterStatus() {
   if (paymentFilter) {
     const pMap = { cash:'💵現金', octopus:'🐙八達通', alipay_hk:'📱Alipay' };
     parts.push(pMap[paymentFilter] || paymentFilter);
+  }
+  if (mtrFilter) {
+    parts.push(`🚇 ${mtrFilter.name} ${mtrRadius}m`);
   }
   if (parts.length > 0) {
     text.textContent = parts.join(' · ') + ` · ${filteredPlaces.length}곳`;
@@ -1431,6 +1674,8 @@ function resetAllFilters() {
   paymentFilter = null;
   document.querySelectorAll('.fchip').forEach(c => c.classList.remove('active'));
   document.querySelector('.price-chip').classList.add('active');
+  document.querySelector('.mtr-radius-chip').classList.add('active');
+  clearMTR();
   renderPlaces();
 }
 
