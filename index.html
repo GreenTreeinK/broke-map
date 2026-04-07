@@ -183,7 +183,7 @@ body {
   z-index: 1;
 }
 
-/* Leaflet 커스텀 마커 */
+/* Leaflet Custom Marker */
 .custom-marker {
   background: var(--red);
   border: 2px solid #fff;
@@ -568,7 +568,7 @@ body {
 }
 .submit-btn:hover { background: var(--red-dark); }
 
-/* ===== MTR 필터 ===== */
+/* ===== MTR Filter ===== */
 .mtr-select-wrap {
   display: flex;
   align-items: center;
@@ -619,7 +619,7 @@ body {
   font-size: 10px !important;
   padding: 4px 8px !important;
 }
-/* MTR 반경 원 (지도 위) */
+/* MTR radius circle */
 .mtr-station-marker {
   background: var(--yellow);
   border: 3px solid #fff;
@@ -627,7 +627,7 @@ body {
   box-shadow: 0 2px 10px rgba(0,0,0,0.4);
 }
 
-/* ===== CTA 버튼 ===== */
+/* ===== CTA Button ===== */
 .cta-btn-wrap {
   position: absolute;
   bottom: 28px;
@@ -654,7 +654,7 @@ body {
 }
 .cta-btn:hover { transform: scale(1.05); box-shadow: 0 6px 24px rgba(0,0,0,0.35); }
 
-/* ===== 필터 상태 요약 ===== */
+/* ===== Filter Status ===== */
 .filter-status {
   position: absolute;
   top: 52px;
@@ -684,7 +684,7 @@ body {
   display: flex; align-items: center; justify-content: center;
 }
 
-/* ===== 2단계 폼 ===== */
+/* ===== 2-Step Form ===== */
 .form-steps {
   display: flex;
   align-items: center;
@@ -851,7 +851,7 @@ body {
 .stat-label { font-size: 10px; color: rgba(255,255,255,0.5); }
 .stat-sep { width: 1px; height: 14px; background: rgba(255,255,255,0.15); }
 
-/* Leaflet popup 커스텀 */
+/* Leaflet Popup Custom */
 .leaflet-popup-content-wrapper {
   background: var(--dark);
   border-radius: 12px;
@@ -878,7 +878,7 @@ body {
   font-family: 'Noto Sans HK', sans-serif;
   text-align: center;
 }
-/* ===== 투표 섹션 ===== */
+/* ===== Vote Section ===== */
 .vote-section {
   margin: 16px 0;
   padding: 14px;
@@ -898,7 +898,7 @@ body {
 .vote-btn.down:hover, .vote-btn.down.voted { background: var(--red-light); border-color: var(--red); color: var(--red); }
 .vote-count { font-size: 15px; font-family: 'Oswald', sans-serif; }
 
-/* ===== 댓글 섹션 ===== */
+/* ===== Comment Section ===== */
 .comment-section { margin-top: 16px; padding-top: 4px; }
 .comment-form { margin-bottom: 12px; }
 .comment-form-row { display: flex; gap: 6px; margin-bottom: 6px; }
@@ -939,14 +939,14 @@ body {
 </head>
 <body>
 
-<!-- 로딩 -->
+<!-- Loading -->
 <div class="loading-overlay" id="loadingOverlay">
   <div class="loading-logo">窮鬼地圖</div>
   <div class="loading-sub">BROKE MAP · HONG KONG</div>
   <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
 </div>
 
-<!-- 헤더 -->
+<!-- Header -->
 <div class="app-header">
   <div class="logo-wrap" onclick="resetView()">
     <div class="logo-icon">💰</div>
@@ -959,44 +959,44 @@ body {
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('zh')" id="lang-zh">中</button>
       <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
-      <button class="lang-btn" onclick="setLang('ko')" id="lang-ko">한</button>
+      
     </div>
-    <button class="header-btn primary" onclick="openReport()">+ <span data-zh="提報" data-en="Report" data-ko="제보" id="reportBtnText">提報</span></button>
+    <button class="header-btn primary" onclick="openReport()">+ <span data-zh="提報" data-en="Report" id="reportBtnText">提報</span></button>
   </div>
 </div>
 
-<!-- 필터 바 -->
+<!-- Filter Bar -->
 <div class="filter-bar">
-  <span class="filter-label" data-zh="價錢" data-en="PRICE" data-ko="가격">價錢</span>
-  <div class="fchip price-chip active" onclick="setPrice(this, 'all')" data-zh="全部" data-en="All" data-ko="전체">全部</div>
-  <div class="fchip price-chip" onclick="setPrice(this, 30)" data-zh="$30↓" data-en="$30↓" data-ko="$30↓">$30↓</div>
-  <div class="fchip price-chip" onclick="setPrice(this, 50)" data-zh="$50↓" data-en="$50↓" data-ko="$50↓">$50↓</div>
-  <div class="fchip price-chip" onclick="setPrice(this, 70)" data-zh="$70↓" data-en="$70↓" data-ko="$70↓">$70↓</div>
-  <div class="fchip price-chip" onclick="setPrice(this, 100)" data-zh="$100↓" data-en="$100↓" data-ko="$100↓">$100↓</div>
+  <span class="filter-label" data-zh="價錢" data-en="PRICE">價錢</span>
+  <div class="fchip price-chip active" onclick="setPrice(this, 'all')" data-zh="全部" data-en="All">全部</div>
+  <div class="fchip price-chip" onclick="setPrice(this, 30)" data-zh="$30↓" data-en="$30↓">$30↓</div>
+  <div class="fchip price-chip" onclick="setPrice(this, 50)" data-zh="$50↓" data-en="$50↓">$50↓</div>
+  <div class="fchip price-chip" onclick="setPrice(this, 70)" data-zh="$70↓" data-en="$70↓">$70↓</div>
+  <div class="fchip price-chip" onclick="setPrice(this, 100)" data-zh="$100↓" data-en="$100↓">$100↓</div>
   <div class="filter-sep"></div>
-  <span class="filter-label" data-zh="時段" data-en="TIME" data-ko="시간대">時段</span>
-  <div class="fchip time-chip" onclick="setTime(this, 'breakfast')" data-zh="早餐" data-en="Breakfast" data-ko="아침">🌅 早餐</div>
-  <div class="fchip time-chip" onclick="setTime(this, 'lunch')" data-zh="午市" data-en="Lunch" data-ko="점심">☀️ 午市</div>
-  <div class="fchip time-chip" onclick="setTime(this, 'afternoon')" data-zh="下午茶" data-en="Aft. Tea" data-ko="애프터눈티">🍵 下午茶</div>
-  <div class="fchip time-chip" onclick="setTime(this, 'latenight')" data-zh="宵夜" data-en="Late Night" data-ko="심야">🌙 宵夜</div>
+  <span class="filter-label" data-zh="時段" data-en="TIME">時段</span>
+  <div class="fchip time-chip" onclick="setTime(this, 'breakfast')" data-zh="早餐" data-en="Breakfast">🌅 早餐</div>
+  <div class="fchip time-chip" onclick="setTime(this, 'lunch')" data-zh="午市" data-en="Lunch">☀️ 午市</div>
+  <div class="fchip time-chip" onclick="setTime(this, 'afternoon')" data-zh="下午茶" data-en="Aft. Tea">🍵 下午茶</div>
+  <div class="fchip time-chip" onclick="setTime(this, 'latenight')" data-zh="宵夜" data-en="Late Night">🌙 宵夜</div>
   <div class="filter-sep"></div>
-  <span class="filter-label" data-zh="類型" data-en="TYPE" data-ko="종류">類型</span>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'cha_chaan_teng')" data-zh="茶餐廳" data-en="茶餐廳" data-ko="茶餐廳">茶餐廳</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'noodle')" data-zh="麵食" data-en="Noodles" data-ko="면류">麵食</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'rice')" data-zh="飯類" data-en="Rice" data-ko="밥류">飯類</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'bakery')" data-zh="烘焙" data-en="Bakery" data-ko="베이커리">烘焙</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'dessert')" data-zh="甜品" data-en="Dessert" data-ko="디저트">甜品</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'hot_pot')" data-zh="火鍋" data-en="Hot Pot" data-ko="훠궈">火鍋</div>
+  <span class="filter-label" data-zh="類型" data-en="TYPE">類型</span>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'cha_chaan_teng')" data-zh="茶餐廳" data-en="茶餐廳">茶餐廳</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'noodle')" data-zh="麵食" data-en="Noodles">麵食</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'rice')" data-zh="飯類" data-en="Rice">飯類</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'bakery')" data-zh="烘焙" data-en="Bakery">烘焙</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'dessert')" data-zh="甜品" data-en="Dessert">甜品</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'hot_pot')" data-zh="火鍋" data-en="Hot Pot">火鍋</div>
   <div class="filter-sep"></div>
-  <span class="filter-label" data-zh="付款" data-en="PAY" data-ko="결제">付款</span>
-  <div class="fchip pay-chip" onclick="setPayment(this, 'cash')" data-zh="現金" data-en="Cash" data-ko="현금">💵 現金</div>
-  <div class="fchip pay-chip" onclick="setPayment(this, 'octopus')" data-zh="八達通" data-en="Octopus" data-ko="옥토퍼스">🐙 八達通</div>
-  <div class="fchip pay-chip" onclick="setPayment(this, 'alipay_hk')" data-zh="AlipayHK" data-en="AlipayHK" data-ko="AlipayHK">📱 Alipay</div>
+  <span class="filter-label" data-zh="付款" data-en="PAY">付款</span>
+  <div class="fchip pay-chip" onclick="setPayment(this, 'cash')" data-zh="現金" data-en="Cash">💵 現金</div>
+  <div class="fchip pay-chip" onclick="setPayment(this, 'octopus')" data-zh="八達通" data-en="Octopus">🐙 八達通</div>
+  <div class="fchip pay-chip" onclick="setPayment(this, 'alipay_hk')" data-zh="AlipayHK" data-en="AlipayHK">📱 Alipay</div>
   <div class="filter-sep"></div>
-  <span class="filter-label" data-zh="MTR" data-en="MTR" data-ko="MTR">🚇 MTR</span>
+  <span class="filter-label" data-zh="MTR" data-en="MTR">🚇 MTR</span>
   <div class="mtr-select-wrap">
     <select class="mtr-select" id="mtrSelect" onchange="setMTR(this.value)">
-      <option value="">-- 역 선택 --</option>
+      <option value="">-- Select Station --</option>
       <optgroup label="港島線 Island Line">
         <option value="Kennedy Town|22.2814|114.1288">堅尼地城 Kennedy Town</option>
         <option value="HKU|22.2840|114.1371">香港大學 HKU</option>
@@ -1085,51 +1085,51 @@ body {
   <div class="fchip mtr-radius-chip" onclick="setMTRRadius(this, 500)" id="mtr-r500">500m</div>
 </div>
 
-<!-- 메인 레이아웃 -->
+<!-- Main Layout -->
 <div class="main-layout">
-  <!-- 지도 -->
+  <!-- Map -->
   <div id="map">
-    <!-- 통계 바 -->
+    <!-- Stats Bar -->
     <div class="stats-bar" id="statsBar">
       <div class="stat-item">
         <span class="stat-num" id="statTotal">-</span>
-        <span class="stat-label" data-zh="食肆" data-en="Places" data-ko="식당">식당</span>
+        <span class="stat-label" data-zh="食肆" data-en="Places">Shops</span>
       </div>
       <div class="stat-sep"></div>
       <div class="stat-item">
         <span class="stat-num" id="statAvgPrice">-</span>
-        <span class="stat-label" data-zh="平均" data-en="Avg HKD" data-ko="평균">avg HKD</span>
+        <span class="stat-label" data-zh="平均" data-en="Avg HKD">avg HKD</span>
       </div>
       <div class="stat-sep"></div>
       <div class="stat-item">
         <span class="stat-num" id="statUnder50">-</span>
-        <span class="stat-label" data-zh="$50以下" data-en="Under $50" data-ko="$50↓">$50↓</span>
+        <span class="stat-label" data-zh="$50以下" data-en="Under $50">$50↓</span>
       </div>
     </div>
-    <!-- 필터 상태 요약 -->
+    <!-- Filter Status -->
     <div class="filter-status" id="filterStatus" style="display:none;">
       <span id="filterStatusText"></span>
       <button onclick="resetAllFilters()" class="filter-reset-btn">✕</button>
     </div>
-    <!-- CTA 버튼 -->
+    <!-- CTA Button -->
     <div class="cta-btn-wrap">
       <button class="cta-btn" onclick="locateAndFilter()">
-        📍 <span data-zh="附近$50以下" data-en="Near me $50↓" data-ko="내 주변 $50↓">附近$50以下</span>
+        📍 <span data-zh="附近$50以下" data-en="Near me $50↓">附近$50以下</span>
       </button>
     </div>
-    <!-- 지도 컨트롤 -->
+    <!-- Map Controls -->
     <div class="map-controls">
-      <button class="map-ctrl-btn locate" onclick="locateUser()" title="내 위치">📍</button>
-      <button class="map-ctrl-btn" onclick="map.zoomIn()" title="확대">+</button>
-      <button class="map-ctrl-btn" onclick="map.zoomOut()" title="축소">−</button>
+      <button class="map-ctrl-btn locate" onclick="locateUser()" title="My location">📍</button>
+      <button class="map-ctrl-btn" onclick="map.zoomIn()" title="Zoom in">+</button>
+      <button class="map-ctrl-btn" onclick="map.zoomOut()" title="Zoom out">−</button>
     </div>
   </div>
 
-  <!-- 사이드 패널 -->
+  <!-- Side Panel -->
   <div class="side-panel" id="sidePanel">
     <div class="panel-handle" onclick="toggleMobilePanel()"></div>
     <div class="panel-header">
-      <div class="panel-title" data-zh="平價食肆" data-en="Budget Eats" data-ko="가성비 식당">平價食肆</div>
+      <div class="panel-title" data-zh="平價食肆" data-en="Budget Eats">平價食肆</div>
       <div class="panel-count" id="panelCount">載入中...</div>
     </div>
     <div class="panel-list" id="placeList">
@@ -1140,40 +1140,40 @@ body {
     </div>
   </div>
 
-  <!-- 상세 패널 -->
+  <!-- Detail Panel -->
   <div class="detail-panel" id="detailPanel">
     <div id="detailContent"></div>
   </div>
 </div>
 
-<!-- 제보 폼 -->
+<!-- Report Form -->
 <div class="report-overlay" id="reportOverlay" onclick="closeReportIfBg(event)">
   <div class="report-sheet">
-    <div class="report-title" data-zh="提報 💰" data-en="Report a Place 💰" data-ko="제보하기 💰">提報 💰</div>
-    <div class="report-sub" data-zh="HKD 100以下嘅平價食肆" data-en="Share a budget eat under HKD 100" data-ko="HKD 100 이하 가성비 식당">HKD 100以下平價食肆</div>
+    <div class="report-title" data-zh="提報 💰" data-en="Report a Place 💰">提報 💰</div>
+    <div class="report-sub" data-zh="HKD 100以下嘅平價食肆" data-en="Share a budget eat under HKD 100">HKD 100以下平價食肆</div>
 
-    <!-- 단계 표시 -->
+    <!-- Steps -->
     <div class="form-steps">
-      <div class="form-step active" id="step1-indicator">① <span data-zh="必填" data-en="Required" data-ko="필수">必填</span></div>
+      <div class="form-step active" id="step1-indicator">① <span data-zh="必填" data-en="Required">必填</span></div>
       <div class="step-arrow">→</div>
-      <div class="form-step" id="step2-indicator">② <span data-zh="詳細" data-en="Details" data-ko="상세">詳細</span></div>
+      <div class="form-step" id="step2-indicator">② <span data-zh="詳細" data-en="Details">詳細</span></div>
     </div>
 
-    <!-- STEP 1: 필수 -->
+    <!-- STEP 1: Required -->
     <div id="report-step1">
       <div class="form-row">
-        <label class="form-label" data-zh="食肆名稱 (中文)*" data-en="Name (Chinese)*" data-ko="식당명 (중문)*">食肆名稱 (中文)*</label>
+        <label class="form-label" data-zh="食肆名稱 (中文)*" data-en="Name (Chinese)*">食肆名稱 (中文)*</label>
         <input class="form-input" id="r_name_zh" placeholder="e.g. 澳洲牛奶公司" type="text">
       </div>
       <div class="form-row">
-        <label class="form-label" data-zh="Name (English)" data-en="Name (English)" data-ko="식당명 (영문)">食肆名稱 (英文)</label>
+        <label class="form-label" data-zh="Name (English)" data-en="Name (English)">食肆名稱 (英文)</label>
         <input class="form-input" id="r_name_en" placeholder="e.g. Australia Dairy Company" type="text">
       </div>
       <div class="form-row-2">
         <div>
-          <label class="form-label" data-zh="地區*" data-en="District*" data-ko="지역*">地區*</label>
+          <label class="form-label" data-zh="地區*" data-en="District*">地區*</label>
           <select class="form-input" id="r_district">
-            <option value="">선택...</option>
+            <option value="">Select...</option>
             <option value="Central">Central 中環</option>
             <option value="Sheung Wan">Sheung Wan 上環</option>
             <option value="Wan Chai">Wan Chai 灣仔</option>
@@ -1195,7 +1195,7 @@ body {
           </select>
         </div>
         <div>
-          <label class="form-label" data-zh="類型" data-en="Category" data-ko="카테고리">類型</label>
+          <label class="form-label" data-zh="類型" data-en="Category">類型</label>
           <select class="form-input" id="r_category">
             <option value="cha_chaan_teng">茶餐廳</option>
             <option value="noodle">麵食</option>
@@ -1209,35 +1209,35 @@ body {
       </div>
       <div class="form-row-2">
         <div>
-          <label class="form-label" data-zh="最低價 (HKD)*" data-en="Min Price*" data-ko="최저가*">最低價 (HKD)*</label>
+          <label class="form-label" data-zh="最低價 (HKD)*" data-en="Min Price*">最低價 (HKD)*</label>
           <input class="form-input" id="r_price_min" placeholder="e.g. 25" type="number" min="1" max="500">
         </div>
         <div>
-          <label class="form-label" data-zh="最高價" data-en="Max Price" data-ko="최고가">最高價</label>
+          <label class="form-label" data-zh="最高價" data-en="Max Price">最高價</label>
           <input class="form-input" id="r_price_max" placeholder="e.g. 60" type="number" min="1" max="500">
         </div>
       </div>
       <button class="submit-btn" onclick="goToStep2()" style="background:var(--dark);">
-        <span data-zh="下一步 →" data-en="Next →" data-ko="다음 →">下一步 →</span>
+        <span data-zh="下一步 →" data-en="Next →">下一步 →</span>
       </button>
     </div>
 
-    <!-- STEP 2: 선택 상세 -->
+    <!-- STEP 2: Optional Details -->
     <div id="report-step2" style="display:none;">
       <div class="form-row">
-        <label class="form-label" data-zh="地址" data-en="Address" data-ko="주소">地址 (選填)</label>
+        <label class="form-label" data-zh="地址" data-en="Address">地址 (選填)</label>
         <input class="form-input" id="r_address" placeholder="e.g. 47 Parkes St, Jordan" type="text">
       </div>
       <div class="form-row">
-        <label class="form-label" data-zh="招牌菜" data-en="Signature Dish" data-ko="대표 메뉴">招牌菜 (選填)</label>
+        <label class="form-label" data-zh="招牌菜" data-en="Signature Dish">招牌菜 (選填)</label>
         <input class="form-input" id="r_dish" placeholder="e.g. 炒蛋多士" type="text">
       </div>
       <div class="form-row">
-        <label class="form-label" data-zh="一句話推薦" data-en="One-line tip" data-ko="한줄 추천">一句推薦 (選填)</label>
-        <input class="form-input" id="r_summary" placeholder="e.g. 아침세트 $25 최고, 빨리 나옴" type="text">
+        <label class="form-label" data-zh="一句話推薦" data-en="One-line tip">一句推薦 (選填)</label>
+        <input class="form-input" id="r_summary" placeholder="e.g. 早餐 $25, 快出餐" type="text">
       </div>
       <div class="form-row">
-        <label class="form-label" data-zh="付款方式" data-en="Payment" data-ko="결제수단">付款方式 (選填)</label>
+        <label class="form-label" data-zh="付款方式" data-en="Payment">付款方式 (選填)</label>
         <div class="payment-select">
           <div class="pcheck" onclick="togglePay(this)" data-val="cash">💵 現金</div>
           <div class="pcheck" onclick="togglePay(this)" data-val="octopus">🐙 Octopus</div>
@@ -1248,23 +1248,23 @@ body {
         </div>
       </div>
       <div class="form-row">
-        <label class="form-label" data-zh="營業時間" data-en="Hours" data-ko="영업시간">營業時間 (選填)</label>
+        <label class="form-label" data-zh="營業時間" data-en="Hours">營業時間 (選填)</label>
         <input class="form-input" id="r_hours" placeholder="e.g. 07:30-23:00" type="text">
       </div>
       <div style="display:flex;gap:8px;margin-top:8px;">
-        <button class="submit-btn" onclick="goToStep1()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">← 이전</button>
+        <button class="submit-btn" onclick="goToStep1()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">← Back</button>
         <button class="submit-btn" onclick="submitReport()" style="flex:1;">
-          💰 <span data-zh="提交" data-en="Submit" data-ko="제출">提交</span>
+          💰 <span data-zh="提交" data-en="Submit">提交</span>
         </button>
       </div>
       <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-muted);">
-        <span data-zh="검토 후 지도에 반영됩니다" data-en="Reviewed before appearing on map" data-ko="검토 후 반영됩니다">審核後上線</span>
+        <span data-zh="審核後上線" data-en="Reviewed before appearing on map">審核後上線</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- 토스트 -->
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <style>
@@ -1273,7 +1273,7 @@ body {
 
 <script>
 // ===== CONFIG =====
-// TODO: 새 Supabase 프로젝트 연결 후 아래 값을 교체하세요
+// Supabase credentials
 const SUPABASE_URL = 'https://nsxhzxlvtgwneiafmfmy.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MP-BjPpUp0djwP4ktmKk9A_IzuvnWZK';
 
@@ -1288,15 +1288,15 @@ let categoryFilter = null;
 let timeFilter = null;
 let paymentFilter = null;
 let mtrFilter = null;      // { name, lat, lng }
-let mtrRadius = 300;       // 기본 300m
-let mtrCircle = null;      // 지도에 표시되는 원
-let mtrMarker = null;      // 역 마커
+let mtrRadius = 300;       //  300m
+let mtrCircle = null;      //   
+let mtrMarker = null;      // Station marker
 let activeMarkerId = null;
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
   initMap();
-  setLang('zh'); // 초기 언어 적용
+  setLang('zh'); // Apply initial language
   db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadPlaces();
   setTimeout(() => {
@@ -1313,7 +1313,7 @@ function initMap() {
     attributionControl: true
   });
 
-  // OpenStreetMap 타일 (무료)
+  // OpenStreetMap tile (free)
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap © CARTO',
     maxZoom: 19
@@ -1334,16 +1334,16 @@ async function loadPlaces() {
 
 function loadDemoData() {
   allPlaces = [
-    { id: '1', name_zh: '澳洲牛奶公司', name_en: 'Australia Dairy Company', district_en: 'Jordan', district_zh: '佐敦', lat: 22.3048, lng: 114.1703, category: 'cha_chaan_teng', price_min: 25, price_max: 60, signature_dish: '炒蛋多士', payment: ['cash'], tags: ['혼밥 좋음', '빨리 나옴', '현금만'], open_hours: '07:30-23:00', is_verified: true },
-    { id: '2', name_zh: '沾仔記', name_en: 'Tsim Chai Kee', district_en: 'Central', district_zh: '中環', lat: 22.2817, lng: 114.1541, category: 'noodle', price_min: 35, price_max: 55, signature_dish: '雲吞麵', payment: ['cash', 'octopus'], tags: ['혼밥 좋음', '빨리 나옴'], open_hours: '09:00-21:00', is_verified: true },
-    { id: '3', name_zh: '公和荳品廠', name_en: 'Kung Wo Bean Curd', district_en: 'Sham Shui Po', district_zh: '深水埗', lat: 22.3306, lng: 114.1624, category: 'dessert', price_min: 10, price_max: 25, signature_dish: '豆腐花', payment: ['cash', 'octopus'], tags: ['저렴', '혼밥 좋음'], open_hours: '07:00-20:30', is_verified: true },
-    { id: '4', name_zh: '勝香園', name_en: 'Sing Heung Yuen', district_en: 'Central', district_zh: '中環', lat: 22.2833, lng: 114.1548, category: 'cha_chaan_teng', price_min: 30, price_max: 55, signature_dish: '番茄通粉', payment: ['cash'], tags: ['야외', '혼밥 좋음', '현금만'], open_hours: '07:30-18:00', is_verified: true },
-    { id: '5', name_zh: '麥文記麵家', name_en: 'Mak Man Kee', district_en: 'Jordan', district_zh: '佐敦', lat: 22.3050, lng: 114.1705, category: 'noodle', price_min: 40, price_max: 65, signature_dish: '鮮蝦雲吞麵', payment: ['cash'], tags: ['혼밥 좋음', '현금만'], open_hours: '12:00-01:00', is_verified: true },
-    { id: '6', name_zh: '泰昌餅家', name_en: 'Tai Cheong Bakery', district_en: 'Central', district_zh: '中環', lat: 22.2829, lng: 114.1540, category: 'bakery', price_min: 8, price_max: 20, signature_dish: '蛋撻', payment: ['cash', 'octopus', 'visa'], tags: ['테이크아웃', '저렴'], open_hours: '07:30-21:00', is_verified: true },
-    { id: '7', name_zh: '坤記煲仔小菜', name_en: 'Kwan Kee Clay Pot', district_en: 'Sheung Wan', district_zh: '上環', lat: 22.2869, lng: 114.1456, category: 'rice', price_min: 55, price_max: 90, signature_dish: '煲仔飯', payment: ['cash', 'octopus'], tags: ['저녁만', '웨이팅 있음'], open_hours: '18:00-23:00', is_verified: true },
-    { id: '8', name_zh: '九記牛腩', name_en: 'Kau Kee', district_en: 'Sheung Wan', district_zh: '上環', lat: 22.2852, lng: 114.1527, category: 'noodle', price_min: 45, price_max: 80, signature_dish: '牛腩麵', payment: ['cash'], tags: ['웨이팅 있음', '현금만', '양 많음'], open_hours: '12:30-22:30', is_verified: true },
-    { id: '9', name_zh: '興記', name_en: 'Hing Kee', district_en: 'Mong Kok', district_zh: '旺角', lat: 22.3196, lng: 114.1697, category: 'cha_chaan_teng', price_min: 25, price_max: 50, signature_dish: '奶茶', payment: ['cash', 'octopus'], tags: ['저렴', '빨리 나옴'], open_hours: '07:00-22:00', is_verified: true },
-    { id: '10', name_zh: '沙爹王', name_en: 'Satay King', district_en: 'Mong Kok', district_zh: '旺角', lat: 22.3175, lng: 114.1693, category: 'hot_pot', price_min: 50, price_max: 80, signature_dish: '沙爹牛肉麵', payment: ['cash', 'octopus'], tags: ['심야 가능', '혼밥 좋음'], open_hours: '12:00-03:00', is_verified: true },
+    { id: '1', name_zh: '澳洲牛奶公司', name_en: 'Australia Dairy Company', district_en: 'Jordan', district_zh: '佐敦', lat: 22.3048, lng: 114.1703, category: 'cha_chaan_teng', price_min: 25, price_max: 60, signature_dish: '炒蛋多士', payment: ['cash'], tags: ['Solo OK', 'Fast service', 'Cash only'], open_hours: '07:30-23:00', is_verified: true },
+    { id: '2', name_zh: '沾仔記', name_en: 'Tsim Chai Kee', district_en: 'Central', district_zh: '中環', lat: 22.2817, lng: 114.1541, category: 'noodle', price_min: 35, price_max: 55, signature_dish: '雲吞麵', payment: ['cash', 'octopus'], tags: ['Solo OK', 'Fast service'], open_hours: '09:00-21:00', is_verified: true },
+    { id: '3', name_zh: '公和荳品廠', name_en: 'Kung Wo Bean Curd', district_en: 'Sham Shui Po', district_zh: '深水埗', lat: 22.3306, lng: 114.1624, category: 'dessert', price_min: 10, price_max: 25, signature_dish: '豆腐花', payment: ['cash', 'octopus'], tags: ['Budget', 'Solo OK'], open_hours: '07:00-20:30', is_verified: true },
+    { id: '4', name_zh: '勝香園', name_en: 'Sing Heung Yuen', district_en: 'Central', district_zh: '中環', lat: 22.2833, lng: 114.1548, category: 'cha_chaan_teng', price_min: 30, price_max: 55, signature_dish: '番茄通粉', payment: ['cash'], tags: ['Outdoor', 'Solo OK', 'Cash only'], open_hours: '07:30-18:00', is_verified: true },
+    { id: '5', name_zh: '麥文記麵家', name_en: 'Mak Man Kee', district_en: 'Jordan', district_zh: '佐敦', lat: 22.3050, lng: 114.1705, category: 'noodle', price_min: 40, price_max: 65, signature_dish: '鮮蝦雲吞麵', payment: ['cash'], tags: ['Solo OK', 'Cash only'], open_hours: '12:00-01:00', is_verified: true },
+    { id: '6', name_zh: '泰昌餅家', name_en: 'Tai Cheong Bakery', district_en: 'Central', district_zh: '中環', lat: 22.2829, lng: 114.1540, category: 'bakery', price_min: 8, price_max: 20, signature_dish: '蛋撻', payment: ['cash', 'octopus', 'visa'], tags: ['Takeout', 'Budget'], open_hours: '07:30-21:00', is_verified: true },
+    { id: '7', name_zh: '坤記煲仔小菜', name_en: 'Kwan Kee Clay Pot', district_en: 'Sheung Wan', district_zh: '上環', lat: 22.2869, lng: 114.1456, category: 'rice', price_min: 55, price_max: 90, signature_dish: '煲仔飯', payment: ['cash', 'octopus'], tags: ['Dinner only', 'Queue'], open_hours: '18:00-23:00', is_verified: true },
+    { id: '8', name_zh: '九記牛腩', name_en: 'Kau Kee', district_en: 'Sheung Wan', district_zh: '上環', lat: 22.2852, lng: 114.1527, category: 'noodle', price_min: 45, price_max: 80, signature_dish: '牛腩麵', payment: ['cash'], tags: ['Queue', 'Cash only', 'Large portion'], open_hours: '12:30-22:30', is_verified: true },
+    { id: '9', name_zh: '興記', name_en: 'Hing Kee', district_en: 'Mong Kok', district_zh: '旺角', lat: 22.3196, lng: 114.1697, category: 'cha_chaan_teng', price_min: 25, price_max: 50, signature_dish: '奶茶', payment: ['cash', 'octopus'], tags: ['Budget', 'Fast service'], open_hours: '07:00-22:00', is_verified: true },
+    { id: '10', name_zh: '沙爹王', name_en: 'Satay King', district_en: 'Mong Kok', district_zh: '旺角', lat: 22.3175, lng: 114.1693, category: 'hot_pot', price_min: 50, price_max: 80, signature_dish: '沙爹牛肉麵', payment: ['cash', 'octopus'], tags: ['Late night', 'Solo OK'], open_hours: '12:00-03:00', is_verified: true },
   ];
   renderPlaces();
 }
@@ -1391,7 +1391,7 @@ function isOpenLateNight(hours) {
   return closeH >= 22 || closeH <= 4;
 }
 
-// ===== 거리 계산 (Haversine) =====
+// ===== Distance Calculation (Haversine) =====
 function getDistanceMeters(lat1, lng1, lat2, lng2) {
   const R = 6371000;
   const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -1402,7 +1402,7 @@ function getDistanceMeters(lat1, lng1, lat2, lng2) {
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 }
 
-// ===== MTR 필터 =====
+// ===== MTR Filter =====
 function setMTR(val) {
   if (!val) { clearMTR(); return; }
   const parts = val.split('|');
@@ -1412,7 +1412,7 @@ function setMTR(val) {
 
   mtrFilter = { name, lat, lng };
 
-  // 지도에 원 표시
+  // Draw circle on map
   if (mtrCircle) map.removeLayer(mtrCircle);
   if (mtrMarker) map.removeLayer(mtrMarker);
 
@@ -1435,10 +1435,10 @@ function setMTR(val) {
     .addTo(map)
     .bindTooltip(name, { permanent: true, direction: 'top', className: 'mtr-tooltip' });
 
-  // 지도 이동
+  // Fly to location
   map.flyTo([lat, lng], 16, { duration: 0.8 });
 
-  // 셀렉트 스타일
+  // Update select style
   document.getElementById('mtrSelect').classList.add('active');
   document.getElementById('mtrClearBtn').style.display = 'flex';
 
@@ -1459,7 +1459,7 @@ function setMTRRadius(el, radius) {
   mtrRadius = radius;
   document.querySelectorAll('.mtr-radius-chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
-  // 원 반경 업데이트
+  // Update circle radius
   if (mtrCircle) mtrCircle.setRadius(radius);
   if (mtrFilter) renderPlaces();
 }
@@ -1485,7 +1485,7 @@ function updateFilterStatus() {
     parts.push(`🚇 ${mtrFilter.name} ${mtrRadius}m`);
   }
   if (parts.length > 0) {
-    text.textContent = parts.join(' · ') + ` · ${filteredPlaces.length}곳`;
+    text.textContent = parts.join(' · ') + ` · ${filteredPlaces.length}`;
     status.style.display = 'flex';
   } else {
     status.style.display = 'none';
@@ -1506,8 +1506,7 @@ function updateStats() {
   const count = filteredPlaces.length;
   const langs = {
     zh: `共 ${count} 間食肆`,
-    en: `${count} places found`,
-    ko: `${count}개 식당`
+    en: `${count} places found`
   };
   document.getElementById('panelCount').textContent = langs[currentLang] || langs.zh;
 }
@@ -1519,7 +1518,7 @@ function getPriceClass(price) {
 }
 
 function renderMarkers() {
-  // 기존 마커 제거
+  // Remove existing markers
   markers.forEach(m => map.removeLayer(m));
   markers = [];
 
@@ -1540,7 +1539,7 @@ function renderMarkers() {
         <div class="popup-district">${place.district_en} · ${place.district_zh || ''}</div>
         <div class="popup-price">HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'}</div>
         <button class="popup-btn" onclick="openDetail('${place.id}')">
-          ${currentLang === 'en' ? 'View Details' : currentLang === 'ko' ? '상세보기' : '查看詳情'} →
+          ${currentLang === 'en' ? 'View Details' : '查看詳情'} →
         </button>
       `, { maxWidth: 200 });
 
@@ -1554,8 +1553,8 @@ function renderList() {
   if (filteredPlaces.length === 0) {
     list.innerHTML = `<div class="empty-state">
       <div class="empty-icon">🔍</div>
-      <div class="empty-text">${currentLang === 'en' ? 'No places found' : currentLang === 'ko' ? '해당하는 식당 없음' : '冇符合結果'}</div>
-      <div class="empty-sub">${currentLang === 'en' ? 'Try a different filter' : currentLang === 'ko' ? '필터를 바꿔보세요' : '試試其他篩選'}</div>
+      <div class="empty-text">${currentLang === 'en' ? 'No places found' : '冇符合結果'}</div>
+      <div class="empty-sub">${currentLang === 'en' ? 'Try a different filter' : '試試其他篩選'}</div>
     </div>`;
     return;
   }
@@ -1610,73 +1609,73 @@ function openDetail(id) {
       <div class="detail-name-en">${place.name_en || ''}</div>
       <div class="detail-price-row">
         <div class="detail-price">HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'}</div>
-        <div class="detail-price-label">${currentLang === 'en' ? 'per person' : currentLang === 'ko' ? '1인당' : '每位'}</div>
+        <div class="detail-price-label">${currentLang === 'en' ? 'per person' : '每位'}</div>
       </div>
     </div>
     <div class="detail-body">
-      ${place.is_verified ? `<div class="detail-verified">✅ ${currentLang === 'en' ? 'Verified by community' : currentLang === 'ko' ? '커뮤니티 검증 완료' : '已驗證'} · <span style="font-weight:400;opacity:0.8">${currentLang === 'en' ? 'Recently confirmed' : currentLang === 'ko' ? '최근 확인됨' : '最近確認'}</span></div>` : ''}
+      ${place.is_verified ? `<div class="detail-verified">✅ ${currentLang === 'en' ? 'Verified by community' : '已驗證'} · <span style="font-weight:400;opacity:0.8">${currentLang === 'en' ? 'Recently confirmed' : '最近確認'}</span></div>` : ''}
 
       ${place.summary ? `<div style="background:var(--yellow-light);border:1.5px solid var(--yellow);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--dark);">💡 ${place.summary}</div>` : ''}
 
       <div class="detail-section">
-        <div class="detail-section-title">${currentLang === 'en' ? 'INFO' : currentLang === 'ko' ? '정보' : '資料'}</div>
+        <div class="detail-section-title">${currentLang === 'en' ? 'INFO' : '資料'}</div>
         <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${place.district_zh ? ' · '+place.district_zh : ''}${place.address ? '<br><small style="color:var(--text-muted)">' + place.address + '</small>' : ''}</span></div>
         ${place.signature_dish ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${place.signature_dish}</span></div>` : ''}
         ${place.open_hours ? `<div class="detail-info-row"><span class="detail-info-icon">🕐</span><span>${place.open_hours}</span></div>` : ''}
-        ${place.is_solo_friendly ? `<div class="detail-info-row"><span class="detail-info-icon">👤</span><span>${currentLang === 'en' ? 'Solo friendly' : currentLang === 'ko' ? '혼밥 가능' : '可以一個人食'}</span></div>` : ''}
+        ${place.is_solo_friendly ? `<div class="detail-info-row"><span class="detail-info-icon">👤</span><span>${currentLang === 'en' ? 'Solo friendly' : '可以一個人食'}</span></div>` : ''}
       </div>
 
       ${payments ? `<div class="detail-section">
-        <div class="detail-section-title">${currentLang === 'en' ? 'PAYMENT' : currentLang === 'ko' ? '결제수단' : '付款方式'}</div>
+        <div class="detail-section-title">${currentLang === 'en' ? 'PAYMENT' : '付款方式'}</div>
         <div class="payment-chips">${payments}</div>
       </div>` : ''}
 
       ${tags ? `<div class="detail-section">
-        <div class="detail-section-title">${currentLang === 'en' ? 'TAGS' : currentLang === 'ko' ? '태그' : '標籤'}</div>
+        <div class="detail-section-title">${currentLang === 'en' ? 'TAGS' : '標籤'}</div>
         <div class="tags-wrap">${tags}</div>
       </div>` : ''}
 
       <button class="map-link-btn" onclick="flyToPlace('${place.id}')">
-        🗺 ${currentLang === 'en' ? 'Show on Map' : currentLang === 'ko' ? '지도에서 보기' : '喺地圖查看'}
+        🗺 ${currentLang === 'en' ? 'Show on Map' : '喺地圖查看'}
       </button>
       <button class="map-link-btn" style="background:var(--surface2);color:var(--text);" onclick="openGoogleMaps(${place.lat}, ${place.lng}, '${encodeURIComponent(place.name_zh)}')">
-        🔗 ${currentLang === 'en' ? 'Open in Google Maps' : currentLang === 'ko' ? '구글 지도에서 열기' : '喺Google Maps開啟'}
+        🔗 ${currentLang === 'en' ? 'Open in Google Maps' : '喺Google Maps開啟'}
       </button>
 
-      <!-- 가성비 투표 -->
+      <!-- Vote Section -->
       <div class="vote-section">
-        <div class="vote-label">${currentLang === 'en' ? 'Value for money?' : currentLang === 'ko' ? '가성비 어때요?' : '抵唔抵食？'}</div>
+        <div class="vote-label">${currentLang === 'en' ? 'Value for money?' : '抵唔抵食？'}</div>
         <div class="vote-btns">
           <button class="vote-btn up" onclick="submitVote('${place.id}', 1)" id="voteUp_${place.id}">
-            👍 <span>${currentLang === 'en' ? 'Worth it!' : currentLang === 'ko' ? '가성비 좋아요!' : '抵食！'}</span>
+            👍 <span>${currentLang === 'en' ? 'Worth it!' : '抵食！'}</span>
             <span class="vote-count" id="voteUpCount_${place.id}">${place.votes_up || 0}</span>
           </button>
           <button class="vote-btn down" onclick="submitVote('${place.id}', -1)" id="voteDown_${place.id}">
-            👎 <span>${currentLang === 'en' ? 'Not worth it' : currentLang === 'ko' ? '별로예요' : '唔抵'}</span>
+            👎 <span>${currentLang === 'en' ? 'Not worth it' : '唔抵'}</span>
             <span class="vote-count" id="voteDownCount_${place.id}">${place.votes_down || 0}</span>
           </button>
         </div>
       </div>
 
-      <!-- 댓글 섹션 -->
+      <!-- Comment Section -->
       <div class="comment-section">
         <div class="detail-section-title" style="padding:0 0 10px;">
-          💬 ${currentLang === 'en' ? 'Comments' : currentLang === 'ko' ? '댓글' : '留言'} <span id="commentCount_${place.id}" style="color:var(--text-muted);font-weight:400;">(${place.comment_count || 0})</span>
+          💬 ${currentLang === 'en' ? 'Comments' : '留言'} <span id="commentCount_${place.id}" style="color:var(--text-muted);font-weight:400;">(${place.comment_count || 0})</span>
         </div>
-        <!-- 댓글 작성 폼 -->
+        <!-- Comment Form -->
         <div class="comment-form">
           <div class="comment-form-row">
-            <input class="comment-input" id="cmtNick_${place.id}" placeholder="${currentLang === 'en' ? 'Nickname' : currentLang === 'ko' ? '닉네임' : '暱稱'}" maxlength="20">
-            <input class="comment-input" id="cmtPw_${place.id}" type="password" placeholder="${currentLang === 'en' ? 'Password (to delete)' : currentLang === 'ko' ? '비밀번호(삭제용)' : '密碼(刪除用)'}" maxlength="20">
+            <input class="comment-input" id="cmtNick_${place.id}" placeholder="${currentLang === 'en' ? 'Nickname' : '暱稱'}" maxlength="20">
+            <input class="comment-input" id="cmtPw_${place.id}" type="password" placeholder="${currentLang === 'en' ? 'Password (to delete)' : '密碼(刪除用)'}" maxlength="20">
           </div>
           <div class="comment-form-row">
-            <input class="comment-input" id="cmtText_${place.id}" placeholder="${currentLang === 'en' ? 'Share your experience...' : currentLang === 'ko' ? '경험을 공유해주세요...' : '分享你的體驗...'}" maxlength="200" style="flex:1;">
+            <input class="comment-input" id="cmtText_${place.id}" placeholder="${currentLang === 'en' ? 'Share your experience...' : '分享你的體驗...'}" maxlength="200" style="flex:1;">
             <button class="comment-submit-btn" onclick="submitComment('${place.id}')">
-              ${currentLang === 'en' ? 'Post' : currentLang === 'ko' ? '등록' : '登錄'}
+              ${currentLang === 'en' ? 'Post' : '登錄'}
             </button>
           </div>
         </div>
-        <!-- 댓글 목록 -->
+        <!-- Comment List -->
         <div id="commentList_${place.id}" class="comment-list">
           <div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">載入中...</div>
         </div>
@@ -1687,7 +1686,7 @@ function openDetail(id) {
   document.getElementById('detailPanel').classList.add('open');
   loadComments(place.id);
 
-  // 해당 카드 스크롤
+  // Scroll to card
   const card = document.getElementById(`card-${id}`);
   if (card) card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   renderList();
@@ -1769,24 +1768,24 @@ function resetAllFilters() {
 }
 
 function locateAndFilter() {
-  // $50 이하 필터 적용
+  // $50   
   priceFilter = 50;
   document.querySelectorAll('.price-chip').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.price-chip')[2]?.classList.add('active');
   renderPlaces();
-  // 내 위치로 이동
+  //   
   locateUser();
 }
 
 // ===== LOCATE =====
 function locateUser() {
-  if (!navigator.geolocation) { showToast('위치 정보를 지원하지 않는 브라우저예요'); return; }
+  if (!navigator.geolocation) { showToast('Geolocation not supported'); return; }
   navigator.geolocation.getCurrentPosition(
     pos => {
       map.flyTo([pos.coords.latitude, pos.coords.longitude], 15, { duration: 1 });
       L.circle([pos.coords.latitude, pos.coords.longitude], { radius: 100, color: '#e8002d', fillColor: '#e8002d', fillOpacity: 0.3 }).addTo(map);
     },
-    () => showToast('위치를 가져올 수 없어요')
+    () => showToast('Cannot get location')
   );
 }
 
@@ -1795,21 +1794,21 @@ function resetView() {
   closeDetail();
 }
 
-// ===== 가성비 투표 =====
+// ===== Vote =====
 async function submitVote(placeId, voteVal) {
   const upBtn = document.getElementById(`voteUp_${placeId}`);
   const downBtn = document.getElementById(`voteDown_${placeId}`);
   const upCount = document.getElementById(`voteUpCount_${placeId}`);
   const downCount = document.getElementById(`voteDownCount_${placeId}`);
 
-  // 이미 투표했는지 확인 (localStorage)
+  // Check if already voted (localStorage)
   const voted = localStorage.getItem(`vote_${placeId}`);
-  if (voted) { showToast(currentLang === 'en' ? 'Already voted!' : currentLang === 'ko' ? '이미 투표했어요!' : '已經投票！'); return; }
+  if (voted) { showToast(currentLang === 'en' ? 'Already voted!' : '已經投票！'); return; }
 
   try {
     if (db) {
       await db.from('brokemap_votes').insert({ place_id: placeId, vote: voteVal });
-      // places 집계 업데이트
+      // Update places count
       const col = voteVal === 1 ? 'votes_up' : 'votes_down';
       const place = allPlaces.find(p => p.id === placeId);
       const newVal = (place[col] || 0) + 1;
@@ -1818,28 +1817,28 @@ async function submitVote(placeId, voteVal) {
     }
     localStorage.setItem(`vote_${placeId}`, voteVal);
 
-    // UI 업데이트
+    // Update UI
     const place = allPlaces.find(p => p.id === placeId);
     if (upCount) upCount.textContent = place.votes_up || 0;
     if (downCount) downCount.textContent = place.votes_down || 0;
     if (voteVal === 1) upBtn?.classList.add('voted');
     else downBtn?.classList.add('voted');
-    showToast(currentLang === 'en' ? 'Thanks for voting! 🙏' : currentLang === 'ko' ? '투표 감사해요! 🙏' : '多謝投票！🙏');
+    showToast(currentLang === 'en' ? 'Thanks for voting! 🙏' : '多謝投票！🙏');
   } catch(e) {
-    showToast(currentLang === 'en' ? 'Error occurred' : currentLang === 'ko' ? '오류가 발생했어요' : '發生錯誤');
+    showToast(currentLang === 'en' ? 'Error occurred' : '發生錯誤');
   }
 }
 
-// ===== 댓글 로드 =====
+// ===== Load Comments =====
 async function loadComments(placeId) {
   const list = document.getElementById(`commentList_${placeId}`);
   if (!list) return;
   try {
-    if (!db) { list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">댓글 기능은 DB 연결 후 사용 가능합니다</div>'; return; }
+    if (!db) { list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">Comments available after DB connection</div>'; return; }
     const { data } = await db.from('brokemap_comments').select('*').eq('place_id', placeId).order('created_at', { ascending: false });
     const comments = data || [];
     if (comments.length === 0) {
-      list.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">${currentLang === 'en' ? 'No comments yet. Be the first!' : currentLang === 'ko' ? '첫 댓글을 남겨보세요!' : '未有留言，做第一個！'}</div>`;
+      list.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">${currentLang === 'en' ? 'No comments yet. Be the first!' : '未有留言，做第一個！'}</div>`;
       return;
     }
     list.innerHTML = comments.map(c => `
@@ -1848,7 +1847,7 @@ async function loadComments(placeId) {
           <span class="comment-nick">👤 ${c.nickname}</span>
           <div style="display:flex;align-items:center;gap:6px;">
             <span class="comment-time">${timeAgo(c.created_at)}</span>
-            <button class="comment-delete-btn" onclick="deleteComment('${c.id}', '${placeId}')">삭제</button>
+            <button class="comment-delete-btn" onclick="deleteComment('${c.id}', '${placeId}')">Delete</button>
           </div>
         </div>
         <div class="comment-text">${c.content}</div>
@@ -1859,21 +1858,21 @@ async function loadComments(placeId) {
   }
 }
 
-// ===== 댓글 작성 =====
+// ===== Submit Comment =====
 async function submitComment(placeId) {
   const nick = document.getElementById(`cmtNick_${placeId}`)?.value.trim();
   const pw = document.getElementById(`cmtPw_${placeId}`)?.value.trim();
   const text = document.getElementById(`cmtText_${placeId}`)?.value.trim();
-  if (!nick) { showToast(currentLang === 'en' ? 'Enter nickname' : '닉네임을 입력하세요'); return; }
-  if (!pw) { showToast(currentLang === 'en' ? 'Enter password' : '비밀번호를 입력하세요'); return; }
-  if (!text) { showToast(currentLang === 'en' ? 'Enter comment' : '댓글을 입력하세요'); return; }
+  if (!nick) { showToast(currentLang === 'en' ? 'Enter nickname' : '請輸入暱稱'); return; }
+  if (!pw) { showToast(currentLang === 'en' ? 'Enter password' : '請輸入密碼'); return; }
+  if (!text) { showToast(currentLang === 'en' ? 'Enter comment' : '請輸入留言'); return; }
 
-  // 간단한 해시 (실제 앱에선 bcrypt 사용 권장)
+  // Simple hash (use bcrypt in production)
   const pwHash = btoa(pw + placeId);
   try {
     if (db) {
       await db.from('brokemap_comments').insert({ place_id: placeId, nickname: nick, password_hash: pwHash, content: text });
-      // 댓글 수 업데이트
+      // Update comment count
       const place = allPlaces.find(p => p.id === placeId);
       const newCount = (place.comment_count || 0) + 1;
       await db.from('brokemap_places').update({ comment_count: newCount }).eq('id', placeId);
@@ -1882,34 +1881,47 @@ async function submitComment(placeId) {
       if (countEl) countEl.textContent = `(${newCount})`;
     }
     document.getElementById(`cmtText_${placeId}`).value = '';
-    showToast(currentLang === 'en' ? 'Comment posted! 💬' : currentLang === 'ko' ? '댓글이 등록됐어요! 💬' : '留言已登錄！💬');
+    showToast(currentLang === 'en' ? 'Comment posted! 💬' : '留言已登錄！💬');
     await loadComments(placeId);
   } catch(e) {
-    showToast(currentLang === 'en' ? 'Error occurred' : currentLang === 'ko' ? '오류가 발생했어요' : '發生錯誤');
+    showToast(currentLang === 'en' ? 'Error occurred' : '發生錯誤');
   }
 }
 
-// ===== 댓글 삭제 =====
+// ===== Delete Comment =====
 async function deleteComment(commentId, placeId) {
-  const pw = prompt(currentLang === 'en' ? 'Enter password to delete:' : currentLang === 'ko' ? '삭제하려면 비밀번호를 입력하세요:' : '輸入密碼以刪除:');
+  const pw = prompt(currentLang === 'en' ? 'Enter password to delete:' : '輸入密碼以刪除:');
   if (!pw) return;
   const pwHash = btoa(pw + placeId);
   try {
     const { data } = await db.from('brokemap_comments').select('password_hash').eq('id', commentId).single();
-    if (data.password_hash !== pwHash) { showToast(currentLang === 'en' ? 'Wrong password' : '비밀번호가 틀렸어요'); return; }
+    if (data.password_hash !== pwHash) { showToast(currentLang === 'en' ? 'Wrong password' : '密碼錯誤'); return; }
     await db.from('brokemap_comments').delete().eq('id', commentId);
-    showToast(currentLang === 'en' ? 'Deleted' : '삭제됐어요');
+    showToast(currentLang === 'en' ? 'Deleted' : '已刪除');
     await loadComments(placeId);
   } catch(e) {
-    showToast(currentLang === 'en' ? 'Error occurred' : currentLang === 'ko' ? '오류가 발생했어요' : '發生錯誤');
+    showToast(currentLang === 'en' ? 'Error occurred' : '發生錯誤');
   }
 }
 
-// ===== 시간 표시 =====
+// ===== Time Display =====
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
   const mins = Math.floor(diff / 60000);
   if (currentLang === 'zh') {
+    if (mins < 1) return '剛才';
+    if (mins < 60) return `${mins}分鐘前`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}小時前`;
+    return `${Math.floor(hrs / 24)}日前`;
+  } else {
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    return `${Math.floor(hrs / 24)}d ago`;
+  }
+}
     if (mins < 1) return '剛才';
     if (mins < 60) return `${mins}分鐘前`;
     const hrs = Math.floor(mins / 60);
@@ -1921,23 +1933,16 @@ function timeAgo(dateStr) {
     const hrs = Math.floor(mins / 60);
     if (hrs < 24) return `${hrs}h ago`;
     return `${Math.floor(hrs / 24)}d ago`;
-  } else {
-    if (mins < 1) return '방금';
-    if (mins < 60) return `${mins}분 전`;
-    const hrs = Math.floor(mins / 60);
-    if (hrs < 24) return `${hrs}시간 전`;
-    return `${Math.floor(hrs / 24)}일 전`;
-  }
 }
 
-// ===== REPORT 2-STEP =====
+// ===== Report 2-Step Form =====
 function goToStep2() {
   const name_zh = document.getElementById('r_name_zh').value.trim();
   const district = document.getElementById('r_district').value;
   const price_min = document.getElementById('r_price_min').value;
-  if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : currentLang === 'ko' ? '식당명을 입력해주세요' : '請輸入食肆名稱'); return; }
-  if (!district) { showToast(currentLang === 'en' ? 'Select a district' : currentLang === 'ko' ? '지역을 선택해주세요' : '請選擇地區'); return; }
-  if (!price_min) { showToast(currentLang === 'en' ? 'Enter minimum price' : currentLang === 'ko' ? '최저가를 입력해주세요' : '請輸入最低價'); return; }
+  if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : '請輸入食肆名稱'); return; }
+  if (!district) { showToast(currentLang === 'en' ? 'Select a district' : '請選擇地區'); return; }
+  if (!price_min) { showToast(currentLang === 'en' ? 'Enter minimum price' : '請輸入最低價'); return; }
   document.getElementById('report-step1').style.display = 'none';
   document.getElementById('report-step2').style.display = 'block';
   document.getElementById('step1-indicator').classList.remove('active');
@@ -1951,7 +1956,7 @@ function goToStep1() {
   document.getElementById('step1-indicator').classList.add('active');
 }
 
-// ===== REPORT =====
+// ===== Report =====
 function openReport() {
   document.getElementById('reportOverlay').classList.add('active');
 }
@@ -1970,9 +1975,9 @@ async function submitReport() {
   const district = document.getElementById('r_district').value;
   const price_min = parseInt(document.getElementById('r_price_min').value);
 
-  if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : currentLang === 'ko' ? '식당명을 입력해주세요' : '請輸入食肆名稱'); return; }
-  if (!district) { showToast(currentLang === 'en' ? 'Select a district' : currentLang === 'ko' ? '지역을 선택해주세요' : '請選擇地區'); return; }
-  if (!price_min) { showToast(currentLang === 'en' ? 'Enter minimum price' : currentLang === 'ko' ? '최저가를 입력해주세요' : '請輸入最低價'); return; }
+  if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : '請輸入食肆名稱'); return; }
+  if (!district) { showToast(currentLang === 'en' ? 'Select a district' : '請選擇地區'); return; }
+  if (!price_min) { showToast(currentLang === 'en' ? 'Enter minimum price' : '請輸入最低價'); return; }
 
   const payment = Array.from(document.querySelectorAll('.pcheck.sel')).map(el => el.dataset.val);
 
@@ -1985,7 +1990,7 @@ async function submitReport() {
     'Tseung Kwan O': '將軍澳', 'North District': '北區', 'Islands': '離島'
   };
 
-  // 지역 좌표 (대략적)
+  // District coordinates (approximate)
   const districtCoords = {
     'Central': [22.2815, 114.1543], 'Sheung Wan': [22.2856, 114.1521],
     'Wan Chai': [22.2769, 114.1731], 'Causeway Bay': [22.2808, 114.1856],
@@ -1999,7 +2004,7 @@ async function submitReport() {
   };
 
   const coords = districtCoords[district] || [22.3193, 114.1694];
-  // 약간 랜덤 오프셋
+  // Slight random offset
   const lat = coords[0] + (Math.random() - 0.5) * 0.005;
   const lng = coords[1] + (Math.random() - 0.5) * 0.005;
 
@@ -2024,28 +2029,28 @@ async function submitReport() {
       const { error } = await db.from('brokemap_reports').insert(reportData);
       if (error) throw error;
     } catch(e) {
-      console.log('DB 저장 실패, 로컬만 처리:', e.message);
+      console.log('DB save failed, local only:', e.message);
     }
   }
 
-  showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : currentLang === 'ko' ? '제보 감사합니다! 🙏' : '多謝提報！審核後上線 🙏');
+  showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : '多謝提報！審核後上線 🙏');
   closeReport();
-  // 폼 초기화
+  // Reset form
   ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('r_district').value = '';
   document.querySelectorAll('.pcheck.sel').forEach(el => el.classList.remove('sel'));
-  // 단계 초기화
+  // Reset steps
   goToStep1();
 }
 
-// ===== LANG =====
+// ===== Language =====
 function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(`lang-${lang}`).classList.add('active');
+  document.getElementById(`lang-${lang}`)?.classList.add('active');
 
   document.querySelectorAll('[data-zh]').forEach(el => {
     const txt = el.dataset[lang] || el.dataset.zh;
@@ -2055,12 +2060,12 @@ function setLang(lang) {
   renderPlaces();
 }
 
-// ===== MOBILE PANEL =====
+// ===== Mobile Panel =====
 function toggleMobilePanel() {
   document.getElementById('sidePanel').classList.toggle('collapsed');
 }
 
-// ===== TOAST =====
+// ===== Toast =====
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
