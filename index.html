@@ -878,6 +878,54 @@ body {
   font-family: 'Noto Sans HK', sans-serif;
   text-align: center;
 }
+/* ===== 투표 섹션 ===== */
+.vote-section {
+  margin: 16px 0;
+  padding: 14px;
+  background: var(--surface2);
+  border-radius: 14px;
+  border: 1.5px solid var(--border);
+}
+.vote-label { font-size: 12px; font-weight: 700; color: var(--text-muted); margin-bottom: 10px; text-align: center; }
+.vote-btns { display: flex; gap: 8px; }
+.vote-btn {
+  flex: 1; padding: 10px; border: 2px solid var(--border); border-radius: 12px;
+  background: var(--surface); font-size: 13px; font-weight: 700; cursor: pointer;
+  font-family: 'Noto Sans HK', sans-serif; transition: all 0.15s;
+  display: flex; align-items: center; justify-content: center; gap: 6px; color: var(--text-soft);
+}
+.vote-btn.up:hover, .vote-btn.up.voted { background: #dcfce7; border-color: #16a34a; color: #166534; }
+.vote-btn.down:hover, .vote-btn.down.voted { background: var(--red-light); border-color: var(--red); color: var(--red); }
+.vote-count { font-size: 15px; font-family: 'Oswald', sans-serif; }
+
+/* ===== 댓글 섹션 ===== */
+.comment-section { margin-top: 16px; padding-top: 4px; }
+.comment-form { margin-bottom: 12px; }
+.comment-form-row { display: flex; gap: 6px; margin-bottom: 6px; }
+.comment-input {
+  background: var(--surface2); border: 1.5px solid var(--border); border-radius: 10px;
+  padding: 9px 12px; font-size: 12px; font-family: 'Noto Sans HK', sans-serif;
+  color: var(--text); outline: none; flex: 1; transition: border-color 0.15s; min-width: 0;
+}
+.comment-input:focus { border-color: var(--red); background: #fff; }
+.comment-submit-btn {
+  background: var(--red); color: #fff; border: none; border-radius: 10px;
+  padding: 9px 14px; font-size: 12px; font-weight: 700; cursor: pointer;
+  font-family: 'Noto Sans HK', sans-serif; white-space: nowrap; transition: background 0.15s;
+}
+.comment-submit-btn:hover { background: var(--red-dark); }
+.comment-list { display: flex; flex-direction: column; gap: 8px; padding-bottom: 20px; }
+.comment-item { background: var(--surface2); border-radius: 12px; padding: 11px 13px; border: 1px solid var(--border); }
+.comment-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.comment-nick { font-size: 12px; font-weight: 700; color: var(--text-soft); }
+.comment-time { font-size: 10px; color: var(--text-muted); }
+.comment-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+.comment-delete-btn {
+  background: none; border: none; color: var(--text-muted); font-size: 10px;
+  cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: all 0.15s;
+}
+.comment-delete-btn:hover { background: var(--red-light); color: var(--red); }
+
 .mtr-tooltip {
   background: var(--yellow) !important;
   color: var(--dark) !important;
@@ -913,7 +961,7 @@ body {
       <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
       <button class="lang-btn" onclick="setLang('ko')" id="lang-ko">한</button>
     </div>
-    <button class="header-btn primary" onclick="openReport()">+ <span data-zh="제보" data-en="Report" data-ko="제보">제보</span></button>
+    <button class="header-btn primary" onclick="openReport()">+ <span data-zh="제報" data-en="Report" data-ko="제보" id="reportBtnText">제報</span></button>
   </div>
 </div>
 
@@ -1101,7 +1149,7 @@ body {
 <!-- 제보 폼 -->
 <div class="report-overlay" id="reportOverlay" onclick="closeReportIfBg(event)">
   <div class="report-sheet">
-    <div class="report-title" data-zh="제보하기 💰" data-en="Report a Place 💰" data-ko="제보하기 💰">제보하기 💰</div>
+    <div class="report-title" data-zh="제報 💰" data-en="Report a Place 💰" data-ko="제보하기 💰">제보하기 💰</div>
     <div class="report-sub" data-zh="HKD 100以下嘅平價食肆" data-en="Share a budget eat under HKD 100" data-ko="HKD 100 이하 가성비 식당">HKD 100 이하 가성비 식당</div>
 
     <!-- 단계 표시 -->
@@ -1206,7 +1254,7 @@ body {
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button class="submit-btn" onclick="goToStep1()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">← 이전</button>
         <button class="submit-btn" onclick="submitReport()" style="flex:1;">
-          💰 <span data-zh="제보 제출" data-en="Submit" data-ko="제출">제출</span>
+          💰 <span data-zh="提交" data-en="Submit" data-ko="제출">제출</span>
         </button>
       </div>
       <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-muted);">
@@ -1248,6 +1296,7 @@ let activeMarkerId = null;
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
   initMap();
+  setLang('zh'); // 초기 언어 적용
   db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadPlaces();
   setTimeout(() => {
@@ -1593,10 +1642,50 @@ function openDetail(id) {
       <button class="map-link-btn" style="background:var(--surface2);color:var(--text);" onclick="openGoogleMaps(${place.lat}, ${place.lng}, '${encodeURIComponent(place.name_zh)}')">
         🔗 ${currentLang === 'en' ? 'Open in Google Maps' : currentLang === 'ko' ? '구글 지도에서 열기' : '喺Google Maps開啟'}
       </button>
+
+      <!-- 가성비 투표 -->
+      <div class="vote-section">
+        <div class="vote-label">${currentLang === 'en' ? 'Value for money?' : currentLang === 'ko' ? '가성비 어때요?' : '抵唔抵食？'}</div>
+        <div class="vote-btns">
+          <button class="vote-btn up" onclick="submitVote('${place.id}', 1)" id="voteUp_${place.id}">
+            👍 <span>${currentLang === 'en' ? 'Worth it!' : currentLang === 'ko' ? '가성비 좋아요!' : '抵食！'}</span>
+            <span class="vote-count" id="voteUpCount_${place.id}">${place.votes_up || 0}</span>
+          </button>
+          <button class="vote-btn down" onclick="submitVote('${place.id}', -1)" id="voteDown_${place.id}">
+            👎 <span>${currentLang === 'en' ? 'Not worth it' : currentLang === 'ko' ? '별로예요' : '唔抵'}</span>
+            <span class="vote-count" id="voteDownCount_${place.id}">${place.votes_down || 0}</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 댓글 섹션 -->
+      <div class="comment-section">
+        <div class="detail-section-title" style="padding:0 0 10px;">
+          💬 ${currentLang === 'en' ? 'Comments' : currentLang === 'ko' ? '댓글' : '留言'} <span id="commentCount_${place.id}" style="color:var(--text-muted);font-weight:400;">(${place.comment_count || 0})</span>
+        </div>
+        <!-- 댓글 작성 폼 -->
+        <div class="comment-form">
+          <div class="comment-form-row">
+            <input class="comment-input" id="cmtNick_${place.id}" placeholder="${currentLang === 'en' ? 'Nickname' : currentLang === 'ko' ? '닉네임' : '暱稱'}" maxlength="20">
+            <input class="comment-input" id="cmtPw_${place.id}" type="password" placeholder="${currentLang === 'en' ? 'Password (to delete)' : currentLang === 'ko' ? '비밀번호(삭제용)' : '密碼(刪除用)'}" maxlength="20">
+          </div>
+          <div class="comment-form-row">
+            <input class="comment-input" id="cmtText_${place.id}" placeholder="${currentLang === 'en' ? 'Share your experience...' : currentLang === 'ko' ? '경험을 공유해주세요...' : '分享你的體驗...'}" maxlength="200" style="flex:1;">
+            <button class="comment-submit-btn" onclick="submitComment('${place.id}')">
+              ${currentLang === 'en' ? 'Post' : currentLang === 'ko' ? '등록' : '登錄'}
+            </button>
+          </div>
+        </div>
+        <!-- 댓글 목록 -->
+        <div id="commentList_${place.id}" class="comment-list">
+          <div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">불러오는 중...</div>
+        </div>
+      </div>
     </div>
   `;
 
   document.getElementById('detailPanel').classList.add('open');
+  loadComments(place.id);
 
   // 해당 카드 스크롤
   const card = document.getElementById(`card-${id}`);
@@ -1704,6 +1793,127 @@ function locateUser() {
 function resetView() {
   map.flyTo([22.3193, 114.1694], 13, { duration: 1 });
   closeDetail();
+}
+
+// ===== 가성비 투표 =====
+async function submitVote(placeId, voteVal) {
+  const upBtn = document.getElementById(`voteUp_${placeId}`);
+  const downBtn = document.getElementById(`voteDown_${placeId}`);
+  const upCount = document.getElementById(`voteUpCount_${placeId}`);
+  const downCount = document.getElementById(`voteDownCount_${placeId}`);
+
+  // 이미 투표했는지 확인 (localStorage)
+  const voted = localStorage.getItem(`vote_${placeId}`);
+  if (voted) { showToast(currentLang === 'en' ? 'Already voted!' : currentLang === 'ko' ? '이미 투표했어요!' : '已經投票！'); return; }
+
+  try {
+    if (db) {
+      await db.from('brokemap_votes').insert({ place_id: placeId, vote: voteVal });
+      // places 집계 업데이트
+      const col = voteVal === 1 ? 'votes_up' : 'votes_down';
+      const place = allPlaces.find(p => p.id === placeId);
+      const newVal = (place[col] || 0) + 1;
+      await db.from('brokemap_places').update({ [col]: newVal }).eq('id', placeId);
+      place[col] = newVal;
+    }
+    localStorage.setItem(`vote_${placeId}`, voteVal);
+
+    // UI 업데이트
+    const place = allPlaces.find(p => p.id === placeId);
+    if (upCount) upCount.textContent = place.votes_up || 0;
+    if (downCount) downCount.textContent = place.votes_down || 0;
+    if (voteVal === 1) upBtn?.classList.add('voted');
+    else downBtn?.classList.add('voted');
+    showToast(currentLang === 'en' ? 'Thanks for voting! 🙏' : currentLang === 'ko' ? '투표 감사해요! 🙏' : '多謝投票！🙏');
+  } catch(e) {
+    showToast('오류가 발생했어요');
+  }
+}
+
+// ===== 댓글 로드 =====
+async function loadComments(placeId) {
+  const list = document.getElementById(`commentList_${placeId}`);
+  if (!list) return;
+  try {
+    if (!db) { list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">댓글 기능은 DB 연결 후 사용 가능합니다</div>'; return; }
+    const { data } = await db.from('brokemap_comments').select('*').eq('place_id', placeId).order('created_at', { ascending: false });
+    const comments = data || [];
+    if (comments.length === 0) {
+      list.innerHTML = `<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">${currentLang === 'en' ? 'No comments yet. Be the first!' : currentLang === 'ko' ? '첫 댓글을 남겨보세요!' : '未有留言，做第一個！'}</div>`;
+      return;
+    }
+    list.innerHTML = comments.map(c => `
+      <div class="comment-item" id="comment_${c.id}">
+        <div class="comment-header">
+          <span class="comment-nick">👤 ${c.nickname}</span>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <span class="comment-time">${timeAgo(c.created_at)}</span>
+            <button class="comment-delete-btn" onclick="deleteComment('${c.id}', '${placeId}')">삭제</button>
+          </div>
+        </div>
+        <div class="comment-text">${c.content}</div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text-muted);font-size:12px;">불러오기 실패</div>';
+  }
+}
+
+// ===== 댓글 작성 =====
+async function submitComment(placeId) {
+  const nick = document.getElementById(`cmtNick_${placeId}`)?.value.trim();
+  const pw = document.getElementById(`cmtPw_${placeId}`)?.value.trim();
+  const text = document.getElementById(`cmtText_${placeId}`)?.value.trim();
+  if (!nick) { showToast(currentLang === 'en' ? 'Enter nickname' : '닉네임을 입력하세요'); return; }
+  if (!pw) { showToast(currentLang === 'en' ? 'Enter password' : '비밀번호를 입력하세요'); return; }
+  if (!text) { showToast(currentLang === 'en' ? 'Enter comment' : '댓글을 입력하세요'); return; }
+
+  // 간단한 해시 (실제 앱에선 bcrypt 사용 권장)
+  const pwHash = btoa(pw + placeId);
+  try {
+    if (db) {
+      await db.from('brokemap_comments').insert({ place_id: placeId, nickname: nick, password_hash: pwHash, content: text });
+      // 댓글 수 업데이트
+      const place = allPlaces.find(p => p.id === placeId);
+      const newCount = (place.comment_count || 0) + 1;
+      await db.from('brokemap_places').update({ comment_count: newCount }).eq('id', placeId);
+      place.comment_count = newCount;
+      const countEl = document.getElementById(`commentCount_${placeId}`);
+      if (countEl) countEl.textContent = `(${newCount})`;
+    }
+    document.getElementById(`cmtText_${placeId}`).value = '';
+    showToast(currentLang === 'en' ? 'Comment posted! 💬' : currentLang === 'ko' ? '댓글이 등록됐어요! 💬' : '留言已登錄！💬');
+    await loadComments(placeId);
+  } catch(e) {
+    showToast('오류가 발생했어요');
+  }
+}
+
+// ===== 댓글 삭제 =====
+async function deleteComment(commentId, placeId) {
+  const pw = prompt(currentLang === 'en' ? 'Enter password to delete:' : currentLang === 'ko' ? '삭제하려면 비밀번호를 입력하세요:' : '輸入密碼以刪除:');
+  if (!pw) return;
+  const pwHash = btoa(pw + placeId);
+  try {
+    const { data } = await db.from('brokemap_comments').select('password_hash').eq('id', commentId).single();
+    if (data.password_hash !== pwHash) { showToast(currentLang === 'en' ? 'Wrong password' : '비밀번호가 틀렸어요'); return; }
+    await db.from('brokemap_comments').delete().eq('id', commentId);
+    showToast(currentLang === 'en' ? 'Deleted' : '삭제됐어요');
+    await loadComments(placeId);
+  } catch(e) {
+    showToast('오류가 발생했어요');
+  }
+}
+
+// ===== 시간 표시 =====
+function timeAgo(dateStr) {
+  const diff = Date.now() - new Date(dateStr).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return '방금';
+  if (mins < 60) return `${mins}분 전`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}시간 전`;
+  return `${Math.floor(hrs / 24)}일 전`;
 }
 
 // ===== REPORT 2-STEP =====
