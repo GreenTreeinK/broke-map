@@ -951,13 +951,12 @@ body {
   .desktop-tab:hover { background: rgba(255,255,255,0.2); color: #fff; }
   .desktop-tab.active { background: var(--yellow); border-color: var(--yellow); color: var(--dark); }
 
-  /* Desktop community pages: not fullscreen, show alongside map */
+  /* Desktop community pages: right sidebar alongside map */
   .community-page {
-    position: fixed;
-    top: 0; right: 0;
+    top: 60px; /* 데스크탑 헤더 높이 */
+    right: 0; left: auto;
     width: 420px;
-    height: 100vh;
-    padding-bottom: 0;
+    bottom: 0;
     border-left: 1px solid var(--border);
     box-shadow: -4px 0 24px rgba(0,0,0,0.2);
     z-index: 500;
@@ -1029,7 +1028,11 @@ body {
   .filter-label { font-size: 10px; }
 
   /* Mobile: community page fullscreen with bottom nav space */
-  .community-page { padding-bottom: 56px; }
+  .community-page {
+    top: 98px; /* 모바일 헤더(52px) + 필터바(46px) */
+    bottom: 56px;
+    padding-bottom: 0;
+  }
 
   /* Mobile: report sheet slides up from bottom */
   .report-overlay { align-items: flex-end; }
@@ -1060,7 +1063,7 @@ body {
    ============================================= */
 @media (min-width: 1200px) {
   .side-panel { width: 420px; }
-  .community-page { width: 480px; }
+  .community-page { width: 480px; bottom: 0; }
   .detail-panel { width: 480px; }
   .filter-bar { padding: 12px 32px; }
   .app-header { padding: 0 36px; }
@@ -1409,7 +1412,7 @@ body {
   height: 56px;
   background: var(--surface2);
   border-top: 1px solid var(--border);
-  z-index: 2000;
+  z-index: 3000; /* 모든 것 위에 */
   display: flex;
   align-items: stretch;
 }
@@ -1424,10 +1427,18 @@ body {
 
 /* ===== COMMUNITY PAGES ===== */
 .community-page {
-  display: none; position: fixed; inset: 0;
-  background: var(--dark); z-index: 1500;
-  flex-direction: column; padding-bottom: 56px;
+  display: none;
+  position: fixed;
+  left: 0; right: 0;
+  bottom: 56px; /* 하단 탭바 위 */
+  background: var(--dark);
+  z-index: 900;
+  flex-direction: column;
+  padding-bottom: 0;
+  overflow: hidden;
 }
+/* 헤더+필터바 높이 동적 계산 대신 top을 앱 컨테이너 기준으로 */
+.community-page { top: 0; }
 .community-page.active { display: flex; }
 .comm-header { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 14px 16px 10px; }
 .comm-title { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 900; color: var(--yellow); letter-spacing: 1px; margin-bottom: 2px; }
