@@ -953,13 +953,14 @@ body {
 
   /* Desktop community pages: right sidebar alongside map */
   .community-page {
-    top: 106px; /* 데스크탑 헤더(60px) + 필터바(46px) */
-    right: 0; left: auto;
+    top: 60px;    /* 데스크탑 헤더 */
+    left: auto;
+    right: 0;
     width: 420px;
     bottom: 0;
     border-left: 1px solid var(--border);
     box-shadow: -4px 0 24px rgba(0,0,0,0.2);
-    z-index: 500;
+    z-index: 1200;
   }
 
   /* Desktop: larger place cards */
@@ -1027,11 +1028,12 @@ body {
   .fchip { padding: 5px 10px; font-size: 11px; }
   .filter-label { font-size: 10px; }
 
-  /* Mobile: community page fullscreen with bottom nav space */
+  /* Mobile: community page below header, above bottom nav */
   .community-page {
-    top: 98px; /* 모바일 헤더(52px) + 필터바(46px) */
-    bottom: 56px;
-    padding-bottom: 0;
+    top: 52px;    /* 모바일 헤더 높이 */
+    bottom: 56px; /* 탭바 높이 */
+    left: 0; right: 0;
+    width: 100%;
   }
 
   /* Mobile: report sheet slides up from bottom */
@@ -1430,15 +1432,13 @@ body {
   display: none;
   position: fixed;
   left: 0; right: 0;
-  bottom: 56px; /* 하단 탭바 위 */
+  top: 56px;   /* 헤더 바로 아래 (모바일 52px, 일단 56px로 통일) */
+  bottom: 0;   /* 화면 끝까지 */
   background: var(--dark);
-  z-index: 900;
+  z-index: 1200; /* 헤더(1000)보다 위, 탭바(3000)보다 아래 */
   flex-direction: column;
-  padding-bottom: 0;
   overflow: hidden;
 }
-/* 헤더+필터바 높이 동적 계산 대신 top을 앱 컨테이너 기준으로 */
-.community-page { top: 0; }
 .community-page.active { display: flex; }
 .comm-header { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 14px 16px 10px; display: flex; align-items: flex-start; justify-content: space-between; }
 .comm-header-text { flex: 1; }
