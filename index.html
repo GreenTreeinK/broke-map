@@ -2537,18 +2537,8 @@ let currentTab = 'map';
 let commFilter = { hotdeal: 'all', community: 'all' };
 let commPosts = { hotdeal: [], community: [] };
 
-const SEED_HOTDEALS = [
-  { id: 's1', cat: 'supermarket', title: 'ParkNShop 百佳 雞蛋特價 $12.9／10隻', price: 12.9, body: '限時優惠，需要會員卡', link: '', nick: '慳錢王', votes_up: 12, votes_down: 0, created_at: new Date(Date.now()-3600000).toISOString() },
-  { id: 's2', cat: 'restaurant', title: "McDonald's 麥當勞 麥辣雞腿堡套餐 $29.9 (App限定)", price: 29.9, body: '只限App落單，每日限量', link: '', nick: '打工仔', votes_up: 8, votes_down: 1, created_at: new Date(Date.now()-7200000).toISOString() },
-  { id: 's3', cat: 'coupon', title: 'Wellcome 惠康 八達通消費滿$200減$20', price: null, body: '限定日期：本月底前', link: '', nick: '節省達人', votes_up: 5, votes_down: 0, created_at: new Date(Date.now()-14400000).toISOString() },
-  { id: 's4', cat: 'supermarket', title: '759阿信屋 韓國泡麵 5包 $19.9', price: 19.9, body: '辛拉麵，限時特賣', link: '', nick: '薄財之徒', votes_up: 15, votes_down: 2, created_at: new Date(Date.now()-86400000).toISOString() },
-];
-const SEED_COMMUNITY = [
-  { id: 'c1', cat: 'tip', title: '每月慳錢攻略：去街市收市前30分鐘買菜！', price: null, body: '收市前半小時，蔬菜魚類大減價，最多慳到五成！', link: '', nick: '主婦達人', votes_up: 23, votes_down: 1, created_at: new Date(Date.now()-3600000).toISOString() },
-  { id: 'c2', cat: 'food', title: '深水埗隱藏版$20雲吞麵，比茶餐廳更好食！', price: 20, body: '桂林街附近，現煮雲吞，每日限量50碗', link: '', nick: '窮鬼美食家', votes_up: 18, votes_down: 0, created_at: new Date(Date.now()-10800000).toISOString() },
-  { id: 'c3', cat: 'transport', title: '搭巴士慳錢：用八達通轉乘地鐵可以扣$2', price: null, body: '部分路線有轉乘優惠，記得查MTR網站', link: '', nick: '交通達人', votes_up: 9, votes_down: 0, created_at: new Date(Date.now()-43200000).toISOString() },
-  { id: 'c4', cat: 'tip', title: 'OpenRice 可以睇邊間有早鳥優惠，慳到兩成', price: null, body: '部分餐廳午市前有優惠，記得留意', link: '', nick: '飲食達人', votes_up: 7, votes_down: 1, created_at: new Date(Date.now()-72000000).toISOString() },
-];
+const SEED_HOTDEALS = [];
+const SEED_COMMUNITY = [];
 
 function switchTab(tab) {
   currentTab = tab;
@@ -2609,7 +2599,15 @@ function renderCommPosts(type) {
   let posts = commPosts[type];
   if (cat !== 'all') posts = posts.filter(p => p.cat === cat);
   if (posts.length === 0) {
-    listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">📭</div>未有帖子，率先分享！</div>`;
+    listEl.innerHTML = `<div class="comm-empty">
+      <div class="comm-empty-icon">${type === 'hotdeal' ? '🔥' : '💬'}</div>
+      <div style="font-weight:700;font-size:15px;color:var(--text);margin-bottom:8px;">${currentLang === 'en' ? 'No posts yet!' : '未有資訊！'}</div>
+      <div style="font-size:13px;color:var(--text-muted);line-height:1.6;">${type === 'hotdeal'
+        ? (currentLang === 'en' ? 'Be the first to share a hot deal in HK! 🛒' : '率先分享香港著數情報！🛒')
+        : (currentLang === 'en' ? 'Share your money-saving tips! 💡' : '分享你嘅慳錢攻略！💡')
+      }</div>
+      <div style="margin-top:16px;font-size:12px;color:var(--text-muted);">${currentLang === 'en' ? 'Tap ✏️ to post' : '按 ✏️ 開始分享'}</div>
+    </div>`;
     return;
   }
   const catEmoji = { supermarket:'🛒', restaurant:'🍽', coupon:'🎟', snack:'🍿', tip:'💡', food:'🍜', transport:'🚇', misc:'🗂', other:'🗂' };
