@@ -953,7 +953,7 @@ body {
 
   /* Desktop community pages: right sidebar alongside map */
   .community-page {
-    top: 60px; /* 데스크탑 헤더 높이 */
+    top: 106px; /* 데스크탑 헤더(60px) + 필터바(46px) */
     right: 0; left: auto;
     width: 420px;
     bottom: 0;
@@ -1440,9 +1440,12 @@ body {
 /* 헤더+필터바 높이 동적 계산 대신 top을 앱 컨테이너 기준으로 */
 .community-page { top: 0; }
 .community-page.active { display: flex; }
-.comm-header { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 14px 16px 10px; }
+.comm-header { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 14px 16px 10px; display: flex; align-items: flex-start; justify-content: space-between; }
+.comm-header-text { flex: 1; }
 .comm-title { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 900; color: var(--yellow); letter-spacing: 1px; margin-bottom: 2px; }
 .comm-subtitle { font-size: 11px; color: var(--text-muted); }
+.comm-close-btn { background: var(--surface3); border: none; color: var(--text-muted); font-size: 18px; width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-left: 10px; transition: background 0.15s; }
+.comm-close-btn:hover { background: var(--border); color: var(--text); }
 .comm-cat-bar { display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px 0; scrollbar-width: none; }
 .comm-cat-bar::-webkit-scrollbar { display: none; }
 .comm-cat { flex: 0 0 auto; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); color: var(--text-muted); cursor: pointer; white-space: nowrap; background: none; }
@@ -2429,8 +2432,11 @@ function showToast(msg) {
 <!-- Hotdeal Page -->
 <div class="community-page" id="pageHotdeal">
   <div class="comm-header">
-    <div class="comm-title">🔥 熱賣 HOT DEALS</div>
-    <div class="comm-subtitle">香港超市、餐廳特價情報</div>
+    <div class="comm-header-text">
+      <div class="comm-title">🔥 熱賣 HOT DEALS</div>
+      <div class="comm-subtitle">香港超市、餐廳特價情報</div>
+    </div>
+    <button class="comm-close-btn" onclick="switchTab('map')" title="Back to map">✕</button>
   </div>
   <div class="comm-cat-bar" id="hotdealCatBar">
     <button class="comm-cat active" onclick="filterComm('hotdeal','all',this)">全部</button>
@@ -2446,8 +2452,11 @@ function showToast(msg) {
 <!-- Community Page -->
 <div class="community-page" id="pageCommunity">
   <div class="comm-header">
-    <div class="comm-title">💬 慳錢版</div>
-    <div class="comm-subtitle">慳錢攻略、生活節省貼士</div>
+    <div class="comm-header-text">
+      <div class="comm-title">💬 慳錢版</div>
+      <div class="comm-subtitle">慳錢攻略、生活節省貼士</div>
+    </div>
+    <button class="comm-close-btn" onclick="switchTab('map')" title="Back to map">✕</button>
   </div>
   <div class="comm-cat-bar" id="commCatBar">
     <button class="comm-cat active" onclick="filterComm('community','all',this)">全部</button>
