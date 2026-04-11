@@ -485,6 +485,25 @@ body {
 .map-link-btn:hover { background: var(--red-dark); }
 
 /* ===== REPORT FORM ===== */
+/* Google Places Autocomplete */
+.search-wrap { position: relative; }
+.search-wrap .form-input { padding-right: 36px; }
+.search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 16px; }
+.place-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--surface3); border-radius: 10px; z-index: 9999; max-height: 220px; overflow-y: auto; box-shadow: 0 4px 16px rgba(0,0,0,0.3); margin-top: 4px; }
+.place-suggestion-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--surface3); font-size: 13px; }
+.place-suggestion-item:last-child { border-bottom: none; }
+.place-suggestion-item:hover { background: var(--surface3); }
+.place-suggestion-item .sug-main { font-weight: 600; color: var(--text); }
+.place-suggestion-item .sug-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+.menu-rows { display: flex; flex-direction: column; gap: 8px; }
+.menu-row { display: flex; gap: 8px; align-items: center; }
+.menu-row .form-input.menu-name { flex: 1; }
+.menu-row .form-input.menu-price { width: 90px; flex: 0 0 90px; }
+.menu-row .menu-del { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; line-height: 1; }
+.add-menu-btn { background: none; border: 1.5px dashed var(--surface3); color: var(--text-muted); font-size: 12px; padding: 7px; border-radius: 8px; width: 100%; cursor: pointer; margin-top: 4px; }
+.add-menu-btn:hover { border-color: var(--yellow); color: var(--yellow); }
+.gmaps-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
+.gmaps-badge img { width: 14px; height: 14px; }
 .report-overlay {
   position: fixed;
   inset: 0;
@@ -1159,9 +1178,8 @@ body {
       <div class="form-step" id="step2-indicator">② <span data-zh="詳細" data-en="Details">詳細</span></div>
     </div>
 
-    <!-- STEP 1: Required -->
-    <div id="report-step1">
-      <div class="form-row">
+    <!-- STEP 1: Required -->\n    <div id="report-step1">\n      <!-- Google Places Search -->\n      <div class="form-row">\n        <label class="form-label">🔍 <span data-zh="搜尋食肆名稱" data-en="Search Restaurant Name">搜尋食肆名稱</span></label>\n        <div class="search-wrap">\n          <input class="form-input" id="r_search" placeholder="e.g. Tsim Chai Kee, Jordan" type="text" autocomplete="off" oninput="onPlaceSearch(this.value)">\n          <span class="search-icon">🔍</span>\n          <div class="place-suggestions" id="placeSuggestions" style="display:none;"></div>\n        </div>\n        <div class="gmaps-badge">Powered by Google</div>\n      </div>\n      <!-- Google Maps Link -->\n      <div class="form-row">\n        <label class="form-label"><span data-zh="Google Maps 連結 (選填)" data-en="Google Maps Link (optional)">Google Maps 連結 (選填)</span></label>\n        <input class="form-input" id="r_gmaps_url" placeholder="https://maps.app.goo.gl/..." type="url">\n      </div>
+
         <label class="form-label" data-zh="食肆名稱 (中文)*" data-en="Name (Chinese)*">食肆名稱 (中文)*</label>
         <input class="form-input" id="r_name_zh" placeholder="e.g. 澳洲牛奶公司" type="text">
       </div>
@@ -1251,6 +1269,23 @@ body {
         <label class="form-label" data-zh="營業時間" data-en="Hours">營業時間 (選填)</label>
         <input class="form-input" id="r_hours" placeholder="e.g. 07:30-23:00" type="text">
       </div>
+      <!-- Menu Items -->
+      <div class="form-row">
+        <label class="form-label">🍽 <span data-zh="代表菜單 (選填)" data-en="Menu Items (optional)">代表菜單 (選填)</span></label>
+        <div class="menu-rows" id="menuRows">
+          <div class="menu-row">
+            <input class="form-input menu-name" placeholder="e.g. 炒蛋多士" type="text">
+            <input class="form-input menu-price" placeholder="HKD" type="number" min="1" max="9999">
+            <button class="menu-del" onclick="removeMenuRow(this)" title="Remove">×</button>
+          </div>
+        </div>
+        <button class="add-menu-btn" onclick="addMenuRow()">+ <span data-zh="加一行" data-en="Add item">加一行</span></button>
+      </div>
+      <!-- Memo -->
+      <div class="form-row">
+        <label class="form-label">📝 <span data-zh="備注 (選填)" data-en="Memo (optional)">備注 (選填)</span></label>
+        <textarea class="form-input" id="r_memo" placeholder="e.g. 位置隱蔽，現金only，份量大..." rows="3" style="resize:vertical;min-height:70px;font-family:inherit;"></textarea>
+      </div>
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button class="submit-btn" onclick="goToStep1()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">← Back</button>
         <button class="submit-btn" onclick="submitReport()" style="flex:1;">
@@ -1276,6 +1311,94 @@ body {
 // Supabase credentials
 const SUPABASE_URL = 'https://nsxhzxlvtgwneiafmfmy.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MP-BjPpUp0djwP4ktmKk9A_IzuvnWZK';
+
+// ===== Google Places Config =====
+// Replace with your Google Places API key
+const GOOGLE_PLACES_API_KEY = '';
+let placesSearchTimer = null;
+let selectedPlaceData = null;
+
+async function onPlaceSearch(val) {
+  const box = document.getElementById('placeSuggestions');
+  if (!val || val.length < 2) { box.style.display = 'none'; return; }
+  clearTimeout(placesSearchTimer);
+  placesSearchTimer = setTimeout(async () => {
+    if (!GOOGLE_PLACES_API_KEY) {
+      // No API key: just show a hint
+      box.innerHTML = `<div class="place-suggestion-item"><div class="sug-main">🔑 Google API key not set</div><div class="sug-sub">Enter name manually below</div></div>`;
+      box.style.display = 'block';
+      return;
+    }
+    try {
+      const res = await fetch(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(val)}&location=22.3193,114.1694&radius=30000&language=zh-HK&key=${GOOGLE_PLACES_API_KEY}`);
+      const data = await res.json();
+      if (!data.predictions || data.predictions.length === 0) { box.style.display = 'none'; return; }
+      box.innerHTML = data.predictions.slice(0, 5).map(p => `
+        <div class="place-suggestion-item" onclick="selectPlace('${p.place_id}','${p.structured_formatting?.main_text?.replace(/'/g,"\\'")||""}','${p.description?.replace(/'/g,"\\'")||""}')">
+          <div class="sug-main">${p.structured_formatting?.main_text || p.description}</div>
+          <div class="sug-sub">${p.structured_formatting?.secondary_text || ''}</div>
+        </div>`).join('');
+      box.style.display = 'block';
+    } catch(e) { box.style.display = 'none'; }
+  }, 350);
+}
+
+async function selectPlace(placeId, mainText, fullText) {
+  const box = document.getElementById('placeSuggestions');
+  box.style.display = 'none';
+  document.getElementById('r_search').value = mainText || fullText;
+
+  if (!GOOGLE_PLACES_API_KEY) return;
+  try {
+    const res = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,geometry,url,website&language=zh-HK&key=${GOOGLE_PLACES_API_KEY}`);
+    const data = await res.json();
+    const r = data.result;
+    if (!r) return;
+    selectedPlaceData = r;
+    // Auto-fill fields
+    if (r.name && !document.getElementById('r_name_zh').value) {
+      document.getElementById('r_name_zh').value = r.name;
+    }
+    if (r.formatted_address && !document.getElementById('r_address').value) {
+      document.getElementById('r_address').value = r.formatted_address;
+    }
+    if (r.url && !document.getElementById('r_gmaps_url').value) {
+      document.getElementById('r_gmaps_url').value = r.url;
+    }
+    if (r.geometry?.location) {
+      selectedPlaceData._lat = r.geometry.location.lat;
+      selectedPlaceData._lng = r.geometry.location.lng;
+    }
+    showToast(currentLang === 'en' ? 'Place selected ✓' : '已選擇地點 ✓');
+  } catch(e) { console.log('Place detail error', e); }
+}
+
+// Close suggestions when clicking outside
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('#r_search') && !e.target.closest('#placeSuggestions')) {
+    const box = document.getElementById('placeSuggestions');
+    if (box) box.style.display = 'none';
+  }
+});
+
+// ===== Menu Row Management =====
+function addMenuRow() {
+  const rows = document.getElementById('menuRows');
+  if (rows.children.length >= 3) { showToast(currentLang === 'en' ? 'Max 3 items' : '最多3項'); return; }
+  const div = document.createElement('div');
+  div.className = 'menu-row';
+  div.innerHTML = `
+    <input class="form-input menu-name" placeholder="e.g. 炒蛋多士" type="text">
+    <input class="form-input menu-price" placeholder="HKD" type="number" min="1" max="9999">
+    <button class="menu-del" onclick="removeMenuRow(this)" title="Remove">×</button>`;
+  rows.appendChild(div);
+}
+function removeMenuRow(btn) {
+  const rows = document.getElementById('menuRows');
+  if (rows.children.length <= 1) { btn.closest('.menu-row').querySelector('.menu-name').value = ''; btn.closest('.menu-row').querySelector('.menu-price').value = ''; return; }
+  btn.closest('.menu-row').remove();
+}
+
 
 let db;
 let map;
@@ -1561,7 +1684,7 @@ function renderList() {
 
   list.innerHTML = filteredPlaces.map(p => {
     const cls = getPriceClass(p.price_min);
-    const tags = (p.tags || []).slice(0, 3).map(t => `<span class="ctag">${t}</span>`).join('');
+    const tags = (p.tags || []).slice(0, 3).map(t => `<span class="ctag">${translateTag(t)}</span>`).join('');
     return `
       <div class="place-card ${activeMarkerId === p.id ? 'active' : ''}" onclick="openDetail('${p.id}')" id="card-${p.id}">
         <div class="card-price-badge ${cls}">$${p.price_min}${p.price_max ? '–'+p.price_max : '+'}</div>
@@ -1598,7 +1721,7 @@ function openDetail(id) {
   ).join('');
 
   const tags = (place.tags || []).map(t =>
-    `<span class="detail-tag">${t}</span>`
+    `<span class="detail-tag">${translateTag(t)}</span>`
   ).join('');
 
   document.getElementById('detailContent').innerHTML = `
@@ -1992,9 +2115,16 @@ async function submitReport() {
   };
 
   const coords = districtCoords[district] || [22.3193, 114.1694];
-  // Slight random offset
-  const lat = coords[0] + (Math.random() - 0.5) * 0.005;
-  const lng = coords[1] + (Math.random() - 0.5) * 0.005;
+  // Use Google Places coordinates if available, else district approximate
+  const lat = selectedPlaceData?._lat || (coords[0] + (Math.random() - 0.5) * 0.005);
+  const lng = selectedPlaceData?._lng || (coords[1] + (Math.random() - 0.5) * 0.005);
+
+  // Collect menu items
+  const menuItems = Array.from(document.querySelectorAll('#menuRows .menu-row')).map(row => {
+    const name = row.querySelector('.menu-name')?.value.trim();
+    const price = parseInt(row.querySelector('.menu-price')?.value) || null;
+    return name ? { name, price } : null;
+  }).filter(Boolean);
 
   const reportData = {
     name_zh,
@@ -2010,6 +2140,9 @@ async function submitReport() {
     summary: document.getElementById('r_summary').value.trim() || null,
     payment,
     open_hours: document.getElementById('r_hours').value.trim() || null,
+    gmaps_url: document.getElementById('r_gmaps_url').value.trim() || null,
+    menu_items: menuItems.length > 0 ? JSON.stringify(menuItems) : null,
+    memo: document.getElementById('r_memo').value.trim() || null,
   };
 
   if (db) {
@@ -2024,12 +2157,22 @@ async function submitReport() {
   showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : '多謝提報！審核後上線 🙏');
   closeReport();
   // Reset form
-  ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary'].forEach(id => {
+  ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary','r_search','r_gmaps_url','r_memo'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('r_district').value = '';
   document.querySelectorAll('.pcheck.sel').forEach(el => el.classList.remove('sel'));
+  // Reset menu rows to 1 empty row
+  const menuRows = document.getElementById('menuRows');
+  if (menuRows) {
+    menuRows.innerHTML = `<div class="menu-row">
+      <input class="form-input menu-name" placeholder="e.g. 炒蛋多士" type="text">
+      <input class="form-input menu-price" placeholder="HKD" type="number" min="1" max="9999">
+      <button class="menu-del" onclick="removeMenuRow(this)" title="Remove">×</button>
+    </div>`;
+  }
+  selectedPlaceData = null;
   // Reset steps
   goToStep1();
 }
@@ -2046,6 +2189,52 @@ function setLang(lang) {
   });
 
   renderPlaces();
+}
+
+// ===== Tag Translation =====
+const TAG_MAP = {
+  '아침': { zh: '早餐時段', en: 'Breakfast' },
+  '저렴': { zh: '平價', en: 'Budget' },
+  '혼밥 좋음': { zh: '一人食OK', en: 'Solo OK' },
+  '혼밥좋음': { zh: '一人食OK', en: 'Solo OK' },
+  '혼밥': { zh: '一人食OK', en: 'Solo OK' },
+  '빠른 나음': { zh: '出餐快', en: 'Fast service' },
+  '빠른나음': { zh: '出餐快', en: 'Fast service' },
+  '빠른': { zh: '出餐快', en: 'Fast service' },
+  '현금만': { zh: '現金限定', en: 'Cash only' },
+  '야외': { zh: '戶外座位', en: 'Outdoor' },
+  '심야 가능': { zh: '深夜營業', en: 'Late night' },
+  '심야가능': { zh: '深夜營業', en: 'Late night' },
+  '심야': { zh: '深夜營業', en: 'Late night' },
+  '아침 세트': { zh: '早餐套餐', en: 'Morning set' },
+  '아침세트': { zh: '早餐套餐', en: 'Morning set' },
+  '웨이팅 있음': { zh: '需要等位', en: 'Queue' },
+  '웨이팅있음': { zh: '需要等位', en: 'Queue' },
+  '웨이팅': { zh: '需要等位', en: 'Queue' },
+  '저녁': { zh: '晚市', en: 'Dinner' },
+  '점심': { zh: '午市', en: 'Lunch' },
+  '포장': { zh: '外賣', en: 'Takeout' },
+  '대용량': { zh: '份量大', en: 'Large portion' },
+  '줄서기': { zh: '需要等位', en: 'Queue' },
+  'Solo OK': { zh: '一人食OK', en: 'Solo OK' },
+  'Fast service': { zh: '出餐快', en: 'Fast service' },
+  'Cash only': { zh: '現金限定', en: 'Cash only' },
+  'Outdoor': { zh: '戶外座位', en: 'Outdoor' },
+  'Late night': { zh: '深夜營業', en: 'Late night' },
+  'Morning set': { zh: '早餐套餐', en: 'Morning set' },
+  'Queue': { zh: '需要等位', en: 'Queue' },
+  'Budget': { zh: '平價', en: 'Budget' },
+  'Takeout': { zh: '外賣', en: 'Takeout' },
+  'Large portion': { zh: '份量大', en: 'Large portion' },
+  'Dinner only': { zh: '晚市限定', en: 'Dinner only' },
+  'Breakfast': { zh: '早餐時段', en: 'Breakfast' },
+  'Lunch': { zh: '午市', en: 'Lunch' },
+  'Michelin Bib': { zh: '米芝蓮', en: 'Michelin Bib' },
+};
+function translateTag(t) {
+  const entry = TAG_MAP[t] || TAG_MAP[t?.trim()];
+  if (entry) return currentLang === 'en' ? entry.en : entry.zh;
+  return t;
 }
 
 // ===== Mobile Panel =====
