@@ -144,11 +144,11 @@ body {
   flex-shrink: 0;
 }
 .fchip {
-  padding: 5px 12px;
+  padding: 5px 10px;
   border-radius: 20px;
   border: 1px solid rgba(255,255,255,0.2);
   background: transparent;
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
   cursor: pointer;
@@ -348,30 +348,31 @@ body {
 /* ===== DETAIL PANEL ===== */
 .detail-panel {
   position: absolute;
-  top: 0; right: 0;
-  width: 380px;
+  top: 0; left: 0;
+  width: 100%;
   height: 100%;
   background: var(--surface);
-  z-index: 10;
+  z-index: 20;
   overflow-y: auto;
-  box-shadow: -4px 0 32px rgba(0,0,0,0.2);
-  transform: translateX(100%);
+  box-shadow: 0 0 32px rgba(0,0,0,0.3);
+  transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .detail-panel.open { transform: translateX(0); }
 
 @media (max-width: 768px) {
   .detail-panel {
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
+    position: fixed;
+    top: 52px;
+    bottom: 56px;
+    left: 0; right: 0;
     width: 100%;
-    height: 85vh;
-    border-radius: 20px 20px 0 0;
-    transform: translateY(100%);
+    height: auto;
+    border-radius: 0;
+    transform: translateX(100%);
+    padding-bottom: 16px;
   }
-  .detail-panel.open { transform: translateY(0); }
+  .detail-panel.open { transform: translateX(0); }
 }
 
 .detail-hero {
@@ -431,7 +432,7 @@ body {
   color: rgba(255,255,255,0.7);
 }
 
-.detail-body { padding: 20px; }
+.detail-body { padding: 20px; padding-bottom: 40px; }
 .detail-section { margin-bottom: 18px; }
 .detail-section-title {
   font-size: 11px;
@@ -955,17 +956,6 @@ body {
   .place-card { padding: 16px 20px; }
   .card-name { font-size: 16px; }
 
-  /* Desktop: detail panel as sidebar on right */
-  .detail-panel {
-    width: 420px;
-    top: 60px;
-    right: 0;
-    height: calc(100vh - 60px);
-    border-radius: 0;
-    transform: translateX(100%);
-  }
-  .detail-panel.open { transform: translateX(0); }
-
   /* Desktop filter bar */
   .filter-bar { padding: 12px 28px; gap: 10px; }
 
@@ -1083,31 +1073,31 @@ body {
 
 <!-- Filter Bar -->
 <div class="filter-bar">
-  <span class="filter-label" data-zh="價錢" data-en="PRICE">價錢</span>
+  <span class="filter-label" data-zh="價錢" data-en="$">價錢</span>
   <div class="fchip price-chip active" onclick="setPrice(this, 'all')" data-zh="全部" data-en="All">全部</div>
   <div class="fchip price-chip" onclick="setPrice(this, 30)" data-zh="$30↓" data-en="$30↓">$30↓</div>
   <div class="fchip price-chip" onclick="setPrice(this, 50)" data-zh="$50↓" data-en="$50↓">$50↓</div>
   <div class="fchip price-chip" onclick="setPrice(this, 70)" data-zh="$70↓" data-en="$70↓">$70↓</div>
   <div class="fchip price-chip" onclick="setPrice(this, 100)" data-zh="$100↓" data-en="$100↓">$100↓</div>
   <div class="filter-sep"></div>
-  <span class="filter-label" data-zh="時段" data-en="TIME">時段</span>
-  <div class="fchip time-chip" onclick="setTime(this, 'breakfast')" data-zh="早餐" data-en="Breakfast">🌅 早餐</div>
-  <div class="fchip time-chip" onclick="setTime(this, 'lunch')" data-zh="午市" data-en="Lunch">☀️ 午市</div>
-  <div class="fchip time-chip" onclick="setTime(this, 'afternoon')" data-zh="下午茶" data-en="Aft. Tea">🍵 下午茶</div>
-  <div class="fchip time-chip" onclick="setTime(this, 'latenight')" data-zh="宵夜" data-en="Late Night">🌙 宵夜</div>
+  <span class="filter-label" data-zh="時段" data-en="⏰">時段</span>
+  <div class="fchip time-chip" onclick="setTime(this, 'breakfast')" data-zh="早餐" data-en="AM">早餐</div>
+  <div class="fchip time-chip" onclick="setTime(this, 'lunch')" data-zh="午市" data-en="Lunch">午市</div>
+  <div class="fchip time-chip" onclick="setTime(this, 'afternoon')" data-zh="下午茶" data-en="Tea">下午茶</div>
+  <div class="fchip time-chip" onclick="setTime(this, 'latenight')" data-zh="宵夜" data-en="Late">宵夜</div>
   <div class="filter-sep"></div>
-  <span class="filter-label" data-zh="類型" data-en="TYPE">類型</span>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'cha_chaan_teng')" data-zh="茶餐廳" data-en="茶餐廳">茶餐廳</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'noodle')" data-zh="麵食" data-en="Noodles">麵食</div>
+  <span class="filter-label" data-zh="類型" data-en="🍽">類型</span>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'cha_chaan_teng')" data-zh="茶餐廳" data-en="ChaChaan">茶餐廳</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'noodle')" data-zh="麵食" data-en="Noodle">麵食</div>
   <div class="fchip cat-chip" onclick="setCategory(this, 'rice')" data-zh="飯類" data-en="Rice">飯類</div>
   <div class="fchip cat-chip" onclick="setCategory(this, 'bakery')" data-zh="烘焙" data-en="Bakery">烘焙</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'dessert')" data-zh="甜品" data-en="Dessert">甜品</div>
-  <div class="fchip cat-chip" onclick="setCategory(this, 'hot_pot')" data-zh="火鍋" data-en="Hot Pot">火鍋</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'dessert')" data-zh="甜品" data-en="Sweet">甜品</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'hot_pot')" data-zh="火鍋" data-en="HotPot">火鍋</div>
   <div class="filter-sep"></div>
-  <span class="filter-label" data-zh="付款" data-en="PAY">付款</span>
-  <div class="fchip pay-chip" onclick="setPayment(this, 'cash')" data-zh="現金" data-en="Cash">💵 現金</div>
-  <div class="fchip pay-chip" onclick="setPayment(this, 'octopus')" data-zh="八達通" data-en="Octopus">🐙 八達通</div>
-  <div class="fchip pay-chip" onclick="setPayment(this, 'alipay_hk')" data-zh="AlipayHK" data-en="AlipayHK">📱 Alipay</div>
+  <span class="filter-label" data-zh="付款" data-en="💳">付款</span>
+  <div class="fchip pay-chip" onclick="setPayment(this, 'cash')" data-zh="現金" data-en="Cash">現金</div>
+  <div class="fchip pay-chip" onclick="setPayment(this, 'octopus')" data-zh="八達通" data-en="Octopus">八達通</div>
+  <div class="fchip pay-chip" onclick="setPayment(this, 'alipay_hk')" data-zh="AlipayHK" data-en="Alipay">AlipayHK</div>
   <div class="filter-sep"></div>
   <span class="filter-label" data-zh="MTR" data-en="MTR">🚇 MTR</span>
   <div class="mtr-select-wrap">
@@ -1265,7 +1255,10 @@ body {
 <!-- Report Form -->
 <div class="report-overlay" id="reportOverlay" onclick="closeReportIfBg(event)">
   <div class="report-sheet">
-    <div class="report-title" data-zh="提報 💰" data-en="Report a Place 💰">提報 💰</div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px;">
+      <div class="report-title" data-zh="提報 💰" data-en="Report a Place 💰">提報 💰</div>
+      <button onclick="closeReport()" style="background:var(--surface3);border:none;color:var(--text-muted);width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
+    </div>
     <div class="report-sub" data-zh="HKD 100以下嘅平價食肆" data-en="Share a budget eat under HKD 100">HKD 100以下平價食肆</div>
 
     <!-- Steps -->
@@ -1552,19 +1545,9 @@ async function loadPlaces() {
 }
 
 function loadDemoData() {
-  allPlaces = [
-    { id: '1', name_zh: '澳洲牛奶公司', name_en: 'Australia Dairy Company', district_en: 'Jordan', district_zh: '佐敦', lat: 22.3048, lng: 114.1703, category: 'cha_chaan_teng', price_min: 25, price_max: 60, signature_dish: '炒蛋多士', payment: ['cash'], tags: ['Solo OK', 'Fast service', 'Cash only'], open_hours: '07:30-23:00', is_verified: true },
-    { id: '2', name_zh: '沾仔記', name_en: 'Tsim Chai Kee', district_en: 'Central', district_zh: '中環', lat: 22.2817, lng: 114.1541, category: 'noodle', price_min: 35, price_max: 55, signature_dish: '雲吞麵', payment: ['cash', 'octopus'], tags: ['Solo OK', 'Fast service'], open_hours: '09:00-21:00', is_verified: true },
-    { id: '3', name_zh: '公和荳品廠', name_en: 'Kung Wo Bean Curd', district_en: 'Sham Shui Po', district_zh: '深水埗', lat: 22.3306, lng: 114.1624, category: 'dessert', price_min: 10, price_max: 25, signature_dish: '豆腐花', payment: ['cash', 'octopus'], tags: ['Budget', 'Solo OK'], open_hours: '07:00-20:30', is_verified: true },
-    { id: '4', name_zh: '勝香園', name_en: 'Sing Heung Yuen', district_en: 'Central', district_zh: '中環', lat: 22.2833, lng: 114.1548, category: 'cha_chaan_teng', price_min: 30, price_max: 55, signature_dish: '番茄通粉', payment: ['cash'], tags: ['Outdoor', 'Solo OK', 'Cash only'], open_hours: '07:30-18:00', is_verified: true },
-    { id: '5', name_zh: '麥文記麵家', name_en: 'Mak Man Kee', district_en: 'Jordan', district_zh: '佐敦', lat: 22.3050, lng: 114.1705, category: 'noodle', price_min: 40, price_max: 65, signature_dish: '鮮蝦雲吞麵', payment: ['cash'], tags: ['Solo OK', 'Cash only'], open_hours: '12:00-01:00', is_verified: true },
-    { id: '6', name_zh: '泰昌餅家', name_en: 'Tai Cheong Bakery', district_en: 'Central', district_zh: '中環', lat: 22.2829, lng: 114.1540, category: 'bakery', price_min: 8, price_max: 20, signature_dish: '蛋撻', payment: ['cash', 'octopus', 'visa'], tags: ['Takeout', 'Budget'], open_hours: '07:30-21:00', is_verified: true },
-    { id: '7', name_zh: '坤記煲仔小菜', name_en: 'Kwan Kee Clay Pot', district_en: 'Sheung Wan', district_zh: '上環', lat: 22.2869, lng: 114.1456, category: 'rice', price_min: 55, price_max: 90, signature_dish: '煲仔飯', payment: ['cash', 'octopus'], tags: ['Dinner only', 'Queue'], open_hours: '18:00-23:00', is_verified: true },
-    { id: '8', name_zh: '九記牛腩', name_en: 'Kau Kee', district_en: 'Sheung Wan', district_zh: '上環', lat: 22.2852, lng: 114.1527, category: 'noodle', price_min: 45, price_max: 80, signature_dish: '牛腩麵', payment: ['cash'], tags: ['Queue', 'Cash only', 'Large portion'], open_hours: '12:30-22:30', is_verified: true },
-    { id: '9', name_zh: '興記', name_en: 'Hing Kee', district_en: 'Mong Kok', district_zh: '旺角', lat: 22.3196, lng: 114.1697, category: 'cha_chaan_teng', price_min: 25, price_max: 50, signature_dish: '奶茶', payment: ['cash', 'octopus'], tags: ['Budget', 'Fast service'], open_hours: '07:00-22:00', is_verified: true },
-    { id: '10', name_zh: '沙爹王', name_en: 'Satay King', district_en: 'Mong Kok', district_zh: '旺角', lat: 22.3175, lng: 114.1693, category: 'hot_pot', price_min: 50, price_max: 80, signature_dish: '沙爹牛肉麵', payment: ['cash', 'octopus'], tags: ['Late night', 'Solo OK'], open_hours: '12:00-03:00', is_verified: true },
-  ];
+  allPlaces = [];
   renderPlaces();
+  showToast(currentLang === 'en' ? 'Could not load data. Please refresh.' : '載入失敗，請重新整理頁面');
 }
 
 // ===== RENDER =====
@@ -2409,12 +2392,10 @@ function setLang(lang) {
   currentLang = lang;
   document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`lang-${lang}`)?.classList.add('active');
-
   document.querySelectorAll('[data-zh]').forEach(el => {
     const txt = el.dataset[lang] || el.dataset.zh;
     if (txt) el.textContent = txt;
   });
-
   renderPlaces();
 }
 
