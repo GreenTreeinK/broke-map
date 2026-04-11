@@ -1127,8 +1127,24 @@ body {
       <div class="form-step" id="step2-indicator">② <span data-zh="詳細" data-en="Details">詳細</span></div>
     </div>
 
-    <!-- STEP 1: Required -->\n    <div id="report-step1">\n      <!-- Google Places Search -->\n      <div class="form-row">\n        <label class="form-label">🔍 <span data-zh="搜尋食肆名稱" data-en="Search Restaurant Name">搜尋食肆名稱</span></label>\n        <div class="search-wrap">\n          <input class="form-input" id="r_search" placeholder="e.g. Tsim Chai Kee, Jordan" type="text" autocomplete="off" oninput="onPlaceSearch(this.value)">\n          <span class="search-icon">🔍</span>\n          <div class="place-suggestions" id="placeSuggestions" style="display:none;"></div>\n        </div>\n        <div class="gmaps-badge">Powered by Google</div>\n      </div>\n      <!-- Google Maps Link -->\n      <div class="form-row">\n        <label class="form-label"><span data-zh="Google Maps 連結 (選填)" data-en="Google Maps Link (optional)">Google Maps 連結 (選填)</span></label>\n        <input class="form-input" id="r_gmaps_url" placeholder="https://maps.app.goo.gl/..." type="url">\n      </div>
-
+    <!-- STEP 1: Required -->
+    <div id="report-step1">
+      <!-- Google Places Search -->
+      <div class="form-row">
+        <label class="form-label">🔍 <span data-zh="搜尋食肆名稱" data-en="Search Restaurant Name">搜尋食肆名稱</span></label>
+        <div class="search-wrap">
+          <input class="form-input" id="r_search" placeholder="e.g. Tsim Chai Kee, Jordan" type="text" autocomplete="off" oninput="onPlaceSearch(this.value)">
+          <span class="search-icon">🔍</span>
+          <div class="place-suggestions" id="placeSuggestions" style="display:none;"></div>
+        </div>
+        <div class="gmaps-badge">Powered by Google</div>
+      </div>
+      <!-- Google Maps Link -->
+      <div class="form-row">
+        <label class="form-label"><span data-zh="Google Maps 連結 (選填)" data-en="Google Maps Link (optional)">Google Maps 連結 (選填)</span></label>
+        <input class="form-input" id="r_gmaps_url" placeholder="https://maps.app.goo.gl/..." type="url">
+      </div>
+      <div class="form-row">
         <label class="form-label" data-zh="食肆名稱 (中文)*" data-en="Name (Chinese)*">食肆名稱 (中文)*</label>
         <input class="form-input" id="r_name_zh" placeholder="e.g. 澳洲牛奶公司" type="text">
       </div>
