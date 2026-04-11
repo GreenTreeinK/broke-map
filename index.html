@@ -325,6 +325,26 @@ body {
   font-weight: 500;
 }
 
+.card-top-row { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.card-name-wrap { flex:1; min-width:0; }
+.card-meta { margin-top: 6px; font-size: 10px; color: var(--text-muted); }
+.card-confirmed { display:inline-flex; align-items:center; gap:4px; background: var(--surface2); border-radius: 999px; padding: 3px 8px; }
+.favorite-btn {
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  color: var(--text-muted);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.favorite-btn:hover { border-color: #f59e0b; color: #b45309; background: #fff7ed; }
+.favorite-btn.active { background: #fff7ed; border-color: #f59e0b; color: #b45309; }
+.favorite-btn.compact { padding: 4px 8px; font-size: 11px; }
+
 /* ===== DETAIL PANEL ===== */
 .detail-panel {
   position: absolute;
@@ -485,25 +505,6 @@ body {
 .map-link-btn:hover { background: var(--red-dark); }
 
 /* ===== REPORT FORM ===== */
-/* Google Places Autocomplete */
-.search-wrap { position: relative; }
-.search-wrap .form-input { padding-right: 36px; }
-.search-icon { position: absolute; right: 10px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; font-size: 16px; }
-.place-suggestions { position: absolute; top: 100%; left: 0; right: 0; background: var(--surface2); border: 1px solid var(--surface3); border-radius: 10px; z-index: 9999; max-height: 220px; overflow-y: auto; box-shadow: 0 4px 16px rgba(0,0,0,0.3); margin-top: 4px; }
-.place-suggestion-item { padding: 10px 14px; cursor: pointer; border-bottom: 1px solid var(--surface3); font-size: 13px; }
-.place-suggestion-item:last-child { border-bottom: none; }
-.place-suggestion-item:hover { background: var(--surface3); }
-.place-suggestion-item .sug-main { font-weight: 600; color: var(--text); }
-.place-suggestion-item .sug-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-.menu-rows { display: flex; flex-direction: column; gap: 8px; }
-.menu-row { display: flex; gap: 8px; align-items: center; }
-.menu-row .form-input.menu-name { flex: 1; }
-.menu-row .form-input.menu-price { width: 90px; flex: 0 0 90px; }
-.menu-row .menu-del { background: none; border: none; color: var(--text-muted); font-size: 18px; cursor: pointer; padding: 0 4px; line-height: 1; }
-.add-menu-btn { background: none; border: 1.5px dashed var(--surface3); color: var(--text-muted); font-size: 12px; padding: 7px; border-radius: 8px; width: 100%; cursor: pointer; margin-top: 4px; }
-.add-menu-btn:hover { border-color: var(--yellow); color: var(--yellow); }
-.gmaps-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; color: var(--text-muted); margin-top: 4px; }
-.gmaps-badge img { width: 14px; height: 14px; }
 .report-overlay {
   position: fixed;
   inset: 0;
@@ -756,6 +757,53 @@ body {
 .empty-text { font-size: 13px; font-weight: 600; color: var(--text-soft); }
 .empty-sub { font-size: 11px; margin-top: 4px; }
 
+/* ===== LOADING ===== */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.4s;
+}
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-logo {
+  font-family: 'Oswald', sans-serif;
+  font-size: 36px;
+  font-weight: 900;
+  color: var(--yellow);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.loading-sub {
+  font-size: 12px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.loading-bar-wrap {
+  width: 200px;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+.loading-bar {
+  height: 100%;
+  background: var(--red);
+  border-radius: 3px;
+  animation: loadBar 1.5s ease-in-out infinite;
+}
+@keyframes loadBar {
+  0% { width: 0%; margin-left: 0; }
+  50% { width: 70%; margin-left: 0; }
+  100% { width: 0%; margin-left: 100%; }
+}
+
 /* ===== MOBILE PANEL HANDLE ===== */
 .panel-handle {
   display: none;
@@ -912,7 +960,11 @@ body {
 <body>
 
 <!-- Loading -->
-
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-logo">窮鬼地圖</div>
+  <div class="loading-sub">BROKE MAP · HONG KONG</div>
+  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
+</div>
 
 <!-- Header -->
 <div class="app-header">
@@ -1129,21 +1181,6 @@ body {
 
     <!-- STEP 1: Required -->
     <div id="report-step1">
-      <!-- Google Places Search -->
-      <div class="form-row">
-        <label class="form-label">🔍 <span data-zh="搜尋食肆名稱" data-en="Search Restaurant Name">搜尋食肆名稱</span></label>
-        <div class="search-wrap">
-          <input class="form-input" id="r_search" placeholder="e.g. Tsim Chai Kee, Jordan" type="text" autocomplete="off" oninput="onPlaceSearch(this.value)">
-          <span class="search-icon">🔍</span>
-          <div class="place-suggestions" id="placeSuggestions" style="display:none;"></div>
-        </div>
-        <div class="gmaps-badge">Powered by Google</div>
-      </div>
-      <!-- Google Maps Link -->
-      <div class="form-row">
-        <label class="form-label"><span data-zh="Google Maps 連結 (選填)" data-en="Google Maps Link (optional)">Google Maps 連結 (選填)</span></label>
-        <input class="form-input" id="r_gmaps_url" placeholder="https://maps.app.goo.gl/..." type="url">
-      </div>
       <div class="form-row">
         <label class="form-label" data-zh="食肆名稱 (中文)*" data-en="Name (Chinese)*">食肆名稱 (中文)*</label>
         <input class="form-input" id="r_name_zh" placeholder="e.g. 澳洲牛奶公司" type="text">
@@ -1234,23 +1271,6 @@ body {
         <label class="form-label" data-zh="營業時間" data-en="Hours">營業時間 (選填)</label>
         <input class="form-input" id="r_hours" placeholder="e.g. 07:30-23:00" type="text">
       </div>
-      <!-- Menu Items -->
-      <div class="form-row">
-        <label class="form-label">🍽 <span data-zh="代表菜單 (選填)" data-en="Menu Items (optional)">代表菜單 (選填)</span></label>
-        <div class="menu-rows" id="menuRows">
-          <div class="menu-row">
-            <input class="form-input menu-name" placeholder="e.g. 炒蛋多士" type="text">
-            <input class="form-input menu-price" placeholder="HKD" type="number" min="1" max="9999">
-            <button class="menu-del" onclick="removeMenuRow(this)" title="Remove">×</button>
-          </div>
-        </div>
-        <button class="add-menu-btn" onclick="addMenuRow()">+ <span data-zh="加一行" data-en="Add item">加一行</span></button>
-      </div>
-      <!-- Memo -->
-      <div class="form-row">
-        <label class="form-label">📝 <span data-zh="備注 (選填)" data-en="Memo (optional)">備注 (選填)</span></label>
-        <textarea class="form-input" id="r_memo" placeholder="e.g. 位置隱蔽，現金only，份量大..." rows="3" style="resize:vertical;min-height:70px;font-family:inherit;"></textarea>
-      </div>
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button class="submit-btn" onclick="goToStep1()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">← Back</button>
         <button class="submit-btn" onclick="submitReport()" style="flex:1;">
@@ -1269,185 +1289,6 @@ body {
 
 <style>
 @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
-
-/* ===== BOTTOM NAV ===== */
-.bottom-nav {
-  display: none;
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: 56px;
-  background: var(--surface2);
-  border-top: 1px solid var(--border);
-  z-index: 2000;
-  display: flex;
-  align-items: stretch;
-}
-.bottom-nav-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  cursor: pointer;
-  font-size: 10px;
-  color: var(--text-muted);
-  border: none;
-  background: none;
-  transition: color 0.15s;
-}
-.bottom-nav-item .nav-icon { font-size: 20px; line-height: 1; }
-.bottom-nav-item.active { color: var(--yellow); }
-.bottom-nav-item:hover { color: var(--text); }
-
-/* ===== COMMUNITY PAGES ===== */
-.community-page {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: var(--dark);
-  z-index: 1500;
-  flex-direction: column;
-  padding-bottom: 56px;
-}
-.community-page.active { display: flex; }
-.comm-header {
-  background: var(--surface2);
-  border-bottom: 1px solid var(--border);
-  padding: 14px 16px 10px;
-}
-.comm-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--yellow);
-  letter-spacing: 1px;
-  margin-bottom: 2px;
-}
-.comm-subtitle { font-size: 11px; color: var(--text-muted); }
-.comm-cat-bar {
-  display: flex;
-  gap: 6px;
-  overflow-x: auto;
-  padding: 10px 16px 0;
-  scrollbar-width: none;
-}
-.comm-cat-bar::-webkit-scrollbar { display: none; }
-.comm-cat {
-  flex: 0 0 auto;
-  padding: 5px 12px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 600;
-  border: 1.5px solid var(--border);
-  color: var(--text-muted);
-  cursor: pointer;
-  white-space: nowrap;
-  background: none;
-}
-.comm-cat.active { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
-.comm-body {
-  flex: 1;
-  overflow-y: auto;
-  padding: 12px 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-.comm-card {
-  background: var(--surface2);
-  border-radius: 14px;
-  padding: 14px;
-  border: 1px solid var(--border);
-  display: flex;
-  gap: 12px;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
-.comm-card:hover { border-color: var(--yellow); }
-.comm-card-thumb {
-  width: 72px; height: 72px;
-  border-radius: 10px;
-  object-fit: cover;
-  flex: 0 0 72px;
-  background: var(--surface3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 28px;
-}
-.comm-card-body { flex: 1; min-width: 0; }
-.comm-card-title {
-  font-size: 14px; font-weight: 700;
-  color: var(--text);
-  margin-bottom: 4px;
-  line-height: 1.3;
-  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-}
-.comm-card-price {
-  font-size: 16px; font-weight: 900;
-  color: var(--yellow);
-  margin-bottom: 4px;
-}
-.comm-card-meta {
-  font-size: 11px; color: var(--text-muted);
-  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-}
-.comm-card-cat {
-  background: var(--surface3);
-  border-radius: 6px;
-  padding: 2px 6px;
-  font-size: 10px;
-  color: var(--text-muted);
-}
-.comm-vote { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--text-muted); }
-.comm-vote span { cursor: pointer; padding: 2px 4px; border-radius: 4px; }
-.comm-vote span:hover { background: var(--surface3); }
-.comm-fab {
-  position: fixed;
-  bottom: 72px; right: 18px;
-  width: 50px; height: 50px;
-  border-radius: 50%;
-  background: var(--yellow);
-  color: var(--dark);
-  font-size: 24px;
-  border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  z-index: 1600;
-  font-weight: 900;
-}
-.comm-fab.active { display: flex; }
-.comm-write-overlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 3000;
-  align-items: flex-end;
-}
-.comm-write-overlay.active { display: flex; }
-.comm-write-sheet {
-  background: var(--surface2);
-  border-radius: 20px 20px 0 0;
-  padding: 20px 16px 32px;
-  width: 100%;
-  max-height: 85vh;
-  overflow-y: auto;
-}
-.comm-write-title {
-  font-size: 16px; font-weight: 800;
-  color: var(--yellow);
-  margin-bottom: 16px;
-}
-.comm-empty {
-  text-align: center;
-  padding: 48px 16px;
-  color: var(--text-muted);
-  font-size: 14px;
-}
-.comm-empty-icon { font-size: 40px; margin-bottom: 10px; }
 </style>
 
 <script>
@@ -1455,94 +1296,6 @@ body {
 // Supabase credentials
 const SUPABASE_URL = 'https://nsxhzxlvtgwneiafmfmy.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MP-BjPpUp0djwP4ktmKk9A_IzuvnWZK';
-
-// ===== Google Places Config =====
-// Replace with your Google Places API key
-const GOOGLE_PLACES_API_KEY = '';
-let placesSearchTimer = null;
-let selectedPlaceData = null;
-
-async function onPlaceSearch(val) {
-  const box = document.getElementById('placeSuggestions');
-  if (!val || val.length < 2) { box.style.display = 'none'; return; }
-  clearTimeout(placesSearchTimer);
-  placesSearchTimer = setTimeout(async () => {
-    if (!GOOGLE_PLACES_API_KEY) {
-      // No API key: just show a hint
-      box.innerHTML = `<div class="place-suggestion-item"><div class="sug-main">🔑 Google API key not set</div><div class="sug-sub">Enter name manually below</div></div>`;
-      box.style.display = 'block';
-      return;
-    }
-    try {
-      const res = await fetch(`https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(val)}&location=22.3193,114.1694&radius=30000&language=zh-HK&key=${GOOGLE_PLACES_API_KEY}`);
-      const data = await res.json();
-      if (!data.predictions || data.predictions.length === 0) { box.style.display = 'none'; return; }
-      box.innerHTML = data.predictions.slice(0, 5).map(p => `
-        <div class="place-suggestion-item" onclick="selectPlace('${p.place_id}','${p.structured_formatting?.main_text?.replace(/'/g,"\\'")||""}','${p.description?.replace(/'/g,"\\'")||""}')">
-          <div class="sug-main">${p.structured_formatting?.main_text || p.description}</div>
-          <div class="sug-sub">${p.structured_formatting?.secondary_text || ''}</div>
-        </div>`).join('');
-      box.style.display = 'block';
-    } catch(e) { box.style.display = 'none'; }
-  }, 350);
-}
-
-async function selectPlace(placeId, mainText, fullText) {
-  const box = document.getElementById('placeSuggestions');
-  box.style.display = 'none';
-  document.getElementById('r_search').value = mainText || fullText;
-
-  if (!GOOGLE_PLACES_API_KEY) return;
-  try {
-    const res = await fetch(`https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,formatted_address,geometry,url,website&language=zh-HK&key=${GOOGLE_PLACES_API_KEY}`);
-    const data = await res.json();
-    const r = data.result;
-    if (!r) return;
-    selectedPlaceData = r;
-    // Auto-fill fields
-    if (r.name && !document.getElementById('r_name_zh').value) {
-      document.getElementById('r_name_zh').value = r.name;
-    }
-    if (r.formatted_address && !document.getElementById('r_address').value) {
-      document.getElementById('r_address').value = r.formatted_address;
-    }
-    if (r.url && !document.getElementById('r_gmaps_url').value) {
-      document.getElementById('r_gmaps_url').value = r.url;
-    }
-    if (r.geometry?.location) {
-      selectedPlaceData._lat = r.geometry.location.lat;
-      selectedPlaceData._lng = r.geometry.location.lng;
-    }
-    showToast(currentLang === 'en' ? 'Place selected ✓' : '已選擇地點 ✓');
-  } catch(e) { console.log('Place detail error', e); }
-}
-
-// Close suggestions when clicking outside
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('#r_search') && !e.target.closest('#placeSuggestions')) {
-    const box = document.getElementById('placeSuggestions');
-    if (box) box.style.display = 'none';
-  }
-});
-
-// ===== Menu Row Management =====
-function addMenuRow() {
-  const rows = document.getElementById('menuRows');
-  if (rows.children.length >= 3) { showToast(currentLang === 'en' ? 'Max 3 items' : '最多3項'); return; }
-  const div = document.createElement('div');
-  div.className = 'menu-row';
-  div.innerHTML = `
-    <input class="form-input menu-name" placeholder="e.g. 炒蛋多士" type="text">
-    <input class="form-input menu-price" placeholder="HKD" type="number" min="1" max="9999">
-    <button class="menu-del" onclick="removeMenuRow(this)" title="Remove">×</button>`;
-  rows.appendChild(div);
-}
-function removeMenuRow(btn) {
-  const rows = document.getElementById('menuRows');
-  if (rows.children.length <= 1) { btn.closest('.menu-row').querySelector('.menu-name').value = ''; btn.closest('.menu-row').querySelector('.menu-price').value = ''; return; }
-  btn.closest('.menu-row').remove();
-}
-
 
 let db;
 let map;
@@ -1559,6 +1312,7 @@ let mtrRadius = 300;       //  300m
 let mtrCircle = null;      //   
 let mtrMarker = null;      // Station marker
 let activeMarkerId = null;
+const FAVORITES_KEY = 'brokemap_favorites';
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1566,6 +1320,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   setLang('zh'); // Apply initial language
   db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadPlaces();
+  setTimeout(() => {
+    document.getElementById('loadingOverlay').classList.add('hidden');
+  }, 1500);
 });
 
 // ===== MAP INIT =====
@@ -1812,6 +1569,68 @@ function renderMarkers() {
   });
 }
 
+
+function getFavoriteIds() {
+  try {
+    return JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+function isFavorite(placeId) {
+  return getFavoriteIds().includes(String(placeId));
+}
+
+function toggleFavorite(placeId, ev) {
+  if (ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+  }
+  const id = String(placeId);
+  const favorites = getFavoriteIds();
+  const next = favorites.includes(id)
+    ? favorites.filter(v => v !== id)
+    : [...favorites, id];
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify(next));
+  updateFavoriteButtons(id);
+  renderList();
+  showToast(currentLang === 'en'
+    ? (next.includes(id) ? 'Saved to favorites ⭐' : 'Removed from favorites')
+    : (next.includes(id) ? '已加入收藏 ⭐' : '已取消收藏'));
+}
+
+function updateFavoriteButtons(placeId) {
+  const active = isFavorite(placeId);
+  document.querySelectorAll(`[data-fav-id="${placeId}"]`).forEach(btn => {
+    btn.classList.toggle('active', active);
+    const label = active
+      ? (currentLang === 'en' ? 'Saved' : '已收藏')
+      : (currentLang === 'en' ? 'Save' : '收藏');
+    btn.innerHTML = `${active ? '⭐' : '☆'} ${label}`;
+  });
+}
+
+function getConfirmedDate(place) {
+  return place.last_verified_at || place.updated_at || place.created_at || null;
+}
+
+function formatShortDate(dateStr) {
+  if (!dateStr) return currentLang === 'en' ? 'Date unknown' : '日期未明';
+  const d = new Date(dateStr);
+  if (Number.isNaN(d.getTime())) return currentLang === 'en' ? 'Date unknown' : '日期未明';
+  return d.toLocaleDateString(currentLang === 'en' ? 'en-HK' : 'zh-HK', {
+    year: 'numeric', month: 'short', day: 'numeric'
+  });
+}
+
+function getConfirmedLabel(place, compact = false) {
+  const base = getConfirmedDate(place);
+  const prefix = currentLang === 'en' ? (compact ? 'Checked' : 'Last confirmed') : (compact ? '確認' : '最近確認');
+  return `${prefix}: ${formatShortDate(base)}`;
+}
+
+// ===== LIST =====
 function renderList() {
   const list = document.getElementById('placeList');
   if (filteredPlaces.length === 0) {
@@ -1825,16 +1644,22 @@ function renderList() {
 
   list.innerHTML = filteredPlaces.map(p => {
     const cls = getPriceClass(p.price_min);
-    const tags = (p.tags || []).slice(0, 3).map(t => `<span class="ctag">${translateTag(t)}</span>`).join('');
+    const tags = (p.tags || []).slice(0, 3).map(t => `<span class="ctag">${t}</span>`).join('');
     return `
       <div class="place-card ${activeMarkerId === p.id ? 'active' : ''}" onclick="openDetail('${p.id}')" id="card-${p.id}">
         <div class="card-price-badge ${cls}">$${p.price_min}${p.price_max ? '–'+p.price_max : '+'}</div>
         <div class="card-info">
-          <div class="card-name">${p.name_zh}</div>
-          <div class="card-name-en">${p.name_en || ''}</div>
+          <div class="card-top-row">
+            <div class="card-name-wrap">
+              <div class="card-name">${p.name_zh}</div>
+              <div class="card-name-en">${p.name_en || ''}</div>
+            </div>
+            <button class="favorite-btn compact ${isFavorite(p.id) ? 'active' : ''}" data-fav-id="${p.id}" onclick="toggleFavorite('${p.id}', event)">${isFavorite(p.id) ? '⭐' : '☆'} ${isFavorite(p.id) ? (currentLang === 'en' ? 'Saved' : '已收藏') : (currentLang === 'en' ? 'Save' : '收藏')}</button>
+          </div>
           <div class="card-district">${p.district_en} ${p.district_zh ? '· '+p.district_zh : ''}</div>
           ${p.signature_dish ? `<div class="card-dish">🍽 ${p.signature_dish}</div>` : ''}
           <div class="card-tags">${tags}</div>
+          <div class="card-meta"><span class="card-confirmed">🗓 ${getConfirmedLabel(p, true)}</span></div>
         </div>
       </div>`;
   }).join('');
@@ -1862,7 +1687,7 @@ function openDetail(id) {
   ).join('');
 
   const tags = (place.tags || []).map(t =>
-    `<span class="detail-tag">${translateTag(t)}</span>`
+    `<span class="detail-tag">${t}</span>`
   ).join('');
 
   document.getElementById('detailContent').innerHTML = `
@@ -1877,7 +1702,11 @@ function openDetail(id) {
       </div>
     </div>
     <div class="detail-body">
-      ${place.is_verified ? `<div class="detail-verified">✅ ${currentLang === 'en' ? 'Verified by community' : '已驗證'} · <span style="font-weight:400;opacity:0.8">${currentLang === 'en' ? 'Recently confirmed' : '最近確認'}</span></div>` : ''}
+      ${place.is_verified ? `<div class="detail-verified">✅ ${currentLang === 'en' ? 'Verified by community' : '已驗證'} · <span style="font-weight:400;opacity:0.8">${getConfirmedLabel(place)}</span></div>` : ''}
+
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+        <button class="favorite-btn ${isFavorite(place.id) ? 'active' : ''}" data-fav-id="${place.id}" onclick="toggleFavorite('${place.id}', event)">${isFavorite(place.id) ? '⭐' : '☆'} ${isFavorite(place.id) ? (currentLang === 'en' ? 'Saved' : '已收藏') : (currentLang === 'en' ? 'Save to favorites' : '加入收藏')}</button>
+      </div>
 
       ${place.summary ? `<div style="background:var(--yellow-light);border:1.5px solid var(--yellow);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--dark);">💡 ${place.summary}</div>` : ''}
 
@@ -1886,6 +1715,7 @@ function openDetail(id) {
         <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${place.district_zh ? ' · '+place.district_zh : ''}${place.address ? '<br><small style="color:var(--text-muted)">' + place.address + '</small>' : ''}</span></div>
         ${place.signature_dish ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${place.signature_dish}</span></div>` : ''}
         ${place.open_hours ? `<div class="detail-info-row"><span class="detail-info-icon">🕐</span><span>${place.open_hours}</span></div>` : ''}
+        <div class="detail-info-row"><span class="detail-info-icon">🗓</span><span>${getConfirmedLabel(place)}</span></div>
         ${place.is_solo_friendly ? `<div class="detail-info-row"><span class="detail-info-icon">👤</span><span>${currentLang === 'en' ? 'Solo friendly' : '可以一個人食'}</span></div>` : ''}
       </div>
 
@@ -2256,16 +2086,9 @@ async function submitReport() {
   };
 
   const coords = districtCoords[district] || [22.3193, 114.1694];
-  // Use Google Places coordinates if available, else district approximate
-  const lat = selectedPlaceData?._lat || (coords[0] + (Math.random() - 0.5) * 0.005);
-  const lng = selectedPlaceData?._lng || (coords[1] + (Math.random() - 0.5) * 0.005);
-
-  // Collect menu items
-  const menuItems = Array.from(document.querySelectorAll('#menuRows .menu-row')).map(row => {
-    const name = row.querySelector('.menu-name')?.value.trim();
-    const price = parseInt(row.querySelector('.menu-price')?.value) || null;
-    return name ? { name, price } : null;
-  }).filter(Boolean);
+  // Slight random offset
+  const lat = coords[0] + (Math.random() - 0.5) * 0.005;
+  const lng = coords[1] + (Math.random() - 0.5) * 0.005;
 
   const reportData = {
     name_zh,
@@ -2281,9 +2104,6 @@ async function submitReport() {
     summary: document.getElementById('r_summary').value.trim() || null,
     payment,
     open_hours: document.getElementById('r_hours').value.trim() || null,
-    gmaps_url: document.getElementById('r_gmaps_url').value.trim() || null,
-    menu_items: menuItems.length > 0 ? JSON.stringify(menuItems) : null,
-    memo: document.getElementById('r_memo').value.trim() || null,
   };
 
   if (db) {
@@ -2298,22 +2118,12 @@ async function submitReport() {
   showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : '多謝提報！審核後上線 🙏');
   closeReport();
   // Reset form
-  ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary','r_search','r_gmaps_url','r_memo'].forEach(id => {
+  ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
   document.getElementById('r_district').value = '';
   document.querySelectorAll('.pcheck.sel').forEach(el => el.classList.remove('sel'));
-  // Reset menu rows to 1 empty row
-  const menuRows = document.getElementById('menuRows');
-  if (menuRows) {
-    menuRows.innerHTML = `<div class="menu-row">
-      <input class="form-input menu-name" placeholder="e.g. 炒蛋多士" type="text">
-      <input class="form-input menu-price" placeholder="HKD" type="number" min="1" max="9999">
-      <button class="menu-del" onclick="removeMenuRow(this)" title="Remove">×</button>
-    </div>`;
-  }
-  selectedPlaceData = null;
   // Reset steps
   goToStep1();
 }
@@ -2332,218 +2142,12 @@ function setLang(lang) {
   renderPlaces();
 }
 
-// ===== Tag Translation =====
-const TAG_MAP = {
-  '아침': { zh: '早餐時段', en: 'Breakfast' },
-  '저렴': { zh: '平價', en: 'Budget' },
-  '혼밥 좋음': { zh: '一人食OK', en: 'Solo OK' },
-  '혼밥좋음': { zh: '一人食OK', en: 'Solo OK' },
-  '혼밥': { zh: '一人食OK', en: 'Solo OK' },
-  '빠른 나음': { zh: '出餐快', en: 'Fast service' },
-  '빠른나음': { zh: '出餐快', en: 'Fast service' },
-  '빠른': { zh: '出餐快', en: 'Fast service' },
-  '현금만': { zh: '現金限定', en: 'Cash only' },
-  '야외': { zh: '戶外座位', en: 'Outdoor' },
-  '심야 가능': { zh: '深夜營業', en: 'Late night' },
-  '심야가능': { zh: '深夜營業', en: 'Late night' },
-  '심야': { zh: '深夜營業', en: 'Late night' },
-  '아침 세트': { zh: '早餐套餐', en: 'Morning set' },
-  '아침세트': { zh: '早餐套餐', en: 'Morning set' },
-  '웨이팅 있음': { zh: '需要等位', en: 'Queue' },
-  '웨이팅있음': { zh: '需要等位', en: 'Queue' },
-  '웨이팅': { zh: '需要等位', en: 'Queue' },
-  '저녁': { zh: '晚市', en: 'Dinner' },
-  '점심': { zh: '午市', en: 'Lunch' },
-  '포장': { zh: '外賣', en: 'Takeout' },
-  '대용량': { zh: '份量大', en: 'Large portion' },
-  '줄서기': { zh: '需要等位', en: 'Queue' },
-  'Solo OK': { zh: '一人食OK', en: 'Solo OK' },
-  'Fast service': { zh: '出餐快', en: 'Fast service' },
-  'Cash only': { zh: '現金限定', en: 'Cash only' },
-  'Outdoor': { zh: '戶外座位', en: 'Outdoor' },
-  'Late night': { zh: '深夜營業', en: 'Late night' },
-  'Morning set': { zh: '早餐套餐', en: 'Morning set' },
-  'Queue': { zh: '需要等位', en: 'Queue' },
-  'Budget': { zh: '平價', en: 'Budget' },
-  'Takeout': { zh: '外賣', en: 'Takeout' },
-  'Large portion': { zh: '份量大', en: 'Large portion' },
-  'Dinner only': { zh: '晚市限定', en: 'Dinner only' },
-  'Breakfast': { zh: '早餐時段', en: 'Breakfast' },
-  'Lunch': { zh: '午市', en: 'Lunch' },
-  'Michelin Bib': { zh: '米芝蓮', en: 'Michelin Bib' },
-};
-function translateTag(t) {
-  const entry = TAG_MAP[t] || TAG_MAP[t?.trim()];
-  if (entry) return currentLang === 'en' ? entry.en : entry.zh;
-  return t;
-}
-
 // ===== Mobile Panel =====
 function toggleMobilePanel() {
   document.getElementById('sidePanel').classList.toggle('collapsed');
 }
 
 // ===== Toast =====
-// ===== COMMUNITY TABS =====
-let currentTab = 'map';
-let commFilter = { hotdeal: 'all', community: 'all' };
-let commPosts = { hotdeal: [], community: [] };
-
-const HOTDEAL_CATS = {
-  supermarket: '🛒 超市', restaurant: '🍽 食肆',
-  coupon: '🎟 優惠券', snack: '🍿 零食', other: '其他'
-};
-const COMM_CATS = {
-  tip: '💡 慳錢貼士', food: '🍜 平食推介',
-  transport: '🚇 交通', misc: '🗂 雜項', other: '其他'
-};
-
-// Sample seed data (shown before DB posts load)
-const SEED_HOTDEALS = [
-  { id: 's1', cat: 'supermarket', title: 'ParkNShop 百佳 雞蛋特價 $12.9／10隻', price: 12.9, body: '限時優惠，需要會員卡', link: '', nick: '慳錢王', votes_up: 12, votes_down: 0, created_at: new Date(Date.now()-3600000).toISOString() },
-  { id: 's2', cat: 'restaurant', title: 'McDonald\'s 麥當勞 麥辣雞腿堡套餐 $29.9 (App限定)', price: 29.9, body: '只限App落單，每日限量', link: '', nick: '打工仔', votes_up: 8, votes_down: 1, created_at: new Date(Date.now()-7200000).toISOString() },
-  { id: 's3', cat: 'coupon', title: 'Wellcome 惠康 八達通消費滿$200減$20', price: null, body: '限定日期：本月底前', link: '', nick: '節省達人', votes_up: 5, votes_down: 0, created_at: new Date(Date.now()-14400000).toISOString() },
-  { id: 's4', cat: 'supermarket', title: '759阿信屋 韓國泡麵 5包 $19.9', price: 19.9, body: '辛拉麵，限時特賣', link: '', nick: '薄財之徒', votes_up: 15, votes_down: 2, created_at: new Date(Date.now()-86400000).toISOString() },
-];
-const SEED_COMMUNITY = [
-  { id: 'c1', cat: 'tip', title: '每月慳錢攻略：去街市收市前30分鐘買菜！', price: null, body: '收市前半小時，蔬菜魚類大減價，最多慳到五成！', link: '', nick: '主婦達人', votes_up: 23, votes_down: 1, created_at: new Date(Date.now()-3600000).toISOString() },
-  { id: 'c2', cat: 'food', title: '深水埗隱藏版$20雲吞麵，比茶餐廳更好食！', price: 20, body: '桂林街附近，現煮雲吞，每日限量50碗', link: '', nick: '窮鬼美食家', votes_up: 18, votes_down: 0, created_at: new Date(Date.now()-10800000).toISOString() },
-  { id: 'c3', cat: 'transport', title: '搭巴士慳錢：用八達通轉乘地鐵可以扣$2', price: null, body: '部分路線有轉乘優惠，記得查MTR網站', link: '', nick: '交通達人', votes_up: 9, votes_down: 0, created_at: new Date(Date.now()-43200000).toISOString() },
-  { id: 'c4', cat: 'tip', title: 'OpenRice 可以睇邊間有早鳥優惠，慳到兩成', price: null, body: '部分餐廳午市前有優惠，記得留意', link: '', nick: '飲食達人', votes_up: 7, votes_down: 1, created_at: new Date(Date.now()-72000000).toISOString() },
-];
-
-function switchTab(tab) {
-  currentTab = tab;
-  // Update nav
-  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.add('active');
-  // Show/hide pages
-  document.getElementById('pageHotdeal').classList.toggle('active', tab === 'hotdeal');
-  document.getElementById('pageCommunity').classList.toggle('active', tab === 'community');
-  document.getElementById('commFab').classList.toggle('active', tab === 'hotdeal' || tab === 'community');
-  // Update write sheet title
-  if (tab === 'hotdeal') {
-    document.getElementById('commWriteTitle').textContent = '🔥 提交熱賣情報';
-    document.getElementById('cw_cat').value = 'supermarket';
-    document.getElementById('cwPriceRow').style.display = '';
-  } else if (tab === 'community') {
-    document.getElementById('commWriteTitle').textContent = '💬 分享慳錢攻略';
-    document.getElementById('cw_cat').value = 'tip';
-    document.getElementById('cwPriceRow').style.display = 'none';
-  }
-  // Load if first visit
-  if ((tab === 'hotdeal' && commPosts.hotdeal.length === 0) ||
-      (tab === 'community' && commPosts.community.length === 0)) {
-    loadCommPosts(tab);
-  }
-}
-
-async function loadCommPosts(type) {
-  const listEl = document.getElementById(type === 'hotdeal' ? 'hotdealList' : 'communityList');
-  listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">⏳</div>載入中...</div>`;
-  let posts = type === 'hotdeal' ? [...SEED_HOTDEALS] : [...SEED_COMMUNITY];
-  if (db) {
-    try {
-      const { data } = await db.from('brokemap_comm_posts')
-        .select('*').eq('type', type).order('created_at', { ascending: false }).limit(50);
-      if (data && data.length > 0) posts = [...data, ...posts];
-    } catch(e) { /* use seed data */ }
-  }
-  commPosts[type] = posts;
-  renderCommPosts(type);
-}
-
-function filterComm(type, cat, btn) {
-  commFilter[type] = cat;
-  const bar = document.getElementById(type === 'hotdeal' ? 'hotdealCatBar' : 'commCatBar');
-  bar.querySelectorAll('.comm-cat').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderCommPosts(type);
-}
-
-function renderCommPosts(type) {
-  const listEl = document.getElementById(type === 'hotdeal' ? 'hotdealList' : 'communityList');
-  const cat = commFilter[type];
-  let posts = commPosts[type];
-  if (cat !== 'all') posts = posts.filter(p => p.cat === cat);
-  if (posts.length === 0) {
-    listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">📭</div>${currentLang === 'en' ? 'No posts yet. Be the first!' : '未有帖子，率先分享！'}</div>`;
-    return;
-  }
-  const catEmoji = { supermarket:'🛒', restaurant:'🍽', coupon:'🎟', snack:'🍿', tip:'💡', food:'🍜', transport:'🚇', misc:'🗂', other:'🗂' };
-  listEl.innerHTML = posts.map(p => `
-    <div class="comm-card">
-      <div class="comm-card-thumb">${catEmoji[p.cat] || '📌'}</div>
-      <div class="comm-card-body">
-        <div class="comm-card-title">${p.title}</div>
-        ${p.price ? `<div class="comm-card-price">HKD $${p.price}</div>` : ''}
-        <div class="comm-card-meta">
-          <span class="comm-card-cat">${catEmoji[p.cat]||''} ${p.cat}</span>
-          <span>👤 ${p.nick || '匿名'}</span>
-          <span>🕐 ${timeAgo(p.created_at)}</span>
-        </div>
-        ${p.body ? `<div style="font-size:12px;color:var(--text-muted);margin-top:5px;line-height:1.4;">${p.body}</div>` : ''}
-        ${p.link ? `<a href="${p.link}" target="_blank" style="font-size:11px;color:var(--yellow);margin-top:4px;display:block;">🔗 더보기</a>` : ''}
-        <div class="comm-vote" style="margin-top:6px;">
-          <span onclick="voteComm('${p.id}','up',this)">👍 ${p.votes_up||0}</span>
-          <span onclick="voteComm('${p.id}','down',this)">👎 ${p.votes_down||0}</span>
-        </div>
-      </div>
-    </div>`).join('');
-}
-
-async function voteComm(id, dir, el) {
-  const key = `commvote_${id}`;
-  if (localStorage.getItem(key)) { showToast(currentLang === 'en' ? 'Already voted!' : '已投票！'); return; }
-  localStorage.setItem(key, dir);
-  const type = currentTab;
-  const post = commPosts[type].find(p => p.id === id);
-  if (!post) return;
-  if (dir === 'up') post.votes_up = (post.votes_up||0) + 1;
-  else post.votes_down = (post.votes_down||0) + 1;
-  renderCommPosts(type);
-  if (db && !id.startsWith('s') && !id.startsWith('c')) {
-    const col = dir === 'up' ? 'votes_up' : 'votes_down';
-    await db.from('brokemap_comm_posts').update({ [col]: post[dir==='up'?'votes_up':'votes_down'] }).eq('id', id);
-  }
-  showToast('✓');
-}
-
-function openCommWrite() { document.getElementById('commWriteOverlay').classList.add('active'); }
-function closeCommWrite() { document.getElementById('commWriteOverlay').classList.remove('active'); }
-function closeCommWriteIfBg(e) { if (e.target === document.getElementById('commWriteOverlay')) closeCommWrite(); }
-
-async function submitCommPost() {
-  const title = document.getElementById('cw_title').value.trim();
-  if (!title) { showToast(currentLang === 'en' ? 'Enter a title' : '請輸入標題'); return; }
-  const post = {
-    type: currentTab,
-    cat: document.getElementById('cw_cat').value,
-    title,
-    price: parseFloat(document.getElementById('cw_price').value) || null,
-    body: document.getElementById('cw_body').value.trim() || null,
-    link: document.getElementById('cw_link').value.trim() || null,
-    nick: '匿名',
-    votes_up: 0, votes_down: 0,
-    created_at: new Date().toISOString(),
-    id: 'new_' + Date.now(),
-  };
-  if (db) {
-    try {
-      const { data, error } = await db.from('brokemap_comm_posts').insert({...post, id: undefined}).select().single();
-      if (data) post.id = data.id;
-    } catch(e) { /* local only */ }
-  }
-  commPosts[currentTab].unshift(post);
-  renderCommPosts(currentTab);
-  closeCommWrite();
-  ['cw_title','cw_price','cw_body','cw_link'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
-  showToast(currentLang === 'en' ? 'Posted! 🙏' : '已提交！多謝分享 🙏');
-}
-
-// Adjust body padding for bottom nav
-document.body.style.paddingBottom = '56px';
-
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -2553,97 +2157,5 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 </script>
-<!-- Bottom Nav -->
-<div class="bottom-nav" id="bottomNav">
-  <button class="bottom-nav-item active" id="navMap" onclick="switchTab('map')">
-    <span class="nav-icon">🗺</span>
-    <span data-zh="地圖" data-en="Map">地圖</span>
-  </button>
-  <button class="bottom-nav-item" id="navHotdeal" onclick="switchTab('hotdeal')">
-    <span class="nav-icon">🔥</span>
-    <span data-zh="熱賣" data-en="Hot Deals">熱賣</span>
-  </button>
-  <button class="bottom-nav-item" id="navCommunity" onclick="switchTab('community')">
-    <span class="nav-icon">💬</span>
-    <span data-zh="慳錢版" data-en="Tips">慳錢版</span>
-  </button>
-</div>
-
-<!-- Hotdeal Page -->
-<div class="community-page" id="pageHotdeal">
-  <div class="comm-header">
-    <div class="comm-title">🔥 熱賣 HOT DEALS</div>
-    <div class="comm-subtitle" data-zh="香港超市、餐廳特價情報" data-en="HK supermarket & restaurant deals">香港超市、餐廳特價情報</div>
-  </div>
-  <div class="comm-cat-bar" id="hotdealCatBar">
-    <button class="comm-cat active" onclick="filterComm('hotdeal','all',this)" data-zh="全部" data-en="All">全部</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','supermarket',this)" data-zh="超市" data-en="Supermarket">🛒 超市</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','restaurant',this)" data-zh="食肆" data-en="Restaurant">🍽 食肆</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','coupon',this)" data-zh="優惠券" data-en="Coupon">🎟 優惠券</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','snack',this)" data-zh="零食" data-en="Snacks">🍿 零食</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','other',this)" data-zh="其他" data-en="Other">其他</button>
-  </div>
-  <div class="comm-body" id="hotdealList"></div>
-</div>
-
-<!-- Community (거지방) Page -->
-<div class="community-page" id="pageCommunity">
-  <div class="comm-header">
-    <div class="comm-title">💬 慳錢版</div>
-    <div class="comm-subtitle" data-zh="慳錢攻略、生活節省貼士" data-en="Money saving tips & tricks">慳錢攻略、生活節省貼士</div>
-  </div>
-  <div class="comm-cat-bar" id="commCatBar">
-    <button class="comm-cat active" onclick="filterComm('community','all',this)" data-zh="全部" data-en="All">全部</button>
-    <button class="comm-cat" onclick="filterComm('community','tip',this)" data-zh="慳錢貼士" data-en="Tips">💡 慳錢貼士</button>
-    <button class="comm-cat" onclick="filterComm('community','food',this)" data-zh="平食推介" data-en="Cheap Eats">🍜 平食推介</button>
-    <button class="comm-cat" onclick="filterComm('community','transport',this)" data-zh="交通" data-en="Transport">🚇 交通</button>
-    <button class="comm-cat" onclick="filterComm('community','misc',this)" data-zh="雜項" data-en="Misc">🗂 雜項</button>
-  </div>
-  <div class="comm-body" id="communityList"></div>
-</div>
-
-<!-- FAB -->
-<button class="comm-fab" id="commFab" onclick="openCommWrite()">✏️</button>
-
-<!-- Write Sheet -->
-<div class="comm-write-overlay" id="commWriteOverlay" onclick="closeCommWriteIfBg(event)">
-  <div class="comm-write-sheet">
-    <div class="comm-write-title" id="commWriteTitle">✏️ 提交情報</div>
-    <div class="form-row">
-      <label class="form-label" data-zh="類別" data-en="Category">類別</label>
-      <select class="form-input" id="cw_cat">
-        <option value="supermarket">🛒 超市 Supermarket</option>
-        <option value="restaurant">🍽 食肆 Restaurant</option>
-        <option value="coupon">🎟 優惠券 Coupon</option>
-        <option value="snack">🍿 零食 Snacks</option>
-        <option value="tip">💡 慳錢貼士 Tips</option>
-        <option value="food">🍜 平食推介 Cheap Eats</option>
-        <option value="transport">🚇 交通 Transport</option>
-        <option value="other">其他 Other</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <label class="form-label" data-zh="標題*" data-en="Title*">標題*</label>
-      <input class="form-input" id="cw_title" placeholder="e.g. ParkNShop 百佳 雞蛋特價 $12.9" type="text">
-    </div>
-    <div class="form-row" id="cwPriceRow">
-      <label class="form-label" data-zh="價錢 (HKD)" data-en="Price (HKD)">價錢 (HKD, 選填)</label>
-      <input class="form-input" id="cw_price" placeholder="e.g. 12.9" type="number" min="0" step="0.1">
-    </div>
-    <div class="form-row">
-      <label class="form-label" data-zh="詳情" data-en="Details">詳情 (選填)</label>
-      <textarea class="form-input" id="cw_body" rows="3" placeholder="e.g. 限時至週日，需要會員卡..." style="resize:vertical;min-height:70px;font-family:inherit;"></textarea>
-    </div>
-    <div class="form-row">
-      <label class="form-label" data-zh="連結" data-en="Link">連結 (選填)</label>
-      <input class="form-input" id="cw_link" placeholder="https://..." type="url">
-    </div>
-    <div style="display:flex;gap:8px;margin-top:4px;">
-      <button class="submit-btn" onclick="closeCommWrite()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">✕ 取消</button>
-      <button class="submit-btn" onclick="submitCommPost()" style="flex:1;">💰 提交</button>
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
