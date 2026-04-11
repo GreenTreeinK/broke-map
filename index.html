@@ -1407,8 +1407,6 @@ body {
 .bottom-nav-item.active { color: var(--yellow); }
 
 /* ===== COMMUNITY PAGES ===== */
-
-/* 모바일: 전체화면 오버레이, 탭바 위 */
 .community-page {
   display: none;
   position: fixed;
@@ -1420,36 +1418,23 @@ body {
 }
 .community-page.active { display: flex; }
 
-/* 데스크탑: 오른쪽 패널, 슬라이드 애니메이션 */
 @media (min-width: 769px) {
+  /* 데스크탑: 오른쪽 사이드바 */
   .community-page {
     top: 60px;
-    left: auto;
-    right: 0;
-    bottom: 0;
+    left: auto; right: 0; bottom: 0;
     width: 400px;
-    transform: translateX(100%);
-    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
-    display: flex !important;
+    z-index: 50;
     border-left: 1px solid var(--border);
-    box-shadow: -6px 0 30px rgba(0,0,0,0.35);
-    z-index: 800;
+    box-shadow: -6px 0 24px rgba(0,0,0,0.3);
   }
-  .community-page.active {
-    transform: translateX(0);
-  }
-  /* 지도 오른쪽 마진 확보 */
-  #map {
-    transition: margin-right 0.28s cubic-bezier(0.4,0,0.2,1);
-  }
-  .comm-open #map {
-    margin-right: 400px;
-  }
+  /* 지도가 사이드바 공간만큼 오른쪽 여백 */
+  .comm-open .main-layout { padding-right: 400px; }
 }
 
 @media (min-width: 1200px) {
   .community-page { width: 440px; }
-  .comm-open #map { margin-right: 440px; }
+  .comm-open .main-layout { padding-right: 440px; }
 }
 
 .comm-header {
@@ -2581,8 +2566,8 @@ function switchTab(tab) {
   document.getElementById('commFab').classList.toggle('active', isComm);
   // 데스크탑: map 영역 밀기
   document.body.classList.toggle('comm-open', isComm);
-  const mainLayout = document.querySelector('.main-layout');
-  if (mainLayout) mainLayout.classList.toggle('comm-open', isComm);
+  // Leaflet 지도 리사이즈 (CSS 변경 후 지도가 새 크기를 인식하도록)
+  setTimeout(() => { if (typeof map !== 'undefined' && map) map.invalidateSize(); }, 50);
   if (tab === 'hotdeal') {
     document.getElementById('commWriteTitle').textContent = '🔥 提交熱賣情報';
     document.getElementById('cw_cat').value = 'supermarket';
