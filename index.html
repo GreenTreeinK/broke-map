@@ -757,53 +757,6 @@ body {
 .empty-text { font-size: 13px; font-weight: 600; color: var(--text-soft); }
 .empty-sub { font-size: 11px; margin-top: 4px; }
 
-/* ===== LOADING ===== */
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--dark);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.4s;
-}
-.loading-overlay.hidden { opacity: 0; pointer-events: none; }
-.loading-logo {
-  font-family: 'Oswald', sans-serif;
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--yellow);
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-}
-.loading-sub {
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 32px;
-}
-.loading-bar-wrap {
-  width: 200px;
-  height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.loading-bar {
-  height: 100%;
-  background: var(--red);
-  border-radius: 3px;
-  animation: loadBar 1.5s ease-in-out infinite;
-}
-@keyframes loadBar {
-  0% { width: 0%; margin-left: 0; }
-  50% { width: 70%; margin-left: 0; }
-  100% { width: 0%; margin-left: 100%; }
-}
-
 /* ===== MOBILE PANEL HANDLE ===== */
 .panel-handle {
   display: none;
@@ -955,31 +908,190 @@ body {
   font-size: 11px !important;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
 }
+
+/* =============================================
+   RESPONSIVE: DESKTOP (769px+)
+   ============================================= */
+@media (min-width: 769px) {
+  /* Hide mobile-only elements */
+  .bottom-nav { display: none !important; }
+  .panel-handle { display: none !important; }
+  body { padding-bottom: 0 !important; }
+
+  /* Wider side panel on desktop */
+  .side-panel {
+    width: 380px;
+    box-shadow: 2px 0 24px rgba(0,0,0,0.2);
+  }
+
+  /* Desktop header: bigger, with nav links */
+  .app-header { height: 60px; padding: 0 28px; }
+  .logo-main { font-size: 22px; }
+  .logo-icon { width: 40px; height: 40px; font-size: 22px; }
+
+  /* Desktop: show community tabs in header */
+  .desktop-tabs {
+    display: flex !important;
+    gap: 4px;
+    margin-left: 24px;
+  }
+  .desktop-tab {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.8);
+    border-radius: 20px;
+    padding: 6px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Noto Sans HK', sans-serif;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .desktop-tab:hover { background: rgba(255,255,255,0.2); color: #fff; }
+  .desktop-tab.active { background: var(--yellow); border-color: var(--yellow); color: var(--dark); }
+
+  /* Desktop community pages: not fullscreen, show alongside map */
+  .community-page {
+    position: fixed;
+    top: 0; right: 0;
+    width: 420px;
+    height: 100vh;
+    padding-bottom: 0;
+    border-left: 1px solid var(--border);
+    box-shadow: -4px 0 24px rgba(0,0,0,0.2);
+    z-index: 500;
+  }
+
+  /* Desktop: larger place cards */
+  .place-card { padding: 16px 20px; }
+  .card-name { font-size: 16px; }
+
+  /* Desktop: detail panel as sidebar on right */
+  .detail-panel {
+    width: 420px;
+    top: 60px;
+    right: 0;
+    height: calc(100vh - 60px);
+    border-radius: 0;
+    transform: translateX(100%);
+  }
+  .detail-panel.open { transform: translateX(0); }
+
+  /* Desktop filter bar */
+  .filter-bar { padding: 12px 28px; gap: 10px; }
+
+  /* Desktop: show MTR filter inline */
+  .mtr-filter-wrap { display: flex !important; }
+
+  /* Desktop report/write overlay */
+  .report-overlay { align-items: center; justify-content: center; }
+  .report-sheet {
+    max-width: 540px;
+    width: 100%;
+    border-radius: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  /* Desktop community write */
+  .comm-write-overlay { align-items: center; justify-content: center; }
+  .comm-write-sheet {
+    max-width: 500px;
+    width: 100%;
+    border-radius: 20px;
+    max-height: 90vh;
+  }
+
+  /* Desktop FAB position */
+  .comm-fab { bottom: 24px; right: 24px; width: 56px; height: 56px; font-size: 24px; }
+
+  /* Wider stats bar */
+  .stats-bar { gap: 24px; padding: 8px 24px; }
+}
+
+/* =============================================
+   RESPONSIVE: MOBILE (768px and below)
+   ============================================= */
+@media (max-width: 768px) {
+  /* Hide desktop-only elements */
+  .desktop-tabs { display: none !important; }
+
+  /* Compact header */
+  .app-header { height: 52px; padding: 0 14px; }
+  .logo-main { font-size: 16px; }
+  .logo-sub { display: none; }
+  .logo-icon { width: 32px; height: 32px; font-size: 18px; }
+
+  /* Compact filter bar */
+  .filter-bar { padding: 8px 12px; gap: 6px; }
+  .fchip { padding: 5px 10px; font-size: 11px; }
+  .filter-label { font-size: 10px; }
+
+  /* Mobile: community page fullscreen with bottom nav space */
+  .community-page { padding-bottom: 56px; }
+
+  /* Mobile: report sheet slides up from bottom */
+  .report-overlay { align-items: flex-end; }
+  .report-sheet { border-radius: 20px 20px 0 0; max-height: 92vh; overflow-y: auto; }
+
+  /* Mobile: side panel as bottom drawer with more height */
+  .side-panel { height: 52vh; }
+
+  /* Mobile: bigger touch targets */
+  .map-ctrl-btn { width: 44px; height: 44px; }
+  .header-btn { padding: 6px 12px; font-size: 11px; }
+
+  /* Mobile: compact stats bar */
+  .stats-bar { gap: 10px; padding: 5px 12px; font-size: 10px; }
+  .stat-item { gap: 4px; }
+  .stat-label { display: none; }
+
+  /* Mobile: touch-friendly cards */
+  .place-card { padding: 12px 14px; }
+  .comm-card { padding: 12px; }
+
+  /* Mobile: map controls above drawer */
+  .map-controls { bottom: calc(52vh + 12px); }
+}
+
+/* =============================================
+   RESPONSIVE: LARGE DESKTOP (1200px+)
+   ============================================= */
+@media (min-width: 1200px) {
+  .side-panel { width: 420px; }
+  .community-page { width: 480px; }
+  .detail-panel { width: 480px; }
+  .filter-bar { padding: 12px 32px; }
+  .app-header { padding: 0 36px; }
+}
 </style>
 </head>
 <body>
 
 <!-- Loading -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-logo">窮鬼地圖</div>
-  <div class="loading-sub">BROKE MAP · HONG KONG</div>
-  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
-</div>
 
 <!-- Header -->
 <div class="app-header">
-  <div class="logo-wrap" onclick="resetView()">
-    <div class="logo-icon">💰</div>
-    <div class="logo-text">
-      <div class="logo-main">窮鬼地圖</div>
-      <div class="logo-sub">BROKE MAP · HK</div>
+  <div style="display:flex;align-items:center;gap:0;">
+    <div class="logo-wrap" onclick="switchTab('map');resetView()">
+      <div class="logo-icon">💰</div>
+      <div class="logo-text">
+        <div class="logo-main">窮鬼地圖</div>
+        <div class="logo-sub">BROKE MAP · HK</div>
+      </div>
+    </div>
+    <!-- Desktop tabs (hidden on mobile via CSS) -->
+    <div class="desktop-tabs" style="display:none;">
+      <button class="desktop-tab active" id="dtabMap" onclick="switchTab('map')">🗺 地圖</button>
+      <button class="desktop-tab" id="dtabHotdeal" onclick="switchTab('hotdeal')">🔥 熱賣</button>
+      <button class="desktop-tab" id="dtabCommunity" onclick="switchTab('community')">💬 慳錢版</button>
     </div>
   </div>
   <div class="header-btns">
     <div class="lang-toggle">
       <button class="lang-btn active" onclick="setLang('zh')" id="lang-zh">中</button>
       <button class="lang-btn" onclick="setLang('en')" id="lang-en">EN</button>
-      
     </div>
     <button class="header-btn primary" onclick="openReport()">+ <span data-zh="提報" data-en="Report" id="reportBtnText">提報</span></button>
   </div>
@@ -1289,6 +1401,61 @@ body {
 
 <style>
 @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  z-index: 2000;
+  display: flex;
+  align-items: stretch;
+}
+.bottom-nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2px; cursor: pointer; font-size: 10px;
+  color: var(--text-muted); border: none; background: none;
+}
+.bottom-nav-item .nav-icon { font-size: 20px; line-height: 1; }
+.bottom-nav-item.active { color: var(--yellow); }
+
+/* ===== COMMUNITY PAGES ===== */
+.community-page {
+  display: none; position: fixed; inset: 0;
+  background: var(--dark); z-index: 1500;
+  flex-direction: column; padding-bottom: 56px;
+}
+.community-page.active { display: flex; }
+.comm-header { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 14px 16px 10px; }
+.comm-title { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 900; color: var(--yellow); letter-spacing: 1px; margin-bottom: 2px; }
+.comm-subtitle { font-size: 11px; color: var(--text-muted); }
+.comm-cat-bar { display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px 0; scrollbar-width: none; }
+.comm-cat-bar::-webkit-scrollbar { display: none; }
+.comm-cat { flex: 0 0 auto; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); color: var(--text-muted); cursor: pointer; white-space: nowrap; background: none; }
+.comm-cat.active { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
+.comm-body { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; }
+.comm-card { background: var(--surface2); border-radius: 14px; padding: 14px; border: 1px solid var(--border); display: flex; gap: 12px; }
+.comm-card:hover { border-color: var(--yellow); }
+.comm-card-thumb { width: 64px; height: 64px; border-radius: 10px; flex: 0 0 64px; background: var(--surface3); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+.comm-card-body { flex: 1; min-width: 0; }
+.comm-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.comm-card-price { font-size: 16px; font-weight: 900; color: var(--yellow); margin-bottom: 4px; }
+.comm-card-meta { font-size: 11px; color: var(--text-muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.comm-card-cat { background: var(--surface3); border-radius: 6px; padding: 2px 6px; font-size: 10px; color: var(--text-muted); }
+.comm-vote { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+.comm-vote span { cursor: pointer; padding: 2px 6px; border-radius: 4px; }
+.comm-vote span:hover { background: var(--surface3); }
+.comm-fab { position: fixed; bottom: 72px; right: 18px; width: 50px; height: 50px; border-radius: 50%; background: var(--yellow); color: var(--dark); font-size: 22px; border: none; cursor: pointer; box-shadow: 0 4px 16px rgba(0,0,0,0.4); display: none; align-items: center; justify-content: center; z-index: 1600; }
+.comm-fab.active { display: flex; }
+.comm-write-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 3000; align-items: flex-end; }
+.comm-write-overlay.active { display: flex; }
+.comm-write-sheet { background: var(--surface2); border-radius: 20px 20px 0 0; padding: 20px 16px 32px; width: 100%; max-height: 85vh; overflow-y: auto; }
+.comm-write-title { font-size: 16px; font-weight: 800; color: var(--yellow); margin-bottom: 16px; }
+.comm-empty { text-align: center; padding: 48px 16px; color: var(--text-muted); font-size: 14px; }
+.comm-empty-icon { font-size: 40px; margin-bottom: 10px; }
 </style>
 
 <script>
@@ -1317,12 +1484,9 @@ const FAVORITES_KEY = 'brokemap_favorites';
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
   initMap();
-  setLang('zh'); // Apply initial language
+  setLang('zh');
   db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadPlaces();
-  setTimeout(() => {
-    document.getElementById('loadingOverlay').classList.add('hidden');
-  }, 1500);
 });
 
 // ===== MAP INIT =====
@@ -1644,7 +1808,7 @@ function renderList() {
 
   list.innerHTML = filteredPlaces.map(p => {
     const cls = getPriceClass(p.price_min);
-    const tags = (p.tags || []).slice(0, 3).map(t => `<span class="ctag">${t}</span>`).join('');
+    const tags = (p.tags || []).slice(0, 3).map(t => `<span class="ctag">${translateTag(t)}</span>`).join('');
     return `
       <div class="place-card ${activeMarkerId === p.id ? 'active' : ''}" onclick="openDetail('${p.id}')" id="card-${p.id}">
         <div class="card-price-badge ${cls}">$${p.price_min}${p.price_max ? '–'+p.price_max : '+'}</div>
@@ -1687,7 +1851,7 @@ function openDetail(id) {
   ).join('');
 
   const tags = (place.tags || []).map(t =>
-    `<span class="detail-tag">${t}</span>`
+    `<span class="detail-tag">${translateTag(t)}</span>`
   ).join('');
 
   document.getElementById('detailContent').innerHTML = `
@@ -1998,6 +2162,84 @@ async function deleteComment(commentId, placeId) {
   }
 }
 
+// ===== Tag Translation =====
+const TAG_MAP = {
+  // 한글 태그 전체 매핑
+  '아침': { zh: '早餐時段', en: 'Breakfast' },
+  '아침 세트': { zh: '早餐套餐', en: 'Morning set' },
+  '아침세트': { zh: '早餐套餐', en: 'Morning set' },
+  '저렴': { zh: '平價', en: 'Budget' },
+  '혼밥 좋음': { zh: '一人食OK', en: 'Solo OK' },
+  '혼밥좋음': { zh: '一人食OK', en: 'Solo OK' },
+  '혼밥 가능': { zh: '一人食OK', en: 'Solo OK' },
+  '혼밥가능': { zh: '一人食OK', en: 'Solo OK' },
+  '혼밥': { zh: '一人食OK', en: 'Solo OK' },
+  '빠른 나음': { zh: '出餐快', en: 'Fast service' },
+  '빠른나음': { zh: '出餐快', en: 'Fast service' },
+  '빨리 나음': { zh: '出餐快', en: 'Fast service' },
+  '빨리나음': { zh: '出餐快', en: 'Fast service' },
+  '빨리': { zh: '出餐快', en: 'Fast service' },
+  '빠른': { zh: '出餐快', en: 'Fast service' },
+  '현금만': { zh: '現金限定', en: 'Cash only' },
+  '야외': { zh: '戶外座位', en: 'Outdoor' },
+  '심야 가능': { zh: '深夜營業', en: 'Late night' },
+  '심야가능': { zh: '深夜營業', en: 'Late night' },
+  '심야': { zh: '深夜營業', en: 'Late night' },
+  '웨이팅 있음': { zh: '需要等位', en: 'Queue' },
+  '웨이팅있음': { zh: '需要等位', en: 'Queue' },
+  '웨이팅': { zh: '需要等位', en: 'Queue' },
+  '저녁': { zh: '晚市', en: 'Dinner' },
+  '점심': { zh: '午市', en: 'Lunch' },
+  '포장': { zh: '外賣', en: 'Takeout' },
+  '대용량': { zh: '份量大', en: 'Large portion' },
+  '줄서기': { zh: '需要等位', en: 'Queue' },
+  '빠름': { zh: '出餐快', en: 'Fast service' },
+  '가성비': { zh: '高性價比', en: 'Value' },
+  '런치 세트': { zh: '午餐套餐', en: 'Lunch set' },
+  '런치세트': { zh: '午餐套餐', en: 'Lunch set' },
+  '전통 딤섬': { zh: '傳統點心', en: 'Traditional dimsum' },
+  '전통딤섬': { zh: '傳統點心', en: 'Traditional dimsum' },
+  '쾌적': { zh: '環境舒適', en: 'Comfortable' },
+  '24시간': { zh: '24小時', en: '24hrs' },
+  '데이크마웃': { zh: '外賣', en: 'Takeout' },
+  '테이크아웃': { zh: '外賣', en: 'Takeout' },
+  // 영문 태그
+  'Solo OK': { zh: '一人食OK', en: 'Solo OK' },
+  'Fast service': { zh: '出餐快', en: 'Fast service' },
+  'Cash only': { zh: '現金限定', en: 'Cash only' },
+  'Outdoor': { zh: '戶外座位', en: 'Outdoor' },
+  'Late night': { zh: '深夜營業', en: 'Late night' },
+  'Morning set': { zh: '早餐套餐', en: 'Morning set' },
+  'Queue': { zh: '需要等位', en: 'Queue' },
+  'Budget': { zh: '平價', en: 'Budget' },
+  'Takeout': { zh: '外賣', en: 'Takeout' },
+  'Large portion': { zh: '份量大', en: 'Large portion' },
+  'Dinner only': { zh: '晚市限定', en: 'Dinner only' },
+  'Breakfast': { zh: '早餐時段', en: 'Breakfast' },
+  'Lunch': { zh: '午市', en: 'Lunch' },
+  'Michelin Bib': { zh: '米芝蓮', en: 'Michelin Bib' },
+  'Spicy': { zh: '辛辣', en: 'Spicy' },
+  'Value': { zh: '高性價比', en: 'Value' },
+  '24hrs': { zh: '24小時', en: '24hrs' },
+  '70yr history': { zh: '70年歷史', en: '70yr history' },
+  'Morning dimsum': { zh: '早茶', en: 'Morning dimsum' },
+  'Lunch set': { zh: '午餐套餐', en: 'Lunch set' },
+  'Comfortable': { zh: '環境舒適', en: 'Comfortable' },
+};
+function translateTag(t) {
+  if (!t) return '';
+  const entry = TAG_MAP[t] || TAG_MAP[t.trim()];
+  if (entry) return currentLang === 'en' ? entry.en : entry.zh;
+  // 한글이 포함된 경우 fallback: TAG_MAP에서 부분 일치 탐색
+  const trimmed = t.trim();
+  for (const [key, val] of Object.entries(TAG_MAP)) {
+    if (trimmed.includes(key) || key.includes(trimmed)) {
+      return currentLang === 'en' ? val.en : val.zh;
+    }
+  }
+  return t; // 매핑 없으면 그대로
+}
+
 // ===== Time Display =====
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime();
@@ -2156,6 +2398,247 @@ function showToast(msg) {
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
+</script>
+<!-- Bottom Nav -->
+<div class="bottom-nav">
+  <button class="bottom-nav-item active" id="navMap" onclick="switchTab('map')">
+    <span class="nav-icon">🗺</span>
+    <span data-zh="地圖" data-en="Map">地圖</span>
+  </button>
+  <button class="bottom-nav-item" id="navHotdeal" onclick="switchTab('hotdeal')">
+    <span class="nav-icon">🔥</span>
+    <span data-zh="熱賣" data-en="Hot Deals">熱賣</span>
+  </button>
+  <button class="bottom-nav-item" id="navCommunity" onclick="switchTab('community')">
+    <span class="nav-icon">💬</span>
+    <span data-zh="慳錢版" data-en="Tips">慳錢版</span>
+  </button>
+</div>
+
+<!-- Hotdeal Page -->
+<div class="community-page" id="pageHotdeal">
+  <div class="comm-header">
+    <div class="comm-title">🔥 熱賣 HOT DEALS</div>
+    <div class="comm-subtitle">香港超市、餐廳特價情報</div>
+  </div>
+  <div class="comm-cat-bar" id="hotdealCatBar">
+    <button class="comm-cat active" onclick="filterComm('hotdeal','all',this)">全部</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','supermarket',this)">🛒 超市</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','restaurant',this)">🍽 食肆</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','coupon',this)">🎟 優惠券</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','snack',this)">🍿 零食</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','other',this)">其他</button>
+  </div>
+  <div class="comm-body" id="hotdealList"></div>
+</div>
+
+<!-- Community Page -->
+<div class="community-page" id="pageCommunity">
+  <div class="comm-header">
+    <div class="comm-title">💬 慳錢版</div>
+    <div class="comm-subtitle">慳錢攻略、生活節省貼士</div>
+  </div>
+  <div class="comm-cat-bar" id="commCatBar">
+    <button class="comm-cat active" onclick="filterComm('community','all',this)">全部</button>
+    <button class="comm-cat" onclick="filterComm('community','tip',this)">💡 慳錢貼士</button>
+    <button class="comm-cat" onclick="filterComm('community','food',this)">🍜 平食推介</button>
+    <button class="comm-cat" onclick="filterComm('community','transport',this)">🚇 交通</button>
+    <button class="comm-cat" onclick="filterComm('community','misc',this)">🗂 雜項</button>
+  </div>
+  <div class="comm-body" id="communityList"></div>
+</div>
+
+<!-- FAB -->
+<button class="comm-fab" id="commFab" onclick="openCommWrite()">✏️</button>
+
+<!-- Write Sheet -->
+<div class="comm-write-overlay" id="commWriteOverlay" onclick="closeCommWriteIfBg(event)">
+  <div class="comm-write-sheet">
+    <div class="comm-write-title" id="commWriteTitle">✏️ 提交情報</div>
+    <div class="form-row">
+      <label class="form-label">類別</label>
+      <select class="form-input" id="cw_cat">
+        <option value="supermarket">🛒 超市 Supermarket</option>
+        <option value="restaurant">🍽 食肆 Restaurant</option>
+        <option value="coupon">🎟 優惠券 Coupon</option>
+        <option value="snack">🍿 零食 Snacks</option>
+        <option value="tip">💡 慳錢貼士 Tips</option>
+        <option value="food">🍜 平食推介 Cheap Eats</option>
+        <option value="transport">🚇 交通 Transport</option>
+        <option value="other">其他 Other</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">標題*</label>
+      <input class="form-input" id="cw_title" placeholder="e.g. ParkNShop 百佳 雞蛋特價 $12.9" type="text">
+    </div>
+    <div class="form-row" id="cwPriceRow">
+      <label class="form-label">價錢 HKD (選填)</label>
+      <input class="form-input" id="cw_price" placeholder="e.g. 12.9" type="number" min="0" step="0.1">
+    </div>
+    <div class="form-row">
+      <label class="form-label">詳情 (選填)</label>
+      <textarea class="form-input" id="cw_body" rows="3" placeholder="e.g. 限時至週日，需要會員卡..." style="resize:vertical;min-height:70px;font-family:inherit;"></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label">連結 (選填)</label>
+      <input class="form-input" id="cw_link" placeholder="https://..." type="url">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="submit-btn" onclick="closeCommWrite()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">✕ 取消</button>
+      <button class="submit-btn" onclick="submitCommPost()" style="flex:1;">💰 提交</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== COMMUNITY TABS =====
+let currentTab = 'map';
+let commFilter = { hotdeal: 'all', community: 'all' };
+let commPosts = { hotdeal: [], community: [] };
+
+const SEED_HOTDEALS = [
+  { id: 's1', cat: 'supermarket', title: 'ParkNShop 百佳 雞蛋特價 $12.9／10隻', price: 12.9, body: '限時優惠，需要會員卡', link: '', nick: '慳錢王', votes_up: 12, votes_down: 0, created_at: new Date(Date.now()-3600000).toISOString() },
+  { id: 's2', cat: 'restaurant', title: "McDonald's 麥當勞 麥辣雞腿堡套餐 $29.9 (App限定)", price: 29.9, body: '只限App落單，每日限量', link: '', nick: '打工仔', votes_up: 8, votes_down: 1, created_at: new Date(Date.now()-7200000).toISOString() },
+  { id: 's3', cat: 'coupon', title: 'Wellcome 惠康 八達通消費滿$200減$20', price: null, body: '限定日期：本月底前', link: '', nick: '節省達人', votes_up: 5, votes_down: 0, created_at: new Date(Date.now()-14400000).toISOString() },
+  { id: 's4', cat: 'supermarket', title: '759阿信屋 韓國泡麵 5包 $19.9', price: 19.9, body: '辛拉麵，限時特賣', link: '', nick: '薄財之徒', votes_up: 15, votes_down: 2, created_at: new Date(Date.now()-86400000).toISOString() },
+];
+const SEED_COMMUNITY = [
+  { id: 'c1', cat: 'tip', title: '每月慳錢攻略：去街市收市前30分鐘買菜！', price: null, body: '收市前半小時，蔬菜魚類大減價，最多慳到五成！', link: '', nick: '主婦達人', votes_up: 23, votes_down: 1, created_at: new Date(Date.now()-3600000).toISOString() },
+  { id: 'c2', cat: 'food', title: '深水埗隱藏版$20雲吞麵，比茶餐廳更好食！', price: 20, body: '桂林街附近，現煮雲吞，每日限量50碗', link: '', nick: '窮鬼美食家', votes_up: 18, votes_down: 0, created_at: new Date(Date.now()-10800000).toISOString() },
+  { id: 'c3', cat: 'transport', title: '搭巴士慳錢：用八達通轉乘地鐵可以扣$2', price: null, body: '部分路線有轉乘優惠，記得查MTR網站', link: '', nick: '交通達人', votes_up: 9, votes_down: 0, created_at: new Date(Date.now()-43200000).toISOString() },
+  { id: 'c4', cat: 'tip', title: 'OpenRice 可以睇邊間有早鳥優惠，慳到兩成', price: null, body: '部分餐廳午市前有優惠，記得留意', link: '', nick: '飲食達人', votes_up: 7, votes_down: 1, created_at: new Date(Date.now()-72000000).toISOString() },
+];
+
+function switchTab(tab) {
+  currentTab = tab;
+  // Mobile bottom nav
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.add('active');
+  // Desktop header tabs
+  document.querySelectorAll('.desktop-tab').forEach(b => b.classList.remove('active'));
+  document.getElementById('dtab' + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.add('active');
+  // Show/hide pages
+  document.getElementById('pageHotdeal').classList.toggle('active', tab === 'hotdeal');
+  document.getElementById('pageCommunity').classList.toggle('active', tab === 'community');
+  document.getElementById('commFab').classList.toggle('active', tab === 'hotdeal' || tab === 'community');
+  if (tab === 'hotdeal') {
+    document.getElementById('commWriteTitle').textContent = '🔥 提交熱賣情報';
+    document.getElementById('cw_cat').value = 'supermarket';
+    document.getElementById('cwPriceRow').style.display = '';
+    if (commPosts.hotdeal.length === 0) loadCommPosts('hotdeal');
+  } else if (tab === 'community') {
+    document.getElementById('commWriteTitle').textContent = '💬 分享慳錢攻略';
+    document.getElementById('cw_cat').value = 'tip';
+    document.getElementById('cwPriceRow').style.display = 'none';
+    if (commPosts.community.length === 0) loadCommPosts('community');
+  }
+}
+
+async function loadCommPosts(type) {
+  const listEl = document.getElementById(type === 'hotdeal' ? 'hotdealList' : 'communityList');
+  listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">⏳</div>載入中...</div>`;
+  let posts = type === 'hotdeal' ? [...SEED_HOTDEALS] : [...SEED_COMMUNITY];
+  if (db) {
+    try {
+      const { data } = await db.from('brokemap_comm_posts')
+        .select('*').eq('type', type).order('created_at', { ascending: false }).limit(50);
+      if (data && data.length > 0) posts = [...data, ...posts];
+    } catch(e) {}
+  }
+  commPosts[type] = posts;
+  renderCommPosts(type);
+}
+
+function filterComm(type, cat, btn) {
+  commFilter[type] = cat;
+  const barId = type === 'hotdeal' ? 'hotdealCatBar' : 'commCatBar';
+  document.getElementById(barId).querySelectorAll('.comm-cat').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCommPosts(type);
+}
+
+function renderCommPosts(type) {
+  const listEl = document.getElementById(type === 'hotdeal' ? 'hotdealList' : 'communityList');
+  const cat = commFilter[type];
+  let posts = commPosts[type];
+  if (cat !== 'all') posts = posts.filter(p => p.cat === cat);
+  if (posts.length === 0) {
+    listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">📭</div>未有帖子，率先分享！</div>`;
+    return;
+  }
+  const catEmoji = { supermarket:'🛒', restaurant:'🍽', coupon:'🎟', snack:'🍿', tip:'💡', food:'🍜', transport:'🚇', misc:'🗂', other:'🗂' };
+  listEl.innerHTML = posts.map(p => `
+    <div class="comm-card">
+      <div class="comm-card-thumb">${catEmoji[p.cat]||'📌'}</div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">${p.title}</div>
+        ${p.price ? `<div class="comm-card-price">HKD $${p.price}</div>` : ''}
+        <div class="comm-card-meta">
+          <span class="comm-card-cat">${catEmoji[p.cat]||''} ${p.cat}</span>
+          <span>👤 ${p.nick||'匿名'}</span>
+          <span>🕐 ${timeAgo(p.created_at)}</span>
+        </div>
+        ${p.body ? `<div style="font-size:12px;color:var(--text-muted);margin-top:5px;line-height:1.4;">${p.body}</div>` : ''}
+        ${p.link ? `<a href="${p.link}" target="_blank" style="font-size:11px;color:var(--yellow);margin-top:4px;display:block;">🔗 더보기</a>` : ''}
+        <div class="comm-vote">
+          <span onclick="voteComm('${p.id}','up')">👍 ${p.votes_up||0}</span>
+          <span onclick="voteComm('${p.id}','down')">👎 ${p.votes_down||0}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function voteComm(id, dir) {
+  const key = `commvote_${id}`;
+  if (localStorage.getItem(key)) { showToast(currentLang === 'en' ? 'Already voted!' : '已投票！'); return; }
+  localStorage.setItem(key, dir);
+  const post = commPosts[currentTab].find(p => p.id === id);
+  if (!post) return;
+  if (dir === 'up') post.votes_up = (post.votes_up||0) + 1;
+  else post.votes_down = (post.votes_down||0) + 1;
+  renderCommPosts(currentTab);
+  if (db && !id.startsWith('s') && !id.startsWith('c')) {
+    const col = dir === 'up' ? 'votes_up' : 'votes_down';
+    await db.from('brokemap_comm_posts').update({ [col]: post[col] }).eq('id', id);
+  }
+  showToast('✓');
+}
+
+function openCommWrite() { document.getElementById('commWriteOverlay').classList.add('active'); }
+function closeCommWrite() { document.getElementById('commWriteOverlay').classList.remove('active'); }
+function closeCommWriteIfBg(e) { if (e.target === document.getElementById('commWriteOverlay')) closeCommWrite(); }
+
+async function submitCommPost() {
+  const title = document.getElementById('cw_title').value.trim();
+  if (!title) { showToast('請輸入標題'); return; }
+  const post = {
+    type: currentTab,
+    cat: document.getElementById('cw_cat').value,
+    title,
+    price: parseFloat(document.getElementById('cw_price').value) || null,
+    body: document.getElementById('cw_body').value.trim() || null,
+    link: document.getElementById('cw_link').value.trim() || null,
+    nick: '匿名',
+    votes_up: 0, votes_down: 0,
+    created_at: new Date().toISOString(),
+    id: 'new_' + Date.now(),
+  };
+  if (db) {
+    try {
+      const { data } = await db.from('brokemap_comm_posts').insert({...post, id: undefined}).select().single();
+      if (data) post.id = data.id;
+    } catch(e) {}
+  }
+  commPosts[currentTab].unshift(post);
+  renderCommPosts(currentTab);
+  closeCommWrite();
+  ['cw_title','cw_price','cw_body','cw_link'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  showToast('已提交！多謝分享 🙏');
+}
+
+// pad body for bottom nav
+document.body.style.paddingBottom = '56px';
 </script>
 </body>
 </html>
