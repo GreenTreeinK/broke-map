@@ -756,53 +756,6 @@ body {
 .empty-text { font-size: 13px; font-weight: 600; color: var(--text-soft); }
 .empty-sub { font-size: 11px; margin-top: 4px; }
 
-/* ===== LOADING ===== */
-.loading-overlay {
-  position: fixed;
-  inset: 0;
-  background: var(--dark);
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.4s;
-}
-.loading-overlay.hidden { opacity: 0; pointer-events: none; }
-.loading-logo {
-  font-family: 'Oswald', sans-serif;
-  font-size: 36px;
-  font-weight: 900;
-  color: var(--yellow);
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-}
-.loading-sub {
-  font-size: 12px;
-  color: rgba(255,255,255,0.4);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 32px;
-}
-.loading-bar-wrap {
-  width: 200px;
-  height: 3px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 3px;
-  overflow: hidden;
-}
-.loading-bar {
-  height: 100%;
-  background: var(--red);
-  border-radius: 3px;
-  animation: loadBar 1.5s ease-in-out infinite;
-}
-@keyframes loadBar {
-  0% { width: 0%; margin-left: 0; }
-  50% { width: 70%; margin-left: 0; }
-  100% { width: 0%; margin-left: 100%; }
-}
-
 /* ===== MOBILE PANEL HANDLE ===== */
 .panel-handle {
   display: none;
@@ -959,11 +912,7 @@ body {
 <body>
 
 <!-- Loading -->
-<div class="loading-overlay" id="loadingOverlay">
-  <div class="loading-logo">窮鬼地圖</div>
-  <div class="loading-sub">BROKE MAP · HONG KONG</div>
-  <div class="loading-bar-wrap"><div class="loading-bar"></div></div>
-</div>
+
 
 <!-- Header -->
 <div class="app-header">
@@ -1422,9 +1371,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   setLang('zh'); // Apply initial language
   db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadPlaces();
-  setTimeout(() => {
-    document.getElementById('loadingOverlay').classList.add('hidden');
-  }, 1500);
 });
 
 // ===== MAP INIT =====
