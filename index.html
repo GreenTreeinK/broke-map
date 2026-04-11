@@ -206,7 +206,7 @@ body {
 
 /* ===== SIDE PANEL ===== */
 .side-panel {
-  width: 340px;
+  width: 300px;
   background: var(--surface);
   display: flex;
   flex-direction: column;
@@ -215,18 +215,88 @@ body {
   box-shadow: -4px 0 24px rgba(0,0,0,0.15);
   z-index: 2;
   transition: transform 0.3s ease;
+  position: relative;
+  isolation: isolate; /* 자식 레이어가 밖으로 못 나가게 */
+  clip-path: inset(0); /* 자식 요소 클립 강제 */
 }
 @media (max-width: 768px) {
+  /* 오른쪽 미니 패널로 변환 */
   .side-panel {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    width: 100%;
-    height: 50vh;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.2);
-    transform: translateY(0);
+    position: fixed;
+    top: 98px;   /* 헤더 + 필터바 */
+    right: 0;
+    bottom: 56px; /* 탭바 위 */
+    left: auto;
+    width: 140px; /* 좁게 */
+    height: auto;
+    border-radius: 12px 0 0 12px;
+    box-shadow: -4px 0 20px rgba(0,0,0,0.3);
+    transform: none;
+    background: rgba(26,10,10,0.92);
+    backdrop-filter: blur(8px);
+    z-index: 50;
   }
-  .side-panel.collapsed { transform: translateY(calc(100% - 60px)); }
+  .side-panel.collapsed {
+    transform: translateX(130px); /* 거의 숨김, 핸들만 보임 */
+  }
+  /* 핸들 모양 변경 → 왼쪽에 탭으로 */
+  .panel-handle {
+    display: block !important;
+    position: absolute;
+    left: -28px; top: 50%;
+    transform: translateY(-50%);
+    width: 28px; height: 56px;
+    background: rgba(26,10,10,0.92);
+    border-radius: 10px 0 0 10px;
+    cursor: pointer;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: var(--yellow);
+    backdrop-filter: blur(8px);
+  }
+  .panel-handle::after { content: '☰'; }
+  /* 헤더 숨기고 리스트만 */
+  .panel-header { display: none; }
+  .panel-list { padding: 4px 0; }
+
+  /* 미니 카드 스타일 */
+  .place-card {
+    padding: 8px 8px;
+    gap: 0;
+    flex-direction: column;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .card-price-badge {
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+    margin-bottom: 3px;
+    align-self: flex-start;
+  }
+  .card-name {
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-name-en { display: none; }
+  .card-district {
+    font-size: 9px;
+    padding: 1px 4px;
+    margin-bottom: 2px;
+  }
+  .card-dish { font-size: 10px; margin-bottom: 2px; }
+  .card-tags { display: none; }
+  .card-meta { display: none; }
+  .card-top-row { flex-direction: column; gap: 2px; }
+  .favorite-btn.compact { display: none; }
+  .card-confirmed { display: none; }
 }
 
 .panel-header {
@@ -346,7 +416,7 @@ body {
 .favorite-btn.compact { padding: 4px 8px; font-size: 11px; }
 
 /* ===== DETAIL PANEL ===== */
-/* 데스크탑: 목록 위에 완전히 덮임 */
+/* 데스크탑: side-panel 안에서 완전히 덮음 */
 .detail-panel {
   position: absolute;
   top: 0; left: 0;
@@ -357,6 +427,8 @@ body {
   overflow-y: auto;
   transform: translateX(100%);
   transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  /* side-panel 밖으로 안 나가도록 */
+  max-width: 100%;
 }
 .detail-panel.open { transform: translateX(0); }
 
@@ -365,14 +437,15 @@ body {
   .detail-panel {
     position: fixed;
     top: auto;
-    bottom: 56px;  /* 탭바 위 */
+    bottom: 56px;
     left: 0; right: 0;
     width: 100%;
-    height: 88vh;  /* 충분한 높이 */
+    height: calc(100vh - 52px - 56px);
     border-radius: 20px 20px 0 0;
     transform: translateY(100%);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    padding-bottom: 32px;  /* 하단 여백 충분히 */
+    padding-bottom: 40px;
+    max-width: 100%;
   }
   .detail-panel.open { transform: translateY(0); }
 }
@@ -659,7 +732,7 @@ body {
   z-index: 100;
 }
 @media (max-width: 768px) {
-  .cta-btn-wrap { bottom: calc(50vh + 16px); }
+  .cta-btn-wrap { bottom: calc(38vh + 16px); }
 }
 .cta-btn {
   background: var(--yellow);
@@ -785,7 +858,7 @@ body {
   gap: 8px;
 }
 @media (max-width: 768px) {
-  .map-controls { bottom: 55vh; right: 12px; }
+  .map-controls { bottom: 72px; right: 150px; } /* 오른쪽 패널 옆 */
 }
 .map-ctrl-btn {
   width: 42px; height: 42px;
@@ -923,7 +996,7 @@ body {
 
   /* Wider side panel on desktop */
   .side-panel {
-    width: 380px;
+    width: 300px;
     box-shadow: 2px 0 24px rgba(0,0,0,0.2);
   }
 
@@ -1010,10 +1083,15 @@ body {
 
   /* Mobile: report sheet slides up from bottom */
   .report-overlay { align-items: flex-end; }
-  .report-sheet { border-radius: 20px 20px 0 0; max-height: 92vh; overflow-y: auto; }
+  .report-sheet {
+    border-radius: 20px 20px 0 0;
+    max-height: calc(100vh - 56px - 52px); /* 탭바 + 헤더 제외 */
+    overflow-y: auto;
+    padding-bottom: 40px;
+  }
 
   /* Mobile: side panel as bottom drawer with more height */
-  .side-panel { height: 52vh; }
+  .side-panel { height: 38vh; }
 
   /* Mobile: bigger touch targets */
   .map-ctrl-btn { width: 44px; height: 44px; }
@@ -1029,14 +1107,14 @@ body {
   .comm-card { padding: 12px; }
 
   /* Mobile: map controls above drawer */
-  .map-controls { bottom: calc(52vh + 12px); }
+  .map-controls { bottom: calc(38vh + 68px); }
 }
 
 /* =============================================
    RESPONSIVE: LARGE DESKTOP (1200px+)
    ============================================= */
 @media (min-width: 1200px) {
-  .side-panel { width: 420px; }
+  .side-panel { width: 320px; }
   .detail-panel { width: 480px; }
   .filter-bar { padding: 12px 32px; }
   .app-header { padding: 0 36px; }
@@ -1246,11 +1324,11 @@ body {
         <div class="empty-text">載入中...</div>
       </div>
     </div>
-  </div>
 
-  <!-- Detail Panel -->
-  <div class="detail-panel" id="detailPanel">
-    <div id="detailContent"></div>
+    <!-- Detail Panel (side-panel 안으로 이동) -->
+    <div class="detail-panel" id="detailPanel">
+      <div id="detailContent"></div>
+    </div>
   </div>
 </div>
 
