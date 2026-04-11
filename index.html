@@ -346,6 +346,7 @@ body {
 .favorite-btn.compact { padding: 4px 8px; font-size: 11px; }
 
 /* ===== DETAIL PANEL ===== */
+/* 데스크탑: 목록 위에 완전히 덮임 */
 .detail-panel {
   position: absolute;
   top: 0; left: 0;
@@ -354,25 +355,26 @@ body {
   background: var(--surface);
   z-index: 20;
   overflow-y: auto;
-  box-shadow: 0 0 32px rgba(0,0,0,0.3);
-  transform: translateX(-100%);
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateX(100%);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .detail-panel.open { transform: translateX(0); }
 
+/* 모바일: 아래에서 위로 슬라이드업 */
 @media (max-width: 768px) {
   .detail-panel {
     position: fixed;
-    top: 52px;
-    bottom: 56px;
+    top: auto;
+    bottom: 56px;  /* 탭바 위 */
     left: 0; right: 0;
     width: 100%;
-    height: auto;
-    border-radius: 0;
-    transform: translateX(100%);
-    padding-bottom: 16px;
+    height: 88vh;  /* 충분한 높이 */
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    padding-bottom: 32px;  /* 하단 여백 충분히 */
   }
-  .detail-panel.open { transform: translateX(0); }
+  .detail-panel.open { transform: translateY(0); }
 }
 
 .detail-hero {
@@ -432,7 +434,7 @@ body {
   color: rgba(255,255,255,0.7);
 }
 
-.detail-body { padding: 20px; padding-bottom: 40px; }
+.detail-body { padding: 20px; padding-bottom: 60px; }
 .detail-section { margin-bottom: 18px; }
 .detail-section-title {
   font-size: 11px;
