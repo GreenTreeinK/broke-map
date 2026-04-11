@@ -1269,6 +1269,185 @@ body {
 
 <style>
 @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+
+/* ===== BOTTOM NAV ===== */
+.bottom-nav {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 56px;
+  background: var(--surface2);
+  border-top: 1px solid var(--border);
+  z-index: 2000;
+  display: flex;
+  align-items: stretch;
+}
+.bottom-nav-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  font-size: 10px;
+  color: var(--text-muted);
+  border: none;
+  background: none;
+  transition: color 0.15s;
+}
+.bottom-nav-item .nav-icon { font-size: 20px; line-height: 1; }
+.bottom-nav-item.active { color: var(--yellow); }
+.bottom-nav-item:hover { color: var(--text); }
+
+/* ===== COMMUNITY PAGES ===== */
+.community-page {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--dark);
+  z-index: 1500;
+  flex-direction: column;
+  padding-bottom: 56px;
+}
+.community-page.active { display: flex; }
+.comm-header {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 16px 10px;
+}
+.comm-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 900;
+  color: var(--yellow);
+  letter-spacing: 1px;
+  margin-bottom: 2px;
+}
+.comm-subtitle { font-size: 11px; color: var(--text-muted); }
+.comm-cat-bar {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 10px 16px 0;
+  scrollbar-width: none;
+}
+.comm-cat-bar::-webkit-scrollbar { display: none; }
+.comm-cat {
+  flex: 0 0 auto;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1.5px solid var(--border);
+  color: var(--text-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  background: none;
+}
+.comm-cat.active { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
+.comm-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.comm-card {
+  background: var(--surface2);
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.comm-card:hover { border-color: var(--yellow); }
+.comm-card-thumb {
+  width: 72px; height: 72px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex: 0 0 72px;
+  background: var(--surface3);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+}
+.comm-card-body { flex: 1; min-width: 0; }
+.comm-card-title {
+  font-size: 14px; font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+  line-height: 1.3;
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.comm-card-price {
+  font-size: 16px; font-weight: 900;
+  color: var(--yellow);
+  margin-bottom: 4px;
+}
+.comm-card-meta {
+  font-size: 11px; color: var(--text-muted);
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+}
+.comm-card-cat {
+  background: var(--surface3);
+  border-radius: 6px;
+  padding: 2px 6px;
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.comm-vote { display: flex; gap: 4px; align-items: center; font-size: 11px; color: var(--text-muted); }
+.comm-vote span { cursor: pointer; padding: 2px 4px; border-radius: 4px; }
+.comm-vote span:hover { background: var(--surface3); }
+.comm-fab {
+  position: fixed;
+  bottom: 72px; right: 18px;
+  width: 50px; height: 50px;
+  border-radius: 50%;
+  background: var(--yellow);
+  color: var(--dark);
+  font-size: 24px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1600;
+  font-weight: 900;
+}
+.comm-fab.active { display: flex; }
+.comm-write-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 3000;
+  align-items: flex-end;
+}
+.comm-write-overlay.active { display: flex; }
+.comm-write-sheet {
+  background: var(--surface2);
+  border-radius: 20px 20px 0 0;
+  padding: 20px 16px 32px;
+  width: 100%;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.comm-write-title {
+  font-size: 16px; font-weight: 800;
+  color: var(--yellow);
+  margin-bottom: 16px;
+}
+.comm-empty {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+.comm-empty-icon { font-size: 40px; margin-bottom: 10px; }
 </style>
 
 <script>
@@ -2205,6 +2384,166 @@ function toggleMobilePanel() {
 }
 
 // ===== Toast =====
+// ===== COMMUNITY TABS =====
+let currentTab = 'map';
+let commFilter = { hotdeal: 'all', community: 'all' };
+let commPosts = { hotdeal: [], community: [] };
+
+const HOTDEAL_CATS = {
+  supermarket: '🛒 超市', restaurant: '🍽 食肆',
+  coupon: '🎟 優惠券', snack: '🍿 零食', other: '其他'
+};
+const COMM_CATS = {
+  tip: '💡 慳錢貼士', food: '🍜 平食推介',
+  transport: '🚇 交通', misc: '🗂 雜項', other: '其他'
+};
+
+// Sample seed data (shown before DB posts load)
+const SEED_HOTDEALS = [
+  { id: 's1', cat: 'supermarket', title: 'ParkNShop 百佳 雞蛋特價 $12.9／10隻', price: 12.9, body: '限時優惠，需要會員卡', link: '', nick: '慳錢王', votes_up: 12, votes_down: 0, created_at: new Date(Date.now()-3600000).toISOString() },
+  { id: 's2', cat: 'restaurant', title: 'McDonald\'s 麥當勞 麥辣雞腿堡套餐 $29.9 (App限定)', price: 29.9, body: '只限App落單，每日限量', link: '', nick: '打工仔', votes_up: 8, votes_down: 1, created_at: new Date(Date.now()-7200000).toISOString() },
+  { id: 's3', cat: 'coupon', title: 'Wellcome 惠康 八達通消費滿$200減$20', price: null, body: '限定日期：本月底前', link: '', nick: '節省達人', votes_up: 5, votes_down: 0, created_at: new Date(Date.now()-14400000).toISOString() },
+  { id: 's4', cat: 'supermarket', title: '759阿信屋 韓國泡麵 5包 $19.9', price: 19.9, body: '辛拉麵，限時特賣', link: '', nick: '薄財之徒', votes_up: 15, votes_down: 2, created_at: new Date(Date.now()-86400000).toISOString() },
+];
+const SEED_COMMUNITY = [
+  { id: 'c1', cat: 'tip', title: '每月慳錢攻略：去街市收市前30分鐘買菜！', price: null, body: '收市前半小時，蔬菜魚類大減價，最多慳到五成！', link: '', nick: '主婦達人', votes_up: 23, votes_down: 1, created_at: new Date(Date.now()-3600000).toISOString() },
+  { id: 'c2', cat: 'food', title: '深水埗隱藏版$20雲吞麵，比茶餐廳更好食！', price: 20, body: '桂林街附近，現煮雲吞，每日限量50碗', link: '', nick: '窮鬼美食家', votes_up: 18, votes_down: 0, created_at: new Date(Date.now()-10800000).toISOString() },
+  { id: 'c3', cat: 'transport', title: '搭巴士慳錢：用八達通轉乘地鐵可以扣$2', price: null, body: '部分路線有轉乘優惠，記得查MTR網站', link: '', nick: '交通達人', votes_up: 9, votes_down: 0, created_at: new Date(Date.now()-43200000).toISOString() },
+  { id: 'c4', cat: 'tip', title: 'OpenRice 可以睇邊間有早鳥優惠，慳到兩成', price: null, body: '部分餐廳午市前有優惠，記得留意', link: '', nick: '飲食達人', votes_up: 7, votes_down: 1, created_at: new Date(Date.now()-72000000).toISOString() },
+];
+
+function switchTab(tab) {
+  currentTab = tab;
+  // Update nav
+  document.querySelectorAll('.bottom-nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav' + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.add('active');
+  // Show/hide pages
+  document.getElementById('pageHotdeal').classList.toggle('active', tab === 'hotdeal');
+  document.getElementById('pageCommunity').classList.toggle('active', tab === 'community');
+  document.getElementById('commFab').classList.toggle('active', tab === 'hotdeal' || tab === 'community');
+  // Update write sheet title
+  if (tab === 'hotdeal') {
+    document.getElementById('commWriteTitle').textContent = '🔥 提交熱賣情報';
+    document.getElementById('cw_cat').value = 'supermarket';
+    document.getElementById('cwPriceRow').style.display = '';
+  } else if (tab === 'community') {
+    document.getElementById('commWriteTitle').textContent = '💬 分享慳錢攻略';
+    document.getElementById('cw_cat').value = 'tip';
+    document.getElementById('cwPriceRow').style.display = 'none';
+  }
+  // Load if first visit
+  if ((tab === 'hotdeal' && commPosts.hotdeal.length === 0) ||
+      (tab === 'community' && commPosts.community.length === 0)) {
+    loadCommPosts(tab);
+  }
+}
+
+async function loadCommPosts(type) {
+  const listEl = document.getElementById(type === 'hotdeal' ? 'hotdealList' : 'communityList');
+  listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">⏳</div>載入中...</div>`;
+  let posts = type === 'hotdeal' ? [...SEED_HOTDEALS] : [...SEED_COMMUNITY];
+  if (db) {
+    try {
+      const { data } = await db.from('brokemap_comm_posts')
+        .select('*').eq('type', type).order('created_at', { ascending: false }).limit(50);
+      if (data && data.length > 0) posts = [...data, ...posts];
+    } catch(e) { /* use seed data */ }
+  }
+  commPosts[type] = posts;
+  renderCommPosts(type);
+}
+
+function filterComm(type, cat, btn) {
+  commFilter[type] = cat;
+  const bar = document.getElementById(type === 'hotdeal' ? 'hotdealCatBar' : 'commCatBar');
+  bar.querySelectorAll('.comm-cat').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCommPosts(type);
+}
+
+function renderCommPosts(type) {
+  const listEl = document.getElementById(type === 'hotdeal' ? 'hotdealList' : 'communityList');
+  const cat = commFilter[type];
+  let posts = commPosts[type];
+  if (cat !== 'all') posts = posts.filter(p => p.cat === cat);
+  if (posts.length === 0) {
+    listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">📭</div>${currentLang === 'en' ? 'No posts yet. Be the first!' : '未有帖子，率先分享！'}</div>`;
+    return;
+  }
+  const catEmoji = { supermarket:'🛒', restaurant:'🍽', coupon:'🎟', snack:'🍿', tip:'💡', food:'🍜', transport:'🚇', misc:'🗂', other:'🗂' };
+  listEl.innerHTML = posts.map(p => `
+    <div class="comm-card">
+      <div class="comm-card-thumb">${catEmoji[p.cat] || '📌'}</div>
+      <div class="comm-card-body">
+        <div class="comm-card-title">${p.title}</div>
+        ${p.price ? `<div class="comm-card-price">HKD $${p.price}</div>` : ''}
+        <div class="comm-card-meta">
+          <span class="comm-card-cat">${catEmoji[p.cat]||''} ${p.cat}</span>
+          <span>👤 ${p.nick || '匿名'}</span>
+          <span>🕐 ${timeAgo(p.created_at)}</span>
+        </div>
+        ${p.body ? `<div style="font-size:12px;color:var(--text-muted);margin-top:5px;line-height:1.4;">${p.body}</div>` : ''}
+        ${p.link ? `<a href="${p.link}" target="_blank" style="font-size:11px;color:var(--yellow);margin-top:4px;display:block;">🔗 더보기</a>` : ''}
+        <div class="comm-vote" style="margin-top:6px;">
+          <span onclick="voteComm('${p.id}','up',this)">👍 ${p.votes_up||0}</span>
+          <span onclick="voteComm('${p.id}','down',this)">👎 ${p.votes_down||0}</span>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+async function voteComm(id, dir, el) {
+  const key = `commvote_${id}`;
+  if (localStorage.getItem(key)) { showToast(currentLang === 'en' ? 'Already voted!' : '已投票！'); return; }
+  localStorage.setItem(key, dir);
+  const type = currentTab;
+  const post = commPosts[type].find(p => p.id === id);
+  if (!post) return;
+  if (dir === 'up') post.votes_up = (post.votes_up||0) + 1;
+  else post.votes_down = (post.votes_down||0) + 1;
+  renderCommPosts(type);
+  if (db && !id.startsWith('s') && !id.startsWith('c')) {
+    const col = dir === 'up' ? 'votes_up' : 'votes_down';
+    await db.from('brokemap_comm_posts').update({ [col]: post[dir==='up'?'votes_up':'votes_down'] }).eq('id', id);
+  }
+  showToast('✓');
+}
+
+function openCommWrite() { document.getElementById('commWriteOverlay').classList.add('active'); }
+function closeCommWrite() { document.getElementById('commWriteOverlay').classList.remove('active'); }
+function closeCommWriteIfBg(e) { if (e.target === document.getElementById('commWriteOverlay')) closeCommWrite(); }
+
+async function submitCommPost() {
+  const title = document.getElementById('cw_title').value.trim();
+  if (!title) { showToast(currentLang === 'en' ? 'Enter a title' : '請輸入標題'); return; }
+  const post = {
+    type: currentTab,
+    cat: document.getElementById('cw_cat').value,
+    title,
+    price: parseFloat(document.getElementById('cw_price').value) || null,
+    body: document.getElementById('cw_body').value.trim() || null,
+    link: document.getElementById('cw_link').value.trim() || null,
+    nick: '匿名',
+    votes_up: 0, votes_down: 0,
+    created_at: new Date().toISOString(),
+    id: 'new_' + Date.now(),
+  };
+  if (db) {
+    try {
+      const { data, error } = await db.from('brokemap_comm_posts').insert({...post, id: undefined}).select().single();
+      if (data) post.id = data.id;
+    } catch(e) { /* local only */ }
+  }
+  commPosts[currentTab].unshift(post);
+  renderCommPosts(currentTab);
+  closeCommWrite();
+  ['cw_title','cw_price','cw_body','cw_link'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  showToast(currentLang === 'en' ? 'Posted! 🙏' : '已提交！多謝分享 🙏');
+}
+
+// Adjust body padding for bottom nav
+document.body.style.paddingBottom = '56px';
+
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
@@ -2214,5 +2553,97 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 </script>
+<!-- Bottom Nav -->
+<div class="bottom-nav" id="bottomNav">
+  <button class="bottom-nav-item active" id="navMap" onclick="switchTab('map')">
+    <span class="nav-icon">🗺</span>
+    <span data-zh="地圖" data-en="Map">地圖</span>
+  </button>
+  <button class="bottom-nav-item" id="navHotdeal" onclick="switchTab('hotdeal')">
+    <span class="nav-icon">🔥</span>
+    <span data-zh="熱賣" data-en="Hot Deals">熱賣</span>
+  </button>
+  <button class="bottom-nav-item" id="navCommunity" onclick="switchTab('community')">
+    <span class="nav-icon">💬</span>
+    <span data-zh="慳錢版" data-en="Tips">慳錢版</span>
+  </button>
+</div>
+
+<!-- Hotdeal Page -->
+<div class="community-page" id="pageHotdeal">
+  <div class="comm-header">
+    <div class="comm-title">🔥 熱賣 HOT DEALS</div>
+    <div class="comm-subtitle" data-zh="香港超市、餐廳特價情報" data-en="HK supermarket & restaurant deals">香港超市、餐廳特價情報</div>
+  </div>
+  <div class="comm-cat-bar" id="hotdealCatBar">
+    <button class="comm-cat active" onclick="filterComm('hotdeal','all',this)" data-zh="全部" data-en="All">全部</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','supermarket',this)" data-zh="超市" data-en="Supermarket">🛒 超市</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','restaurant',this)" data-zh="食肆" data-en="Restaurant">🍽 食肆</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','coupon',this)" data-zh="優惠券" data-en="Coupon">🎟 優惠券</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','snack',this)" data-zh="零食" data-en="Snacks">🍿 零食</button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','other',this)" data-zh="其他" data-en="Other">其他</button>
+  </div>
+  <div class="comm-body" id="hotdealList"></div>
+</div>
+
+<!-- Community (거지방) Page -->
+<div class="community-page" id="pageCommunity">
+  <div class="comm-header">
+    <div class="comm-title">💬 慳錢版</div>
+    <div class="comm-subtitle" data-zh="慳錢攻略、生活節省貼士" data-en="Money saving tips & tricks">慳錢攻略、生活節省貼士</div>
+  </div>
+  <div class="comm-cat-bar" id="commCatBar">
+    <button class="comm-cat active" onclick="filterComm('community','all',this)" data-zh="全部" data-en="All">全部</button>
+    <button class="comm-cat" onclick="filterComm('community','tip',this)" data-zh="慳錢貼士" data-en="Tips">💡 慳錢貼士</button>
+    <button class="comm-cat" onclick="filterComm('community','food',this)" data-zh="平食推介" data-en="Cheap Eats">🍜 平食推介</button>
+    <button class="comm-cat" onclick="filterComm('community','transport',this)" data-zh="交通" data-en="Transport">🚇 交通</button>
+    <button class="comm-cat" onclick="filterComm('community','misc',this)" data-zh="雜項" data-en="Misc">🗂 雜項</button>
+  </div>
+  <div class="comm-body" id="communityList"></div>
+</div>
+
+<!-- FAB -->
+<button class="comm-fab" id="commFab" onclick="openCommWrite()">✏️</button>
+
+<!-- Write Sheet -->
+<div class="comm-write-overlay" id="commWriteOverlay" onclick="closeCommWriteIfBg(event)">
+  <div class="comm-write-sheet">
+    <div class="comm-write-title" id="commWriteTitle">✏️ 提交情報</div>
+    <div class="form-row">
+      <label class="form-label" data-zh="類別" data-en="Category">類別</label>
+      <select class="form-input" id="cw_cat">
+        <option value="supermarket">🛒 超市 Supermarket</option>
+        <option value="restaurant">🍽 食肆 Restaurant</option>
+        <option value="coupon">🎟 優惠券 Coupon</option>
+        <option value="snack">🍿 零食 Snacks</option>
+        <option value="tip">💡 慳錢貼士 Tips</option>
+        <option value="food">🍜 平食推介 Cheap Eats</option>
+        <option value="transport">🚇 交通 Transport</option>
+        <option value="other">其他 Other</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label" data-zh="標題*" data-en="Title*">標題*</label>
+      <input class="form-input" id="cw_title" placeholder="e.g. ParkNShop 百佳 雞蛋特價 $12.9" type="text">
+    </div>
+    <div class="form-row" id="cwPriceRow">
+      <label class="form-label" data-zh="價錢 (HKD)" data-en="Price (HKD)">價錢 (HKD, 選填)</label>
+      <input class="form-input" id="cw_price" placeholder="e.g. 12.9" type="number" min="0" step="0.1">
+    </div>
+    <div class="form-row">
+      <label class="form-label" data-zh="詳情" data-en="Details">詳情 (選填)</label>
+      <textarea class="form-input" id="cw_body" rows="3" placeholder="e.g. 限時至週日，需要會員卡..." style="resize:vertical;min-height:70px;font-family:inherit;"></textarea>
+    </div>
+    <div class="form-row">
+      <label class="form-label" data-zh="連結" data-en="Link">連結 (選填)</label>
+      <input class="form-input" id="cw_link" placeholder="https://..." type="url">
+    </div>
+    <div style="display:flex;gap:8px;margin-top:4px;">
+      <button class="submit-btn" onclick="closeCommWrite()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">✕ 取消</button>
+      <button class="submit-btn" onclick="submitCommPost()" style="flex:1;">💰 提交</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
