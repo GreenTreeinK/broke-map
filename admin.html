@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>窮鬼地圖 — 管理員</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root {
+  --red: #e8002d;
+  --yellow: #f5c400;
+  --dark: #1a0a0a;
+  --surface: #2a1a1a;
+  --surface2: #3a2020;
+  --surface3: #4a2828;
+  --border: rgba(255,255,255,0.1);
+  --text: #f5f0e8;
+  --text-muted: rgba(245,240,232,0.5);
+  --green: #16a34a;
+  --green-light: #dcfce7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: var(--dark); color: var(--text); min-height: 100vh; }
+
+/* LOGIN */
+.login-wrap {
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+}
+.login-box {
+  background: var(--surface); border-radius: 20px;
+  padding: 40px; width: 340px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+}
+.login-logo { font-size: 32px; font-weight: 900; color: var(--yellow); margin-bottom: 4px; }
+.login-sub { font-size: 12px; color: var(--text-muted); margin-bottom: 28px; }
+.login-input {
+  width: 100%; padding: 12px 14px; border-radius: 10px;
+  border: 1.5px solid var(--border); background: var(--surface2);
+  color: var(--text); font-size: 15px; margin-bottom: 12px;
+  outline: none;
+}
+.login-input:focus { border-color: var(--yellow); }
+.login-btn {
+  width: 100%; padding: 12px; border-radius: 10px;
+  background: var(--yellow); color: var(--dark);
+  font-size: 15px; font-weight: 800; border: none; cursor: pointer;
+}
+.login-btn:hover { background: #e6b800; }
+.login-error { color: var(--red); font-size: 13px; margin-top: 10px; text-align: center; }
+
+/* ADMIN LAYOUT */
+.admin-wrap { display: none; flex-direction: column; min-height: 100vh; }
+.admin-header {
+  background: var(--red); padding: 0 24px; height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.admin-title { font-size: 18px; font-weight: 900; color: #fff; }
+.admin-logout {
+  background: rgba(255,255,255,0.2); border: none; color: #fff;
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; cursor: pointer;
+}
+
+/* TABS */
+.admin-tabs {
+  display: flex; background: var(--surface); border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+}
+.admin-tab {
+  padding: 14px 20px; font-size: 14px; font-weight: 700;
+  color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+}
+.admin-tab.active { color: var(--yellow); border-bottom-color: var(--yellow); }
+
+/* CONTENT */
+.admin-content { padding: 24px; flex: 1; }
+.admin-section { display: none; }
+.admin-section.active { display: block; }
+
+/* STATS */
+.stats-row { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+.stat-card {
+  background: var(--surface); border-radius: 14px; padding: 20px 24px;
+  flex: 1; min-width: 140px;
+}
+.stat-card .num { font-size: 32px; font-weight: 900; color: var(--yellow); }
+.stat-card .lbl { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+
+/* TABLE */
+.table-wrap { background: var(--surface); border-radius: 14px; overflow: hidden; }
+.table-toolbar {
+  padding: 14px 16px; display: flex; gap: 10px; align-items: center;
+  border-bottom: 1px solid var(--border); flex-wrap: wrap;
+}
+.search-input {
+  padding: 8px 12px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: var(--surface2); color: var(--text); font-size: 13px;
+  outline: none; flex: 1; min-width: 200px;
+}
+.search-input:focus { border-color: var(--yellow); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: var(--surface2); padding: 10px 14px; text-align: left;
+  color: var(--text-muted); font-weight: 700; font-size: 11px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 56px;
+}
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:hover td { background: rgba(255,255,255,0.03); }
+tr:last-child td { border-bottom: none; }
+
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 6px;
+  font-size: 11px; font-weight: 700;
+}
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-red { background: #fee2e2; color: #dc2626; }
+.badge-yellow { background: #fef9c3; color: #854d0e; }
+
+.btn { padding: 5px 12px; border-radius: 7px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; transition: opacity 0.15s; }
+.btn:hover { opacity: 0.8; }
+.btn-edit { background: var(--yellow); color: var(--dark); }
+.btn-delete { background: #fee2e2; color: #dc2626; }
+.btn-approve { background: var(--green-light); color: var(--green); }
+.btn-reject { background: #fee2e2; color: #dc2626; }
+
+/* MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7); z-index: 1000;
+  align-items: center; justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--surface); border-radius: 16px; padding: 28px;
+  width: 100%; max-width: 520px; max-height: 90vh; overflow-y: auto;
+}
+.modal-title { font-size: 16px; font-weight: 800; color: var(--yellow); margin-bottom: 20px; }
+.form-row { margin-bottom: 14px; }
+.form-label { font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 5px; display: block; }
+.form-input {
+  width: 100%; padding: 10px 12px; border-radius: 8px;
+  border: 1.5px solid var(--border); background: var(--surface2);
+  color: var(--text); font-size: 14px; outline: none;
+}
+.form-input:focus { border-color: var(--yellow); }
+.form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+.modal-btns { display: flex; gap: 8px; margin-top: 8px; }
+.btn-save { background: var(--yellow); color: var(--dark); padding: 10px; flex: 1; border-radius: 8px; font-weight: 800; border: none; cursor: pointer; }
+.btn-cancel { background: var(--surface3); color: var(--text); padding: 10px; flex: 0 0 80px; border-radius: 8px; font-weight: 700; border: none; cursor: pointer; }
+
+.loading { text-align: center; padding: 40px; color: var(--text-muted); }
+.empty { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">💰 窮鬼地圖</div>
+    <div class="login-sub">관리자 페이지</div>
+    <input class="login-input" type="password" id="pwInput" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">로그인</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="admin-wrap" id="adminWrap">
+  <div class="admin-header">
+    <div class="admin-title">💰 窮鬼地圖 관리자</div>
+    <button class="admin-logout" onclick="logout()">로그아웃</button>
+  </div>
+
+  <div class="admin-tabs">
+    <div class="admin-tab active" onclick="showTab('places')">🗺 식당 관리</div>
+    <div class="admin-tab" onclick="showTab('reports')">📋 제보 승인</div>
+    <div class="admin-tab" onclick="showTab('stats')">📊 통계</div>
+  </div>
+
+  <div class="admin-content">
+
+    <!-- PLACES -->
+    <div class="admin-section active" id="tab-places">
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <input class="search-input" id="placeSearch" placeholder="🔍 식당명 검색..." oninput="filterPlaces()">
+          <span id="placeCount" style="color:var(--text-muted);font-size:13px;"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>식당명</th>
+                <th>지역</th>
+                <th>가격</th>
+                <th>카테고리</th>
+                <th>영업시간</th>
+                <th>검증</th>
+                <th>관리</th>
+              </tr>
+            </thead>
+            <tbody id="placesTableBody">
+              <tr><td colspan="7" class="loading">⏳ 로딩 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="admin-section" id="tab-reports">
+      <div class="table-wrap">
+        <div class="table-toolbar">
+          <span style="font-weight:700;color:var(--yellow);">📋 사용자 제보 목록</span>
+          <span id="reportCount" style="color:var(--text-muted);font-size:13px;margin-left:auto;"></span>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>식당명</th>
+                <th>지역</th>
+                <th>가격</th>
+                <th>영업시간</th>
+                <th>제보일</th>
+                <th>처리</th>
+              </tr>
+            </thead>
+            <tbody id="reportsTableBody">
+              <tr><td colspan="6" class="loading">⏳ 로딩 중...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="admin-section" id="tab-stats">
+      <div class="stats-row" id="statsRow">
+        <div class="stat-card"><div class="num" id="statTotal">-</div><div class="lbl">전체 식당</div></div>
+        <div class="stat-card"><div class="num" id="statVerified">-</div><div class="lbl">검증된 식당</div></div>
+        <div class="stat-card"><div class="num" id="statReports">-</div><div class="lbl">미처리 제보</div></div>
+        <div class="stat-card"><div class="num" id="statComments">-</div><div class="lbl">전체 댓글</div></div>
+      </div>
+      <div class="table-wrap" style="padding:20px;">
+        <div style="font-weight:700;color:var(--yellow);margin-bottom:16px;">지역별 식당 수</div>
+        <div id="districtStats"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="editModal" onclick="closeEditIfBg(event)">
+  <div class="modal">
+    <div class="modal-title">✏️ 식당 정보 수정</div>
+    <input type="hidden" id="editId">
+    <div class="form-row-2">
+      <div>
+        <label class="form-label">이름 (중문)*</label>
+        <input class="form-input" id="editNameZh">
+      </div>
+      <div>
+        <label class="form-label">이름 (영문)</label>
+        <input class="form-input" id="editNameEn">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div>
+        <label class="form-label">지역 (영문)*</label>
+        <select class="form-input" id="editDistrict">
+          <option value="Central">Central 中環</option>
+          <option value="Sheung Wan">Sheung Wan 上環</option>
+          <option value="Wan Chai">Wan Chai 灣仔</option>
+          <option value="Causeway Bay">Causeway Bay 銅鑼灣</option>
+          <option value="Jordan">Jordan 佐敦</option>
+          <option value="Tsim Sha Tsui">TST 尖沙咀</option>
+          <option value="Mong Kok">Mong Kok 旺角</option>
+          <option value="Sham Shui Po">Sham Shui Po 深水埗</option>
+          <option value="Kowloon City">Kowloon City 九龍城</option>
+          <option value="Yau Ma Tei">Yau Ma Tei 油麻地</option>
+          <option value="Kwun Tong">Kwun Tong 觀塘</option>
+          <option value="Ngau Tau Kok">Ngau Tau Kok 牛頭角</option>
+          <option value="Sai Ying Pun">Sai Ying Pun 西營盤</option>
+          <option value="North Point">North Point 北角</option>
+          <option value="Tai Hang">Tai Hang 大坑</option>
+          <option value="Kennedy Town">Kennedy Town 堅尼地城</option>
+          <option value="Sha Tin">Sha Tin 沙田</option>
+          <option value="Tai Po">Tai Po 大埔</option>
+          <option value="Tuen Mun">Tuen Mun 屯門</option>
+          <option value="Yuen Long">Yuen Long 元朗</option>
+          <option value="Tseung Kwan O">TKO 將軍澳</option>
+        </select>
+      </div>
+      <div>
+        <label class="form-label">카테고리</label>
+        <select class="form-input" id="editCategory">
+          <option value="cha_chaan_teng">茶餐廳</option>
+          <option value="noodle">麵食</option>
+          <option value="rice">飯類</option>
+          <option value="bakery">烘焙</option>
+          <option value="dessert">甜品</option>
+          <option value="hot_pot">火鍋</option>
+          <option value="other">其他</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div>
+        <label class="form-label">최저가 (HKD)*</label>
+        <input class="form-input" id="editPriceMin" type="number">
+      </div>
+      <div>
+        <label class="form-label">최고가 (HKD)</label>
+        <input class="form-input" id="editPriceMax" type="number">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">주소</label>
+      <input class="form-input" id="editAddress">
+    </div>
+    <div class="form-row">
+      <label class="form-label">영업시간</label>
+      <input class="form-input" id="editHours" placeholder="e.g. 07:00-22:00">
+    </div>
+    <div class="form-row">
+      <label class="form-label">대표메뉴</label>
+      <input class="form-input" id="editDish">
+    </div>
+    <div class="form-row">
+      <label class="form-label">검증 여부</label>
+      <select class="form-input" id="editVerified">
+        <option value="true">✅ 검증됨</option>
+        <option value="false">❌ 미검증</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn-cancel" onclick="closeEdit()">취소</button>
+      <button class="btn-save" onclick="saveEdit()">💾 저장</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://nsxhzxlvtgwneiafmfmy.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_MP-BjPpUp0djwP4ktmKk9A_IzuvnWZK';
+const ADMIN_PW = 'brokemap2024!'; // ← 비밀번호 변경하세요
+
+let db = null;
+let allPlaces = [];
+let allReports = [];
+
+// ===== LOGIN =====
+function login() {
+  const pw = document.getElementById('pwInput').value;
+  if (pw !== ADMIN_PW) {
+    document.getElementById('loginError').textContent = '비밀번호가 틀렸어요';
+    return;
+  }
+  db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  document.getElementById('loginWrap').style.display = 'none';
+  document.getElementById('adminWrap').style.display = 'flex';
+  loadPlaces();
+  loadReports();
+  loadStats();
+}
+
+function logout() {
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('adminWrap').style.display = 'none';
+  document.getElementById('pwInput').value = '';
+}
+
+// ===== TABS =====
+function showTab(tab) {
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===== PLACES =====
+async function loadPlaces() {
+  const { data } = await db.from('brokemap_places').select('*').order('district_en').order('name_zh');
+  allPlaces = data || [];
+  document.getElementById('placeCount').textContent = `총 ${allPlaces.length}개`;
+  renderPlaces(allPlaces);
+}
+
+function filterPlaces() {
+  const q = document.getElementById('placeSearch').value.toLowerCase();
+  const filtered = allPlaces.filter(p =>
+    p.name_zh?.toLowerCase().includes(q) ||
+    p.name_en?.toLowerCase().includes(q) ||
+    p.district_en?.toLowerCase().includes(q)
+  );
+  renderPlaces(filtered);
+}
+
+const catMap = { cha_chaan_teng:'茶餐廳', noodle:'麵食', rice:'飯類', bakery:'烘焙', dessert:'甜品', hot_pot:'火鍋', other:'其他' };
+
+function renderPlaces(places) {
+  const tbody = document.getElementById('placesTableBody');
+  if (!places.length) { tbody.innerHTML = '<tr><td colspan="7" class="empty">결과 없음</td></tr>'; return; }
+  tbody.innerHTML = places.map(p => `
+    <tr>
+      <td><div style="font-weight:700;">${p.name_zh}</div><div style="font-size:11px;color:var(--text-muted)">${p.name_en||''}</div></td>
+      <td>${p.district_en}<br><span style="font-size:11px;color:var(--text-muted)">${p.district_zh||''}</span></td>
+      <td>$${p.price_min}${p.price_max?'–'+p.price_max:''}</td>
+      <td>${catMap[p.category]||p.category||'-'}</td>
+      <td style="font-size:12px;">${p.open_hours||'-'}</td>
+      <td><span class="badge ${p.is_verified?'badge-green':'badge-red'}">${p.is_verified?'✅ 검증':'❌ 미검증'}</span></td>
+      <td style="white-space:nowrap;">
+        <button class="btn btn-edit" onclick="openEdit('${p.id}')">수정</button>
+        <button class="btn btn-delete" onclick="deletePlace('${p.id}','${p.name_zh}')">삭제</button>
+      </td>
+    </tr>`).join('');
+}
+
+// ===== EDIT =====
+function openEdit(id) {
+  const p = allPlaces.find(x => x.id === id);
+  if (!p) return;
+  document.getElementById('editId').value = id;
+  document.getElementById('editNameZh').value = p.name_zh || '';
+  document.getElementById('editNameEn').value = p.name_en || '';
+  document.getElementById('editDistrict').value = p.district_en || '';
+  document.getElementById('editCategory').value = p.category || 'other';
+  document.getElementById('editPriceMin').value = p.price_min || '';
+  document.getElementById('editPriceMax').value = p.price_max || '';
+  document.getElementById('editAddress').value = p.address || '';
+  document.getElementById('editHours').value = p.open_hours || '';
+  document.getElementById('editDish').value = p.signature_dish || '';
+  document.getElementById('editVerified').value = p.is_verified ? 'true' : 'false';
+  document.getElementById('editModal').classList.add('active');
+}
+
+function closeEdit() { document.getElementById('editModal').classList.remove('active'); }
+function closeEditIfBg(e) { if (e.target === document.getElementById('editModal')) closeEdit(); }
+
+async function saveEdit() {
+  const id = document.getElementById('editId').value;
+  const districtZhMap = {
+    'Central':'中環','Sheung Wan':'上環','Wan Chai':'灣仔','Causeway Bay':'銅鑼灣',
+    'Jordan':'佐敦','Tsim Sha Tsui':'尖沙咀','Mong Kok':'旺角','Sham Shui Po':'深水埗',
+    'Kowloon City':'九龍城','Yau Ma Tei':'油麻地','Kwun Tong':'觀塘','Ngau Tau Kok':'牛頭角',
+    'Sai Ying Pun':'西營盤','North Point':'北角','Tai Hang':'大坑','Kennedy Town':'堅尼地城',
+    'Sha Tin':'沙田','Tai Po':'大埔','Tuen Mun':'屯門','Yuen Long':'元朗','Tseung Kwan O':'將軍澳'
+  };
+  const district = document.getElementById('editDistrict').value;
+  const updates = {
+    name_zh: document.getElementById('editNameZh').value.trim(),
+    name_en: document.getElementById('editNameEn').value.trim() || null,
+    district_en: district,
+    district_zh: districtZhMap[district] || district,
+    category: document.getElementById('editCategory').value,
+    price_min: parseInt(document.getElementById('editPriceMin').value) || 0,
+    price_max: parseInt(document.getElementById('editPriceMax').value) || null,
+    address: document.getElementById('editAddress').value.trim() || null,
+    open_hours: document.getElementById('editHours').value.trim() || null,
+    signature_dish: document.getElementById('editDish').value.trim() || null,
+    is_verified: document.getElementById('editVerified').value === 'true',
+    last_verified_at: new Date().toISOString(),
+  };
+  const { error } = await db.from('brokemap_places').update(updates).eq('id', id);
+  if (error) { alert('저장 실패: ' + error.message); return; }
+  closeEdit();
+  await loadPlaces();
+  showToast('✅ 저장 완료!');
+}
+
+async function deletePlace(id, name) {
+  if (!confirm(`"${name}" 을(를) 삭제할까요?\n되돌릴 수 없어요!`)) return;
+  const { error } = await db.from('brokemap_places').delete().eq('id', id);
+  if (error) { alert('삭제 실패: ' + error.message); return; }
+  await loadPlaces();
+  showToast('🗑 삭제 완료');
+}
+
+// ===== REPORTS =====
+async function loadReports() {
+  const { data } = await db.from('brokemap_reports').select('*').order('created_at', { ascending: false });
+  allReports = data || [];
+  document.getElementById('reportCount').textContent = `총 ${allReports.length}개`;
+  renderReports();
+}
+
+function renderReports() {
+  const tbody = document.getElementById('reportsTableBody');
+  if (!allReports.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="empty">📭 미처리 제보 없음</td></tr>';
+    return;
+  }
+  tbody.innerHTML = allReports.map(r => `
+    <tr>
+      <td><div style="font-weight:700;">${r.name_zh||'-'}</div><div style="font-size:11px;color:var(--text-muted)">${r.name_en||''}</div></td>
+      <td>${r.district_en||'-'}</td>
+      <td>$${r.price_min||'?'}${r.price_max?'–'+r.price_max:''}</td>
+      <td style="font-size:12px;">${r.open_hours||'-'}</td>
+      <td style="font-size:11px;color:var(--text-muted)">${r.created_at ? new Date(r.created_at).toLocaleDateString('ko-KR') : '-'}</td>
+      <td style="white-space:nowrap;">
+        <button class="btn btn-approve" onclick="approveReport('${r.id}')">✅ 승인</button>
+        <button class="btn btn-reject" onclick="rejectReport('${r.id}')">❌ 거절</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function approveReport(id) {
+  const r = allReports.find(x => x.id === id);
+  if (!r) return;
+  if (!confirm(`"${r.name_zh}" 을(를) 식당 목록에 추가할까요?`)) return;
+  const { error } = await db.from('brokemap_places').insert({
+    name_zh: r.name_zh, name_en: r.name_en,
+    district_en: r.district_en, district_zh: r.district_zh,
+    lat: r.lat, lng: r.lng,
+    category: r.category, price_min: r.price_min, price_max: r.price_max,
+    address: r.address, open_hours: r.open_hours,
+    signature_dish: r.signature_dish, summary: r.summary,
+    payment: r.payment, is_verified: true,
+    last_verified_at: new Date().toISOString(),
+  });
+  if (error) { alert('승인 실패: ' + error.message); return; }
+  await db.from('brokemap_reports').delete().eq('id', id);
+  await loadReports();
+  await loadPlaces();
+  showToast('✅ 승인 완료! 식당 목록에 추가됐어요');
+}
+
+async function rejectReport(id) {
+  const r = allReports.find(x => x.id === id);
+  if (!confirm(`"${r?.name_zh}" 제보를 거절할까요?`)) return;
+  await db.from('brokemap_reports').delete().eq('id', id);
+  await loadReports();
+  showToast('🗑 제보 거절됨');
+}
+
+// ===== STATS =====
+async function loadStats() {
+  const [places, reports, comments] = await Promise.all([
+    db.from('brokemap_places').select('id, is_verified, district_en', { count: 'exact' }),
+    db.from('brokemap_reports').select('id', { count: 'exact' }),
+    db.from('brokemap_comments').select('id', { count: 'exact' }),
+  ]);
+  const total = places.data?.length || 0;
+  const verified = places.data?.filter(p => p.is_verified).length || 0;
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statVerified').textContent = verified;
+  document.getElementById('statReports').textContent = reports.data?.length || 0;
+  document.getElementById('statComments').textContent = comments.data?.length || 0;
+
+  // District breakdown
+  const distMap = {};
+  (places.data || []).forEach(p => {
+    distMap[p.district_en] = (distMap[p.district_en] || 0) + 1;
+  });
+  const sorted = Object.entries(distMap).sort((a,b) => b[1]-a[1]);
+  document.getElementById('districtStats').innerHTML = sorted.map(([d, n]) => `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+      <div style="width:100px;font-size:13px;">${d}</div>
+      <div style="flex:1;background:var(--surface2);border-radius:4px;height:16px;overflow:hidden;">
+        <div style="height:100%;background:var(--yellow);width:${Math.round(n/total*100)}%;border-radius:4px;"></div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:var(--yellow);width:30px;text-align:right;">${n}</div>
+    </div>`).join('');
+}
+
+// ===== TOAST =====
+let toastTimer;
+function showToast(msg) {
+  let t = document.getElementById('adminToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'adminToast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;z-index:9999;transition:opacity 0.3s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.style.opacity = '0', 2500);
+}
+</script>
+</body>
+</html>
