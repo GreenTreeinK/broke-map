@@ -228,38 +228,34 @@ body {
     height: 64px !important;
     border-radius: 16px 16px 0 0;
     box-shadow: 0 -4px 24px rgba(0,0,0,0.3);
-    transition: height 0.3s ease;
+    transition: height 0.3s ease, transform 0.35s ease;
     overflow: hidden !important;
     z-index: 200 !important;
     background: var(--surface) !important;
   }
   .side-panel.expanded { height: 52vh !important; }
+  .side-panel.hint-bounce {
+    animation: panelHintBounce 1.25s ease-in-out 1;
+  }
   .panel-header {
     cursor: pointer;
     height: 64px;
     min-height: 64px;
     flex-shrink: 0;
-    padding: 8px 16px 12px;
+    padding-top: 6px;
   }
-  .panel-title {
-    margin-bottom: 0;
-    line-height: 1.15;
-  }
-  .panel-count {
-    display: none;
-    margin-top: 2px;
-    line-height: 1.2;
-  }
-  .side-panel.expanded .panel-count {
-    display: block;
-  }
+  .side-panel:not(.expanded) .panel-count { display: none; }
+  .side-panel:not(.expanded) .panel-hint { display: block; }
+  .side-panel.expanded .panel-count { display: block; }
+  .side-panel.expanded .panel-hint { display: block; }
   /* 핸들바 표시 */
   .panel-handle {
     display: block !important;
-    width: 40px; height: 4px;
-    background: var(--border);
-    border-radius: 4px;
-    margin: 8px auto 0;
+    width: 52px; height: 5px;
+    background: rgba(90,53,53,0.45);
+    border-radius: 999px;
+    margin: 6px auto 4px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.35) inset;
   }
 }
 
@@ -268,6 +264,10 @@ body {
   padding: 14px 16px 10px;
   border-bottom: 1.5px solid var(--border);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 .panel-title {
   font-family: 'Oswald', sans-serif;
@@ -281,6 +281,24 @@ body {
 .panel-count {
   font-size: 11px;
   color: var(--text-muted);
+}
+.panel-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.panel-hint {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.1px;
+  line-height: 1.2;
+}
+@keyframes panelHintBounce {
+  0% { transform: translateY(0); }
+  18% { transform: translateY(-12px); }
+  42% { transform: translateY(0); }
+  62% { transform: translateY(-8px); }
+  100% { transform: translateY(0); }
 }
 .panel-list {
   flex: 1;
@@ -777,10 +795,10 @@ body {
 /* ===== MOBILE PANEL HANDLE ===== */
 .panel-handle {
   display: none;
-  width: 36px; height: 4px;
-  background: var(--border);
-  border-radius: 2px;
-  margin: 8px auto 0;
+  width: 52px; height: 5px;
+  background: rgba(90,53,53,0.45);
+  border-radius: 999px;
+  margin: 6px auto 4px;
 }
 @media (max-width: 768px) {
   .panel-handle { display: block; }
@@ -1253,7 +1271,10 @@ body {
   <div class="side-panel" id="sidePanel">
     <div class="panel-handle" onclick="toggleMobilePanel()"></div>
     <div class="panel-header">
-      <div class="panel-title" data-zh="平價食肆" data-en="Budget Eats">平價食肆</div>
+      <div class="panel-header-text">
+        <div class="panel-title" data-zh="平價食肆" data-en="Budget Eats">平價食肆</div>
+        <div class="panel-hint" data-zh="向上拉睇名單" data-en="Swipe up for list">向上拉睇名單</div>
+      </div>
       <div class="panel-count" id="panelCount">載入中...</div>
     </div>
     <div class="panel-list" id="placeList">
@@ -1540,6 +1561,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   initMap();
   setLang('zh');
+  showFirstVisitPanelHint();
   db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadPlaces();
 });
@@ -2438,6 +2460,19 @@ function toggleMobilePanel() {
     sp.classList.add('expanded');
     sp.style.height = '50vh';
   }
+}
+
+function showFirstVisitPanelHint() {
+  if (window.innerWidth > 768) return;
+  const key = 'brokemap_panel_hint_seen';
+  if (localStorage.getItem(key)) return;
+  const sp = document.getElementById('sidePanel');
+  if (!sp) return;
+  setTimeout(() => {
+    sp.classList.add('hint-bounce');
+    setTimeout(() => sp.classList.remove('hint-bounce'), 1300);
+    localStorage.setItem(key, '1');
+  }, 900);
 }
 
 // 패널 헤더 클릭으로도 토글
