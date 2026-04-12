@@ -220,19 +220,24 @@ body {
   clip-path: inset(0); /* 자식 요소 클립 강제 */
 }
 @media (max-width: 768px) {
-  /* 모바일: 하단 바텀시트 */
+  /* 모바일: 기본 헤더만, 탭하면 확장 */
   .side-panel {
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
+    position: fixed;
+    bottom: 56px;
+    left: 0; right: 0;
     width: 100%;
-    height: 38vh;
-    border-radius: 20px 20px 0 0;
-    box-shadow: 0 -4px 24px rgba(0,0,0,0.2);
-    transform: translateY(0);
+    height: 56px;
+    border-radius: 16px 16px 0 0;
+    box-shadow: 0 -4px 24px rgba(0,0,0,0.25);
+    transition: height 0.3s cubic-bezier(0.4,0,0.2,1);
+    overflow: hidden;
+    z-index: 50;
+    background: var(--surface); /* 불투명 배경 */
     isolation: auto;
     clip-path: none;
   }
-  .side-panel.collapsed { transform: translateY(calc(100% - 60px)); }
+  .side-panel.expanded { height: 50vh; }
+  .panel-header { cursor: pointer; }
 }
 
 .panel-header {
@@ -352,50 +357,16 @@ body {
 .favorite-btn.compact { padding: 4px 8px; font-size: 11px; }
 
 /* ===== DETAIL PANEL ===== */
-/* ===== DETAIL PANEL ===== */
-/* 데스크탑: side-panel과 같은 위치에 절대좌표로 겹침 */
 .detail-panel {
+  display: none;
   position: fixed;
-  top: 106px; /* 헤더(60px) + 필터바(46px) */
-  left: 0;
-  width: 300px;
-  bottom: 0;
+  inset: 0;
   background: var(--surface);
-  z-index: 3;
+  z-index: 4000;
   overflow-y: auto;
-  transform: translateX(-100%);
-  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  padding-bottom: 60px;
 }
-.detail-panel.open { transform: translateX(0); }
-
-/* 모바일: 전체화면 바텀시트 */
-@media (max-width: 768px) {
-  .detail-panel {
-    position: fixed;
-    top: auto;
-    left: 0; right: 0;
-    bottom: 56px;
-    width: 100%;
-    height: calc(100vh - 98px - 56px);
-    border-radius: 20px 20px 0 0;
-    transform: translateY(100%);
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    padding-bottom: 40px;
-    z-index: 2600;
-  }
-  .detail-panel.open { transform: translateY(0); }
-}
-
-@media (min-width: 769px) {
-  .detail-panel {
-    top: 106px;
-    width: 300px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .detail-panel { width: 320px; }
-}
+.detail-panel.open { display: block; }
 
 .detail-hero {
   background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
@@ -679,7 +650,7 @@ body {
   z-index: 100;
 }
 @media (max-width: 768px) {
-  .cta-btn-wrap { bottom: calc(38vh + 16px); }
+  .cta-btn-wrap { bottom: 80px; }
 }
 .cta-btn {
   background: var(--yellow);
@@ -805,7 +776,7 @@ body {
   gap: 8px;
 }
 @media (max-width: 768px) {
-  .map-controls { bottom: calc(38vh + 68px); right: 12px; }
+  .map-controls { bottom: 120px; right: 12px; }
 }
 .map-ctrl-btn {
   width: 42px; height: 42px;
@@ -1054,7 +1025,7 @@ body {
   .comm-card { padding: 12px; }
 
   /* Mobile: map controls above drawer */
-  .map-controls { bottom: calc(38vh + 68px); }
+  .map-controls { bottom: 120px; }
 }
 
 /* =============================================
@@ -1273,10 +1244,11 @@ body {
     </div>
   </div>
 
-  <!-- Detail Panel -->
-  <div class="detail-panel" id="detailPanel">
-    <div id="detailContent"></div>
-  </div>
+</div>
+
+<!-- Detail Panel: body level fixed overlay -->
+<div class="detail-panel" id="detailPanel">
+  <div id="detailContent"></div>
 </div>
 
 <!-- Report Form -->
@@ -2428,8 +2400,17 @@ function setLang(lang) {
 
 // ===== Mobile Panel =====
 function toggleMobilePanel() {
-  document.getElementById('sidePanel').classList.toggle('collapsed');
+  const sp = document.getElementById('sidePanel');
+  sp.classList.toggle('expanded');
 }
+
+// 패널 헤더 클릭으로도 토글
+document.addEventListener('DOMContentLoaded', () => {
+  const ph = document.querySelector('.panel-header');
+  if (ph) ph.addEventListener('click', () => {
+    if (window.innerWidth <= 768) toggleMobilePanel();
+  });
+});
 
 // ===== Toast =====
 let toastTimer;
