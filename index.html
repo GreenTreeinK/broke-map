@@ -294,6 +294,31 @@ body {
   line-height: 1.2;
   display: none; /* 기본 숨김 - 모바일만 표시 */
 }
+
+.panel-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.panel-sort {
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-soft);
+  font-size: 11px;
+  font-weight: 700;
+  font-family: 'Noto Sans HK', sans-serif;
+  outline: none;
+  max-width: 108px;
+}
+.panel-sort:focus { border-color: var(--yellow); }
+@media (max-width: 768px) {
+  .side-panel:not(.expanded) .panel-sort { display: none; }
+  .panel-header-actions { gap: 6px; }
+  .panel-sort { max-width: 96px; font-size: 10px; padding: 5px 8px; }
+}
 @keyframes panelHintBounce {
   0% { transform: translateY(0); }
   18% { transform: translateY(-12px); }
@@ -1301,7 +1326,16 @@ body {
         <div class="panel-title" data-zh="平價食肆" data-en="Budget Eats">平價食肆</div>
         <div class="panel-hint" data-zh="向上拉睇名單" data-en="Swipe up for list">向上拉睇名單</div>
       </div>
-      <div class="panel-count" id="panelCount">載入中...</div>
+      <div class="panel-header-actions">
+        <select id="placeSortSelect" class="panel-sort" onchange="setPlaceSort(this.value); event.stopPropagation();" onclick="event.stopPropagation()">
+          <option value="popular">熱門排序</option>
+          <option value="recent">最近確認</option>
+          <option value="cheap">最平優先</option>
+          <option value="saved">收藏優先</option>
+          <option value="name">名稱排序</option>
+        </select>
+        <div class="panel-count" id="panelCount">載入中...</div>
+      </div>
     </div>
     <div class="panel-list" id="placeList">
       <div class="empty-state">
@@ -1325,7 +1359,10 @@ body {
       <div class="report-title" data-zh="提報 💰" data-en="Report a Place 💰">提報 💰</div>
       <button onclick="closeReport()" style="background:var(--surface3);border:none;color:var(--text-muted);width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;">✕</button>
     </div>
-    <div class="report-sub" data-zh="HKD 100以下嘅平價食肆" data-en="Share a budget eat under HKD 100">HKD 100以下平價食肆</div>
+    <div class="report-sub" id="reportSub" data-zh="HKD 100以下嘅平價食肆" data-en="Share a budget eat under HKD 100">HKD 100以下平價食肆</div>
+    <div id="reportModeBadge" style="display:none;background:var(--yellow-light);border:1.5px solid var(--yellow);color:var(--dark);padding:8px 12px;border-radius:12px;font-size:12px;font-weight:700;margin-bottom:14px;"></div>
+    <input type="hidden" id="reportMode" value="new_place">
+    <input type="hidden" id="reportPlaceId" value="">
 
     <!-- Steps -->
     <div class="form-steps">
@@ -1531,6 +1568,58 @@ body {
 .comm-cat { flex: 0 0 auto; padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: 600; border: 1.5px solid var(--border); color: var(--text-muted); cursor: pointer; white-space: nowrap; background: none; }
 .comm-cat.active { background: var(--yellow); color: var(--dark); border-color: var(--yellow); }
 .comm-body { flex: 1; overflow-y: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; background: #f5f0e8; }
+
+.comm-toolbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding: 10px 16px 0;
+  background:#f5f0e8;
+}
+.comm-hero {
+  flex:1;
+  font-size:12px;
+  color:var(--text-soft);
+  line-height:1.4;
+  background:#fff8dc;
+  border:1px solid #f1d37a;
+  border-radius:12px;
+  padding:8px 10px;
+}
+.comm-sort {
+  flex:0 0 auto;
+  padding:8px 10px;
+  border-radius:999px;
+  border:1.5px solid var(--border);
+  background:#fff;
+  color:var(--text-soft);
+  font-size:11px;
+  font-weight:700;
+  font-family:'Noto Sans HK', sans-serif;
+}
+.comm-card-actions {
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:8px;
+  flex-wrap:wrap;
+}
+.comm-share {
+  border:none;
+  background:#fff3cd;
+  color:#8a5a00;
+  border-radius:999px;
+  padding:6px 10px;
+  font-size:11px;
+  font-weight:700;
+  cursor:pointer;
+}
+.comm-link {
+  font-size:11px;
+  color:var(--yellow);
+  text-decoration:none;
+}
 .comm-card { background: #fff; border-radius: 14px; padding: 14px; border: 1px solid rgba(0,0,0,0.08); display: flex; gap: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
 .comm-card:hover { border-color: var(--yellow); }
 .comm-card-thumb { width: 64px; height: 64px; border-radius: 10px; flex: 0 0 64px; background: var(--surface3); display: flex; align-items: center; justify-content: center; font-size: 28px; }
@@ -1574,6 +1663,10 @@ let mtrCircle = null;      //
 let mtrMarker = null;      // Station marker
 let activeMarkerId = null;
 const FAVORITES_KEY = 'brokemap_favorites';
+let placeSort = 'popular';
+const commSort = { hotdeal: 'new', community: 'new' };
+let reportModeState = 'new_place';
+let reportSourcePlaceId = null;
 
 // ===== INIT =====
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1590,6 +1683,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   showFirstVisitPanelHint();
   db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
   await loadPlaces();
+  applyHashNavigation();
 });
 
 // ===== MAP INIT =====
@@ -1626,7 +1720,111 @@ function loadDemoData() {
   showToast(currentLang === 'en' ? 'Could not load data. Please refresh.' : '載入失敗，請重新整理頁面');
 }
 
+function applyHashNavigation() {
+  const hash = window.location.hash || '';
+  if (!hash.startsWith('#place-')) return;
+  const id = hash.replace('#place-', '');
+  const place = allPlaces.find(p => String(p.id) === id);
+  if (!place) return;
+  setTimeout(() => {
+    map.flyTo([place.lat, place.lng], 17, { duration: 0.8 });
+    openDetail(place.id);
+  }, 250);
+}
+
 // ===== RENDER =====
+
+function setPlaceSort(val) {
+  placeSort = val || 'popular';
+  renderPlaces();
+}
+
+function sortPlaces(list) {
+  const arr = [...list];
+  arr.sort((a, b) => {
+    switch (placeSort) {
+      case 'cheap':
+        return (a.price_min || 9999) - (b.price_min || 9999);
+      case 'recent':
+        return new Date(getConfirmedDate(b) || 0) - new Date(getConfirmedDate(a) || 0);
+      case 'saved':
+        return Number(isFavorite(b.id)) - Number(isFavorite(a.id)) || (a.price_min || 9999) - (b.price_min || 9999);
+      case 'name':
+        return String(a.name_zh || '').localeCompare(String(b.name_zh || ''), 'zh-HK');
+      case 'popular':
+      default:
+        return ((b.votes_up || 0) - (b.votes_down || 0) + (b.comment_count || 0)) - ((a.votes_up || 0) - (a.votes_down || 0) + (a.comment_count || 0))
+          || (a.price_min || 9999) - (b.price_min || 9999);
+    }
+  });
+  return arr;
+}
+
+function getPlaceShareUrl(place) {
+  const u = new URL(window.location.href);
+  u.hash = `place-${place.id}`;
+  return u.toString();
+}
+
+async function sharePlace(placeId, ev) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  const place = allPlaces.find(p => String(p.id) === String(placeId));
+  if (!place) return;
+  const url = getPlaceShareUrl(place);
+  const text = `${place.name_zh} · HKD $${place.price_min}${place.price_max ? '-' + place.price_max : '+'} · ${place.district_en}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `${place.name_zh} | Broke Map`, text, url });
+    } else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(url);
+      showToast(currentLang === 'en' ? 'Link copied!' : '連結已複製！');
+    } else {
+      prompt('Copy this link', url);
+    }
+  } catch (e) {}
+}
+
+function openUpdateReport(mode, placeId, ev) {
+  if (ev) { ev.preventDefault(); ev.stopPropagation(); }
+  const place = allPlaces.find(p => String(p.id) === String(placeId));
+  reportModeState = mode;
+  reportSourcePlaceId = placeId;
+  document.getElementById('reportMode').value = mode;
+  document.getElementById('reportPlaceId').value = placeId;
+  document.getElementById('reportModeBadge').style.display = 'block';
+  const badge = document.getElementById('reportModeBadge');
+  const sub = document.getElementById('reportSub');
+  const reportTitle = document.querySelector('.report-title');
+  if (mode === 'price_update') {
+    if (reportTitle) reportTitle.textContent = currentLang === 'en' ? 'Report Price Update 💸' : '回報價錢更新 💸';
+    badge.textContent = currentLang === 'en' ? 'Price update report for this place' : '回報呢間食肆最新價錢';
+    sub.textContent = currentLang === 'en' ? 'Help keep prices accurate for everyone.' : '幫大家更新更準確嘅價錢資料。';
+  } else {
+    if (reportTitle) reportTitle.textContent = currentLang === 'en' ? 'Report Closure 🚫' : '回報已結業 🚫';
+    badge.textContent = currentLang === 'en' ? 'Closure report for this place' : '回報呢間食肆已結業';
+    sub.textContent = currentLang === 'en' ? 'Let us know if this place has closed.' : '如果已結業，請通知我哋。';
+  }
+  if (place) {
+    document.getElementById('r_name_zh').value = place.name_zh || '';
+    document.getElementById('r_name_en').value = place.name_en || '';
+    document.getElementById('r_district').value = place.district_en || '';
+    document.getElementById('r_category').value = place.category || 'other';
+    document.getElementById('r_price_min').value = place.price_min || '';
+    document.getElementById('r_price_max').value = place.price_max || '';
+    document.getElementById('r_address').value = place.address || '';
+    document.getElementById('r_dish').value = place.signature_dish || '';
+    document.getElementById('r_summary').value = mode === 'closed'
+      ? (currentLang === 'en' ? 'Reported as closed.' : '有人回報已結業')
+      : (place.summary || '');
+    document.getElementById('r_hours').value = place.open_hours || '';
+    document.querySelectorAll('.pcheck').forEach(el => {
+      el.classList.toggle('sel', (place.payment || []).includes(el.dataset.val));
+    });
+  }
+  openReport();
+  goToStep2();
+}
+
 function renderPlaces() {
   filteredPlaces = allPlaces.filter(p => {
     if (priceFilter !== 'all' && p.price_min > priceFilter) return false;
@@ -1646,6 +1844,7 @@ function renderPlaces() {
     return true;
   });
 
+  filteredPlaces = sortPlaces(filteredPlaces);
   updateStats();
   updateFilterStatus();
   renderMarkers();
@@ -1963,6 +2162,9 @@ function openDetail(id) {
 
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
         <button class="favorite-btn ${isFavorite(place.id) ? 'active' : ''}" data-fav-id="${place.id}" onclick="toggleFavorite('${place.id}', event)">${isFavorite(place.id) ? '⭐' : '☆'} ${isFavorite(place.id) ? (currentLang === 'en' ? 'Saved' : '已收藏') : (currentLang === 'en' ? 'Save to favorites' : '加入收藏')}</button>
+        <button class="favorite-btn compact" onclick="sharePlace('${place.id}', event)">🔗 ${currentLang === 'en' ? 'Share' : '分享'}</button>
+        <button class="favorite-btn compact" onclick="openUpdateReport('price_update','${place.id}', event)">💸 ${currentLang === 'en' ? 'Price update' : '價格有變'}</button>
+        <button class="favorite-btn compact" onclick="openUpdateReport('closed','${place.id}', event)">🚫 ${currentLang === 'en' ? 'Closed' : '已結業'}</button>
       </div>
 
       ${place.summary ? `<div style="background:var(--yellow-light);border:1.5px solid var(--yellow);border-radius:12px;padding:10px 14px;margin-bottom:16px;font-size:13px;font-weight:600;color:var(--dark);">💡 ${place.summary}</div>` : ''}
@@ -2386,12 +2588,24 @@ function goToStep1() {
 // ===== Report =====
 function openReport() {
   document.getElementById('reportOverlay').classList.add('active');
+  if (reportModeState === 'new_place') goToStep1();
 }
 function closeReportIfBg(e) {
   if (e.target === document.getElementById('reportOverlay')) closeReport();
 }
+function resetReportMode() {
+  reportModeState = 'new_place';
+  reportSourcePlaceId = null;
+  document.getElementById('reportMode').value = 'new_place';
+  document.getElementById('reportPlaceId').value = '';
+  document.getElementById('reportModeBadge').style.display = 'none';
+  document.getElementById('reportSub').textContent = currentLang === 'en' ? 'Share a budget eat under HKD 100' : 'HKD 100以下平價食肆';
+  const reportTitle = document.querySelector('.report-title');
+  if (reportTitle) reportTitle.textContent = currentLang === 'en' ? 'Report a Place 💰' : '提報 💰';
+}
 function closeReport() {
   document.getElementById('reportOverlay').classList.remove('active');
+  resetReportMode();
 }
 function togglePay(el) {
   el.classList.toggle('sel');
@@ -2449,18 +2663,45 @@ async function submitReport() {
     summary: document.getElementById('r_summary').value.trim() || null,
     payment,
     open_hours: document.getElementById('r_hours').value.trim() || null,
+    report_type: reportModeState || 'new_place',
+    source_place_id: reportSourcePlaceId || null,
+    status: 'pending',
+    note: (reportModeState === 'price_update'
+      ? (currentLang === 'en' ? 'User submitted a price update.' : '用戶回報價錢更新')
+      : reportModeState === 'closed'
+        ? (currentLang === 'en' ? 'User reported this place as closed.' : '用戶回報這間食肆已結業')
+        : null)
   };
 
   if (db) {
     try {
-      const { error } = await db.from('brokemap_reports').insert(reportData);
+      let { error } = await db.from('brokemap_reports').insert(reportData);
+      if (error && /column/i.test(error.message || '')) {
+        const fallback = {
+          name_zh: reportData.name_zh,
+          name_en: reportData.name_en,
+          district_en: reportData.district_en,
+          district_zh: reportData.district_zh,
+          address: reportData.address,
+          lat: reportData.lat,
+          lng: reportData.lng,
+          category: reportData.category,
+          price_min: reportData.price_min,
+          price_max: reportData.price_max,
+          signature_dish: reportData.signature_dish,
+          summary: [reportData.summary, reportData.note].filter(Boolean).join(' / ') || null,
+          payment: reportData.payment,
+          open_hours: reportData.open_hours
+        };
+        ({ error } = await db.from('brokemap_reports').insert(fallback));
+      }
       if (error) throw error;
     } catch(e) {
       console.log('DB save failed, local only:', e.message);
     }
   }
 
-  showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : '多謝提報！審核後上線 🙏');
+  showToast(currentLang === 'en' ? (reportModeState === 'new_place' ? 'Thanks for reporting! 🙏' : 'Thanks! Report received 🙏') : (reportModeState === 'new_place' ? '多謝提報！審核後上線 🙏' : '收到回報，多謝你 🙏'));
   closeReport();
   // Reset form
   ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary'].forEach(id => {
@@ -2482,7 +2723,20 @@ function setLang(lang) {
     const txt = el.dataset[lang] || el.dataset.zh;
     if (txt) el.textContent = txt;
   });
+  const reportTitle = document.querySelector('.report-title');
+  if (reportTitle && reportModeState === 'new_place') {
+    reportTitle.textContent = lang === 'en' ? 'Report a Place 💰' : '提報 💰';
+  }
+  const sortSelect = document.getElementById('placeSortSelect');
+  if (sortSelect) {
+    const labels = {
+      zh: {popular:'熱門排序', recent:'最近確認', cheap:'最平優先', saved:'收藏優先', name:'名稱排序'},
+      en: {popular:'Popular', recent:'Recently checked', cheap:'Cheapest', saved:'Saved first', name:'Name'}
+    };
+    [...sortSelect.options].forEach(o => { o.textContent = labels[lang]?.[o.value] || labels.zh[o.value] || o.textContent; });
+  }
   renderPlaces();
+  if (currentTab === 'hotdeal' || currentTab === 'community') renderCommPosts(currentTab);
 }
 
 // ===== Mobile Panel =====
@@ -2562,6 +2816,14 @@ function showToast(msg) {
     <button class="comm-cat" onclick="filterComm('hotdeal','snack',this)">🍿 零食</button>
     <button class="comm-cat" onclick="filterComm('hotdeal','other',this)">其他</button>
   </div>
+  <div class="comm-toolbar">
+    <div class="comm-hero" data-zh="🔥 分享超市著數、午市套餐、優惠券同限時特價。" data-en="🔥 Share supermarket deals, lunch sets, coupons and flash discounts.">🔥 分享超市著數、午市套餐、優惠券同限時特價。</div>
+    <select class="comm-sort" id="hotdealSort" onchange="setCommSort('hotdeal', this.value)">
+      <option value="new" data-zh="最新" data-en="Newest">最新</option>
+      <option value="hot" data-zh="最熱門" data-en="Hottest">最熱門</option>
+      <option value="cheap" data-zh="最平" data-en="Cheapest">最平</option>
+    </select>
+  </div>
   <div class="comm-body" id="hotdealList"></div>
 </div>
 
@@ -2580,6 +2842,13 @@ function showToast(msg) {
     <button class="comm-cat" onclick="filterComm('community','food',this)">🍜 平食推介</button>
     <button class="comm-cat" onclick="filterComm('community','transport',this)">🚇 交通</button>
     <button class="comm-cat" onclick="filterComm('community','misc',this)">🗂 雜項</button>
+  </div>
+  <div class="comm-toolbar">
+    <div class="comm-hero" data-zh="💬 分享真實好用嘅香港慳錢攻略同生活貼士。" data-en="💬 Share practical tips for saving money in Hong Kong.">💬 分享真實好用嘅香港慳錢攻略同生活貼士。</div>
+    <select class="comm-sort" id="communitySort" onchange="setCommSort('community', this.value)">
+      <option value="new" data-zh="最新" data-en="Newest">最新</option>
+      <option value="hot" data-zh="最熱門" data-en="Hottest">最熱門</option>
+    </select>
   </div>
   <div class="comm-body" id="communityList"></div>
 </div>
@@ -2666,6 +2935,44 @@ function switchTab(tab) {
   }
 }
 
+
+function setCommSort(type, val) {
+  commSort[type] = val || 'new';
+  renderCommPosts(type);
+}
+
+function sortCommPosts(type, posts) {
+  const arr = [...posts];
+  const mode = commSort[type] || 'new';
+  arr.sort((a, b) => {
+    if (mode === 'hot') {
+      return ((b.votes_up || 0) - (b.votes_down || 0)) - ((a.votes_up || 0) - (a.votes_down || 0))
+        || new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    }
+    if (mode === 'cheap' && type === 'hotdeal') {
+      return (a.price ?? 999999) - (b.price ?? 999999)
+        || new Date(b.created_at || 0) - new Date(a.created_at || 0);
+    }
+    return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+  });
+  return arr;
+}
+
+async function shareCommPost(id, type) {
+  const post = commPosts[type].find(p => String(p.id) === String(id));
+  if (!post) return;
+  const url = window.location.href.split('#')[0];
+  const text = `${post.title}${post.price ? ' · HKD $' + post.price : ''}`;
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: `Broke Map · ${type === 'hotdeal' ? 'Hot Deals' : 'Tips'}`, text, url });
+    } else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(`${text} ${url}`);
+      showToast(currentLang === 'en' ? 'Copied!' : '已複製！');
+    }
+  } catch (e) {}
+}
+
 async function loadCommPosts(type) {
   const listEl = document.getElementById(type === 'hotdeal' ? 'hotdealList' : 'communityList');
   listEl.innerHTML = `<div class="comm-empty"><div class="comm-empty-icon">⏳</div>載入中...</div>`;
@@ -2694,6 +3001,7 @@ function renderCommPosts(type) {
   const cat = commFilter[type];
   let posts = commPosts[type];
   if (cat !== 'all') posts = posts.filter(p => p.cat === cat);
+  posts = sortCommPosts(type, posts);
   if (posts.length === 0) {
     listEl.innerHTML = `<div class="comm-empty">
       <div class="comm-empty-icon">${type === 'hotdeal' ? '🔥' : '💬'}</div>
@@ -2719,7 +3027,10 @@ function renderCommPosts(type) {
           <span>🕐 ${timeAgo(p.created_at)}</span>
         </div>
         ${p.body ? `<div style="font-size:12px;color:var(--text-muted);margin-top:5px;line-height:1.4;">${p.body}</div>` : ''}
-        ${p.link ? `<a href="${p.link}" target="_blank" style="font-size:11px;color:var(--yellow);margin-top:4px;display:block;">🔗 더보기</a>` : ''}
+        <div class="comm-card-actions">
+          ${p.link ? `<a class="comm-link" href="${p.link}" target="_blank" rel="noopener noreferrer">🔗 ${currentLang === 'en' ? 'Open link' : '打開連結'}</a>` : ''}
+          <button class="comm-share" onclick="shareCommPost('${p.id}','${type}')">🔗 ${currentLang === 'en' ? 'Share' : '分享'}</button>
+        </div>
         <div class="comm-vote">
           <span onclick="voteComm('${p.id}','up')">👍 ${p.votes_up||0}</span>
           <span onclick="voteComm('${p.id}','down')">👎 ${p.votes_down||0}</span>

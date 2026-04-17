@@ -162,10 +162,12 @@ tr:last-child td { border-bottom: none; }
 <div class="login-wrap" id="loginWrap">
   <div class="login-box">
     <div class="login-logo">💰 窮鬼地圖</div>
-    <div class="login-sub">관리자 페이지</div>
-    <input class="login-input" type="password" id="pwInput" placeholder="비밀번호 입력" onkeydown="if(event.key==='Enter')login()">
+    <div class="login-sub">관리자 페이지 · Supabase Auth 로그인</div>
+    <input class="login-input" type="email" id="emailInput" placeholder="관리자 이메일" onkeydown="if(event.key==='Enter')login()">
+    <input class="login-input" type="password" id="pwInput" placeholder="비밀번호" onkeydown="if(event.key==='Enter')login()">
     <button class="login-btn" onclick="login()">로그인</button>
     <div class="login-error" id="loginError"></div>
+    <div style="margin-top:12px;color:var(--text-muted);font-size:12px;line-height:1.5;">GitHub Pages에 공개해도 비밀번호가 파일에 박히지 않도록 Supabase Auth로 로그인합니다.</div>
   </div>
 </div>
 
@@ -183,6 +185,7 @@ tr:last-child td { border-bottom: none; }
   </div>
 
   <div class="admin-content">
+    <div style="margin-bottom:16px;padding:12px 14px;border-radius:12px;background:rgba(245,196,0,0.12);color:var(--text);font-size:12px;line-height:1.5;border:1px solid rgba(245,196,0,0.25);">⚠️ 권장: Supabase에서 관리자 계정 1개만 만들고, RLS로 수정/삭제 권한을 관리자 계정으로 제한하세요.</div>
 
     <!-- PLACES -->
     <div class="admin-section active" id="tab-places">
@@ -223,16 +226,17 @@ tr:last-child td { border-bottom: none; }
           <table>
             <thead>
               <tr>
+                <th>유형</th>
                 <th>식당명</th>
                 <th>지역</th>
                 <th>가격</th>
-                <th>영업시간</th>
+                <th>메모</th>
                 <th>제보일</th>
                 <th>처리</th>
               </tr>
             </thead>
             <tbody id="reportsTableBody">
-              <tr><td colspan="6" class="loading">⏳ 로딩 중...</td></tr>
+              <tr><td colspan="7" class="loading">⏳ 로딩 중...</td></tr>
             </tbody>
           </table>
         </div>
@@ -350,20 +354,51 @@ tr:last-child td { border-bottom: none; }
 <script>
 const SUPABASE_URL = 'https://nsxhzxlvtgwneiafmfmy.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_MP-BjPpUp0djwP4ktmKk9A_IzuvnWZK';
-const ADMIN_PW = 'brokemap2024!'; // ← 비밀번호 변경하세요
+const ALLOWED_ADMIN_EMAILS = []; // 비워두면 모든 로그인 허용, 넣으면 화이트리스트로 제한
 
-let db = null;
+let db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 let allPlaces = [];
 let allReports = [];
 
+document.addEventListener('DOMContentLoaded', async () => {
+  const { data } = await db.auth.getSession();
+  if (data.session?.user) {
+    if (isAllowedAdmin(data.session.user.email)) {
+      enterAdmin();
+    } else {
+      await db.auth.signOut();
+    }
+  }
+});
+
 // ===== LOGIN =====
-function login() {
+function isAllowedAdmin(email) {
+  if (!email) return false;
+  return ALLOWED_ADMIN_EMAILS.length === 0 || ALLOWED_ADMIN_EMAILS.includes(email.toLowerCase());
+}
+
+async function login() {
+  const email = document.getElementById('emailInput').value.trim().toLowerCase();
   const pw = document.getElementById('pwInput').value;
-  if (pw !== ADMIN_PW) {
-    document.getElementById('loginError').textContent = '비밀번호가 틀렸어요';
+  document.getElementById('loginError').textContent = '';
+  if (!email || !pw) {
+    document.getElementById('loginError').textContent = '이메일과 비밀번호를 입력하세요';
     return;
   }
-  db = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  const { data, error } = await db.auth.signInWithPassword({ email, password: pw });
+  if (error || !data.user) {
+    document.getElementById('loginError').textContent = error?.message || '로그인 실패';
+    return;
+  }
+  if (!isAllowedAdmin(data.user.email)) {
+    await db.auth.signOut();
+    document.getElementById('loginError').textContent = '허용된 관리자 계정이 아닙니다';
+    return;
+  }
+  enterAdmin();
+}
+
+function enterAdmin() {
   document.getElementById('loginWrap').style.display = 'none';
   document.getElementById('adminWrap').style.display = 'flex';
   loadPlaces();
@@ -371,7 +406,8 @@ function login() {
   loadStats();
 }
 
-function logout() {
+async function logout() {
+  await db.auth.signOut();
   document.getElementById('loginWrap').style.display = 'flex';
   document.getElementById('adminWrap').style.display = 'none';
   document.getElementById('pwInput').value = '';
@@ -382,7 +418,9 @@ function showTab(tab) {
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  event.target.classList.add('active');
+  document.querySelectorAll('.admin-tab').forEach(t => {
+    if (t.getAttribute('onclick')?.includes(`'${tab}'`)) t.classList.add('active');
+  });
 }
 
 // ===== PLACES =====
@@ -494,18 +532,20 @@ async function loadReports() {
 function renderReports() {
   const tbody = document.getElementById('reportsTableBody');
   if (!allReports.length) {
-    tbody.innerHTML = '<tr><td colspan="6" class="empty">📭 미처리 제보 없음</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="empty">📭 미처리 제보 없음</td></tr>';
     return;
   }
+  const typeLabel = { new_place:'신규', price_update:'가격수정', closed:'폐업', other:'기타' };
   tbody.innerHTML = allReports.map(r => `
     <tr>
+      <td><span class="badge ${r.report_type === 'closed' ? 'badge-red' : r.report_type === 'price_update' ? 'badge-yellow' : 'badge-green'}">${typeLabel[r.report_type] || '신규'}</span></td>
       <td><div style="font-weight:700;">${r.name_zh||'-'}</div><div style="font-size:11px;color:var(--text-muted)">${r.name_en||''}</div></td>
       <td>${r.district_en||'-'}</td>
       <td>$${r.price_min||'?'}${r.price_max?'–'+r.price_max:''}</td>
-      <td style="font-size:12px;">${r.open_hours||'-'}</td>
+      <td style="font-size:12px;max-width:260px;line-height:1.4;">${r.note || r.summary || r.open_hours || '-'}</td>
       <td style="font-size:11px;color:var(--text-muted)">${r.created_at ? new Date(r.created_at).toLocaleDateString('ko-KR') : '-'}</td>
       <td style="white-space:nowrap;">
-        <button class="btn btn-approve" onclick="approveReport('${r.id}')">✅ 승인</button>
+        <button class="btn btn-approve" onclick="approveReport('${r.id}')">✅ 처리</button>
         <button class="btn btn-reject" onclick="rejectReport('${r.id}')">❌ 거절</button>
       </td>
     </tr>`).join('');
@@ -514,22 +554,50 @@ function renderReports() {
 async function approveReport(id) {
   const r = allReports.find(x => x.id === id);
   if (!r) return;
-  if (!confirm(`"${r.name_zh}" 을(를) 식당 목록에 추가할까요?`)) return;
-  const { error } = await db.from('brokemap_places').insert({
-    name_zh: r.name_zh, name_en: r.name_en,
-    district_en: r.district_en, district_zh: r.district_zh,
-    lat: r.lat, lng: r.lng,
-    category: r.category, price_min: r.price_min, price_max: r.price_max,
-    address: r.address, open_hours: r.open_hours,
-    signature_dish: r.signature_dish, summary: r.summary,
-    payment: r.payment, is_verified: true,
-    last_verified_at: new Date().toISOString(),
-  });
-  if (error) { alert('승인 실패: ' + error.message); return; }
+  const type = r.report_type || 'new_place';
+
+  if (type === 'closed' && r.source_place_id) {
+    if (!confirm(`"${r.name_zh}" 을(를) 폐업 처리할까요?`)) return;
+    const { error } = await db.from('brokemap_places').update({
+      is_verified: false,
+      summary: (r.note || 'User reported closure'),
+      updated_at: new Date().toISOString()
+    }).eq('id', r.source_place_id);
+    if (error) { alert('폐업 처리 실패: ' + error.message); return; }
+  } else if (type === 'price_update' && r.source_place_id) {
+    if (!confirm(`"${r.name_zh}" 의 가격/정보를 업데이트할까요?`)) return;
+    const patch = {
+      price_min: r.price_min,
+      price_max: r.price_max,
+      open_hours: r.open_hours,
+      address: r.address,
+      signature_dish: r.signature_dish,
+      summary: r.summary,
+      payment: r.payment,
+      last_verified_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    };
+    Object.keys(patch).forEach(k => patch[k] == null && delete patch[k]);
+    const { error } = await db.from('brokemap_places').update(patch).eq('id', r.source_place_id);
+    if (error) { alert('업데이트 실패: ' + error.message); return; }
+  } else {
+    if (!confirm(`"${r.name_zh}" 을(를) 식당 목록에 추가할까요?`)) return;
+    const { error } = await db.from('brokemap_places').insert({
+      name_zh: r.name_zh, name_en: r.name_en,
+      district_en: r.district_en, district_zh: r.district_zh,
+      lat: r.lat, lng: r.lng,
+      category: r.category, price_min: r.price_min, price_max: r.price_max,
+      address: r.address, open_hours: r.open_hours,
+      signature_dish: r.signature_dish, summary: r.summary,
+      payment: r.payment, is_verified: true,
+      last_verified_at: new Date().toISOString(),
+    });
+    if (error) { alert('승인 실패: ' + error.message); return; }
+  }
   await db.from('brokemap_reports').delete().eq('id', id);
   await loadReports();
   await loadPlaces();
-  showToast('✅ 승인 완료! 식당 목록에 추가됐어요');
+  showToast('✅ 처리 완료!');
 }
 
 async function rejectReport(id) {
