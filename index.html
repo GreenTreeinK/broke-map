@@ -292,6 +292,7 @@ body {
   color: var(--text-muted);
   letter-spacing: 0.1px;
   line-height: 1.2;
+  display: none; /* 기본 숨김 - 모바일만 표시 */
 }
 @keyframes panelHintBounce {
   0% { transform: translateY(0); }
@@ -401,13 +402,38 @@ body {
 .detail-panel {
   display: none;
   position: fixed;
-  inset: 0;
+  top: 102px; /* 헤더(56px) + 필터바(46px) */
+  left: 0; right: 0; bottom: 0;
   background: var(--surface);
   z-index: 4000;
   overflow-y: auto;
+  overflow-x: hidden;
   padding-bottom: 60px;
+  -webkit-overflow-scrolling: touch;
 }
 .detail-panel.open { display: block; }
+
+/* 데스크탑: side-panel 너비에 맞춤 */
+@media (min-width: 769px) {
+  .detail-panel {
+    top: 106px; /* 헤더(60px) + 필터바(46px) */
+    width: 300px;
+    right: auto;
+  }
+}
+@media (min-width: 1200px) {
+  .detail-panel { width: 320px; }
+}
+
+/* 모바일: 전체화면 */
+@media (max-width: 768px) {
+  .detail-panel {
+    top: 0;
+    width: 100%;
+    right: 0;
+  }
+  .detail-panel .detail-hero { padding-top: 44px; }
+}
 
 .detail-hero {
   background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
@@ -1093,9 +1119,9 @@ body {
     </div>
     <!-- Desktop tabs (hidden on mobile via CSS) -->
     <div class="desktop-tabs" style="display:none;">
-      <button class="desktop-tab active" id="dtabMap" onclick="switchTab('map')">🗺 地圖</button>
-      <button class="desktop-tab" id="dtabHotdeal" onclick="switchTab('hotdeal')">🔥 熱賣</button>
-      <button class="desktop-tab" id="dtabCommunity" onclick="switchTab('community')">💬 慳錢版</button>
+      <button class="desktop-tab active" id="dtabMap" onclick="switchTab('map')">🗺 <span data-zh="地圖" data-en="Map">地圖</span></button>
+      <button class="desktop-tab" id="dtabHotdeal" onclick="switchTab('hotdeal')">🔥 <span data-zh="熱賣" data-en="Hot Deals">熱賣</span></button>
+      <button class="desktop-tab" id="dtabCommunity" onclick="switchTab('community')">💬 <span data-zh="慳錢版" data-en="Tips">慳錢版</span></button>
     </div>
   </div>
   <div class="header-btns">
@@ -1346,13 +1372,13 @@ body {
         <div>
           <label class="form-label" data-zh="類型" data-en="Category">類型</label>
           <select class="form-input" id="r_category">
-            <option value="cha_chaan_teng">茶餐廳</option>
-            <option value="noodle">麵食</option>
-            <option value="rice">飯類</option>
-            <option value="bakery">烘焙</option>
-            <option value="dessert">甜品</option>
-            <option value="hot_pot">火鍋</option>
-            <option value="other">其他</option>
+            <option value="cha_chaan_teng">茶餐廳 ChaChaan</option>
+            <option value="noodle">麵食 Noodle</option>
+            <option value="rice">飯類 Rice</option>
+            <option value="bakery">烘焙 Bakery</option>
+            <option value="dessert">甜品 Dessert</option>
+            <option value="hot_pot">火鍋 Hot Pot</option>
+            <option value="other">其他 Other</option>
           </select>
         </div>
       </div>
@@ -1788,7 +1814,7 @@ function renderMarkers() {
       .addTo(map)
       .bindPopup(`
         <div class="popup-name">${place.name_zh}</div>
-        <div class="popup-district">${place.district_en} · ${place.district_zh || ''}</div>
+        <div class="popup-district">${place.district_en}${currentLang === 'zh' && place.district_zh ? ' · '+place.district_zh : ''}</div>
         <div class="popup-price">HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'}</div>
         <button class="popup-btn" onclick="openDetail('${place.id}')">
           ${currentLang === 'en' ? 'View Details' : '查看詳情'} →
@@ -1887,8 +1913,8 @@ function renderList() {
             </div>
             <button class="favorite-btn compact ${isFavorite(p.id) ? 'active' : ''}" data-fav-id="${p.id}" onclick="toggleFavorite('${p.id}', event)">${isFavorite(p.id) ? '⭐' : '☆'} ${isFavorite(p.id) ? (currentLang === 'en' ? 'Saved' : '已收藏') : (currentLang === 'en' ? 'Save' : '收藏')}</button>
           </div>
-          <div class="card-district">${p.district_en} ${p.district_zh ? '· '+p.district_zh : ''}</div>
-          ${p.signature_dish ? `<div class="card-dish">🍽 ${p.signature_dish}</div>` : ''}
+          <div class="card-district">${p.district_en} ${currentLang === 'zh' && p.district_zh ? '· '+p.district_zh : ''}</div>
+          ${p.signature_dish && currentLang === 'zh' ? `<div class="card-dish">🍽 ${p.signature_dish}</div>` : ''}
           <div class="card-tags">${tags}</div>
           <div class="card-meta"><span class="card-confirmed">🗓 ${getConfirmedLabel(p, true)}</span></div>
         </div>
@@ -1943,8 +1969,8 @@ function openDetail(id) {
 
       <div class="detail-section">
         <div class="detail-section-title">${currentLang === 'en' ? 'INFO' : '資料'}</div>
-        <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${place.district_zh ? ' · '+place.district_zh : ''}${place.address ? '<br><small style="color:var(--text-muted)">' + place.address + '</small>' : ''}</span></div>
-        ${place.signature_dish ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${place.signature_dish}</span></div>` : ''}
+        <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${currentLang === 'zh' && place.district_zh ? ' · '+place.district_zh : ''}${place.address ? '<br><small style="color:var(--text-muted)">' + place.address + '</small>' : ''}</span></div>
+        ${place.signature_dish && currentLang === 'zh' ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${place.signature_dish}</span></div>` : ''}
         ${place.open_hours ? `<div class="detail-info-row"><span class="detail-info-icon">🕐</span><span>${place.open_hours}</span></div>` : ''}
         <div class="detail-info-row"><span class="detail-info-icon">🗓</span><span>${getConfirmedLabel(place)}</span></div>
         ${place.is_solo_friendly ? `<div class="detail-info-row"><span class="detail-info-icon">👤</span><span>${currentLang === 'en' ? 'Solo friendly' : '可以一個人食'}</span></div>` : ''}
@@ -2009,8 +2035,14 @@ function openDetail(id) {
   `;
 
   document.getElementById('detailPanel').classList.add('open');
-  // 항상 맨 위에서 시작
   document.getElementById('detailPanel').scrollTop = 0;
+  // 데스크탑: 헤더+필터바 정확한 높이 계산
+  if (window.innerWidth >= 769) {
+    const header = document.querySelector('.app-header');
+    const filterBar = document.querySelector('.filter-bar');
+    const topOffset = (header?.offsetHeight || 60) + (filterBar?.offsetHeight || 46);
+    document.getElementById('detailPanel').style.top = topOffset + 'px';
+  }
   loadComments(place.id);
 
   // Scroll to card
@@ -2020,7 +2052,9 @@ function openDetail(id) {
 }
 
 function closeDetail() {
-  document.getElementById('detailPanel').classList.remove('open');
+  const dp = document.getElementById('detailPanel');
+  dp.classList.remove('open');
+  dp.style.top = '';
   activeMarkerId = null;
   renderList();
 }
