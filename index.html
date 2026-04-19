@@ -1442,6 +1442,34 @@ body {
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Issue Report Modal -->
+<div class="report-overlay" id="issueOverlay" onclick="closeIssueIfBg(event)" style="z-index:5000;">
+  <div class="report-sheet" style="max-width:420px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:900;color:var(--red);">⚠️ <span id="issueTitle">報告問題</span></div>
+      <button onclick="closeIssue()" style="background:var(--surface3);border:none;color:var(--text-muted);width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;">✕</button>
+    </div>
+    <input type="hidden" id="issuePlaceId">
+    <div class="form-row">
+      <label class="form-label">問題類型 Issue Type*</label>
+      <select class="form-input" id="issueType">
+        <option value="closed">🚫 已結業 Permanently Closed</option>
+        <option value="price_changed">💰 價錢已更改 Price Changed</option>
+        <option value="hours_changed">🕐 營業時間已更改 Hours Changed</option>
+        <option value="wrong_location">📍 位置不正確 Wrong Location</option>
+        <option value="other">📝 其他 Other</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label class="form-label">詳情 Details (選填)</label>
+      <textarea class="form-input" id="issueDetail" rows="3" placeholder="e.g. 新價錢係 $45-60 / New price is $45-60..." style="resize:vertical;min-height:70px;font-family:inherit;"></textarea>
+    </div>
+    <button class="submit-btn" onclick="submitIssue()" style="width:100%;">
+      📤 <span id="issueSubmitLabel">提交</span>
+    </button>
+  </div>
+</div>
+
 <style>
 @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
 
@@ -1993,6 +2021,16 @@ function openDetail(id) {
         🔗 ${currentLang === 'en' ? 'Open in Google Maps' : '喺Google Maps開啟'}
       </button>
 
+      <!-- SNS 공유 버튼 -->
+      <button class="map-link-btn" style="background:#25D366;color:#fff;" onclick="sharePlace('${place.id}')">
+        📤 ${currentLang === 'en' ? 'Share' : '分享'}
+      </button>
+
+      <!-- 문제 신고 버튼 -->
+      <button class="map-link-btn" style="background:var(--surface2);color:#e8002d;border:1px solid #e8002d;" onclick="openIssueReport('${place.id}', '${place.name_zh.replace(/'/g,"\\'")}')">
+        ⚠️ ${currentLang === 'en' ? 'Report Issue' : '報告問題'}
+      </button>
+
       <!-- Vote Section -->
       <div class="vote-section">
         <div class="vote-label">${currentLang === 'en' ? 'Value for money?' : '抵唔抵食？'}</div>
@@ -2520,6 +2558,67 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===== Toast =====
+// ===== SNS 공유 =====
+function sharePlace(id) {
+  const place = allPlaces.find(p => p.id === id);
+  if (!place) return;
+  const url = `https://greentreeink.github.io/broke-map/`;
+  const text = currentLang === 'en'
+    ? `${place.name_en || place.name_zh} — HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'} | Broke Map HK 🗺`
+    : `${place.name_zh} — HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'} | 窮鬼地圖 🗺`;
+
+  if (navigator.share) {
+    // 모바일 네이티브 공유
+    navigator.share({ title: place.name_zh, text, url }).catch(() => {});
+  } else {
+    // 데스크탑: 클립보드 복사
+    const copyText = `${text}\n${url}`;
+    navigator.clipboard.writeText(copyText).then(() => {
+      showToast(currentLang === 'en' ? '📋 Copied to clipboard!' : '📋 已複製到剪貼板！');
+    }).catch(() => {
+      // fallback: 새 탭으로 WhatsApp 공유
+      window.open(`https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
+    });
+  }
+}
+
+// ===== 문제 신고 =====
+function openIssueReport(placeId, placeName) {
+  document.getElementById('issuePlaceId').value = placeId;
+  document.getElementById('issueTitle').textContent = currentLang === 'en' ? `Report Issue` : `報告問題`;
+  document.getElementById('issueSubmitLabel').textContent = currentLang === 'en' ? 'Submit' : '提交';
+  document.getElementById('issueDetail').value = '';
+  document.getElementById('issueOverlay').classList.add('active');
+}
+function closeIssue() {
+  document.getElementById('issueOverlay').classList.remove('active');
+}
+function closeIssueIfBg(e) {
+  if (e.target === document.getElementById('issueOverlay')) closeIssue();
+}
+async function submitIssue() {
+  const placeId = document.getElementById('issuePlaceId').value;
+  const issueType = document.getElementById('issueType').value;
+  const detail = document.getElementById('issueDetail').value.trim();
+
+  const issueData = {
+    place_id: placeId,
+    issue_type: issueType,
+    detail: detail || null,
+    created_at: new Date().toISOString(),
+  };
+
+  if (db) {
+    try {
+      await db.from('brokemap_issues').insert(issueData);
+    } catch(e) {
+      console.log('Issue DB save failed:', e.message);
+    }
+  }
+  closeIssue();
+  showToast(currentLang === 'en' ? '✅ Thanks for reporting!' : '✅ 多謝報告！我們會盡快處理');
+}
+
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
