@@ -1403,10 +1403,16 @@ body {
         <label class="form-label" data-zh="地址" data-en="Address">地址 (選填)</label>
         <input class="form-input" id="r_address" placeholder="e.g. 47 Parkes St, Jordan" type="text">
       </div>
+
+      <!-- 招牌菜 중문/영문 분리 -->
       <div class="form-row">
-        <label class="form-label" data-zh="招牌菜" data-en="Signature Dish">招牌菜 (選填)</label>
-        <input class="form-input" id="r_dish" placeholder="e.g. 炒蛋多士" type="text">
+        <label class="form-label">🍽 招牌菜 Signature Dish (選填)</label>
+        <div style="display:flex;gap:8px;">
+          <input class="form-input" id="r_dish_zh" placeholder="中文 e.g. 炒蛋多士" type="text" style="flex:1;">
+          <input class="form-input" id="r_dish_en" placeholder="English e.g. Scrambled Egg Toast" type="text" style="flex:1;">
+        </div>
       </div>
+
       <div class="form-row">
         <label class="form-label" data-zh="一句話推薦" data-en="One-line tip">一句推薦 (選填)</label>
         <input class="form-input" id="r_summary" placeholder="e.g. 早餐 $25, 快出餐" type="text">
@@ -1422,10 +1428,42 @@ body {
           <div class="pcheck" onclick="togglePay(this)" data-val="fps">🔄 FPS</div>
         </div>
       </div>
+
+      <!-- 영업시간 드롭다운 -->
       <div class="form-row">
-        <label class="form-label" data-zh="營業時間" data-en="Hours">營業時間 (選填)</label>
-        <input class="form-input" id="r_hours" placeholder="e.g. 07:30-23:00" type="text">
+        <label class="form-label">🕐 營業時間 Hours (選填)</label>
+        <div class="hours-builder" id="hoursBuilder">
+          <div class="hours-row" id="hoursRows">
+            <div class="hours-day-row">
+              <select class="form-input hours-days" style="flex:1.2;">
+                <option value="平日">平日 Mon–Fri</option>
+                <option value="週一至五">週一至五 Mon–Fri</option>
+                <option value="週六">週六 Sat</option>
+                <option value="週日">週日 Sun</option>
+                <option value="週六至日">週六至日 Sat–Sun</option>
+                <option value="每日">每日 Daily</option>
+                <option value="公眾假期">公眾假期 PH</option>
+              </select>
+              <select class="form-input hours-open" style="flex:1;">
+                <option value="">開店 Open</option>
+              </select>
+              <span style="align-self:center;color:var(--text-muted);flex-shrink:0;">–</span>
+              <select class="form-input hours-close" style="flex:1;">
+                <option value="">關門 Close</option>
+              </select>
+              <select class="form-input hours-status" style="flex:0.8;">
+                <option value="">正常</option>
+                <option value="休息">休息 Closed</option>
+              </select>
+            </div>
+          </div>
+          <button type="button" class="add-menu-btn" onclick="addHoursRow()" style="margin-top:6px;">+ 加時段 Add period</button>
+          <div style="margin-top:8px;padding:8px 10px;background:var(--surface3);border-radius:8px;font-size:11px;color:var(--text-muted);" id="hoursPreview">
+            預覽 Preview: —
+          </div>
+        </div>
       </div>
+
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button class="submit-btn" onclick="goToStep1()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">← Back</button>
         <button class="submit-btn" onclick="submitReport()" style="flex:1;">
@@ -2400,6 +2438,116 @@ function timeAgo(dateStr) {
   }
 }
 
+// ===== Hours Builder =====
+const TIMES = (() => {
+  const t = [];
+  for (let h = 0; h < 24; h++) {
+    for (let m of [0, 30]) {
+      const hh = String(h).padStart(2,'0');
+      const mm = String(m).padStart(2,'0');
+      t.push(`${hh}:${mm}`);
+    }
+  }
+  t.push('24:00'); // 자정
+  return t;
+})();
+
+function populateTimeSelects(row) {
+  const opens = row.querySelector('.hours-open');
+  const closes = row.querySelector('.hours-close');
+  [opens, closes].forEach((sel, idx) => {
+    sel.innerHTML = `<option value="">${idx===0?'開店 Open':'關門 Close'}</option>`;
+    TIMES.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      sel.appendChild(opt);
+    });
+  });
+  // 기본값
+  opens.value = '08:00';
+  closes.value = '22:00';
+  updateHoursPreview();
+}
+
+function addHoursRow() {
+  const container = document.getElementById('hoursRows');
+  const div = document.createElement('div');
+  div.className = 'hours-day-row';
+  div.style.cssText = 'display:flex;gap:4px;align-items:center;margin-bottom:6px;flex-wrap:wrap;';
+  div.innerHTML = `
+    <select class="form-input hours-days" style="flex:1.2;" onchange="updateHoursPreview()">
+      <option value="平日">平日 Mon–Fri</option>
+      <option value="週一至五">週一至五 Mon–Fri</option>
+      <option value="週六">週六 Sat</option>
+      <option value="週日">週日 Sun</option>
+      <option value="週六至日">週六至日 Sat–Sun</option>
+      <option value="每日">每日 Daily</option>
+      <option value="公眾假期">公眾假期 PH</option>
+    </select>
+    <select class="form-input hours-open" style="flex:1;" onchange="updateHoursPreview()"></select>
+    <span style="align-self:center;color:var(--text-muted);flex-shrink:0;">–</span>
+    <select class="form-input hours-close" style="flex:1;" onchange="updateHoursPreview()"></select>
+    <select class="form-input hours-status" style="flex:0.8;" onchange="updateHoursPreview()">
+      <option value="">正常</option>
+      <option value="休息">休息 Closed</option>
+    </select>
+    <button type="button" onclick="this.parentElement.remove();updateHoursPreview()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;flex-shrink:0;">×</button>`;
+  container.appendChild(div);
+  populateTimeSelects(div);
+}
+
+function updateHoursPreview() {
+  const rows = document.querySelectorAll('.hours-day-row');
+  const parts = [];
+  rows.forEach(row => {
+    const day = row.querySelector('.hours-days')?.value || '';
+    const open = row.querySelector('.hours-open')?.value || '';
+    const close = row.querySelector('.hours-close')?.value || '';
+    const status = row.querySelector('.hours-status')?.value || '';
+    if (status === '休息') {
+      parts.push(`${day} 休息`);
+    } else if (open && close) {
+      parts.push(`${day} ${open}–${close}`);
+    }
+  });
+  const preview = parts.join(' / ') || '—';
+  const el = document.getElementById('hoursPreview');
+  if (el) el.textContent = `預覽 Preview: ${preview}`;
+  return parts.join(' / ');
+}
+
+function buildHoursString() {
+  return updateHoursPreview().replace('預覽 Preview: ', '') || null;
+}
+
+function initHoursBuilder() {
+  const container = document.getElementById('hoursRows');
+  if (!container) return;
+  container.innerHTML = '';
+  const div = document.createElement('div');
+  div.className = 'hours-day-row';
+  div.style.cssText = 'display:flex;gap:4px;align-items:center;margin-bottom:6px;flex-wrap:wrap;';
+  div.innerHTML = `
+    <select class="form-input hours-days" style="flex:1.2;" onchange="updateHoursPreview()">
+      <option value="每日">每日 Daily</option>
+      <option value="平日">平日 Mon–Fri</option>
+      <option value="週一至五">週一至五 Mon–Fri</option>
+      <option value="週六">週六 Sat</option>
+      <option value="週日">週日 Sun</option>
+      <option value="週六至日">週六至日 Sat–Sun</option>
+      <option value="公眾假期">公眾假期 PH</option>
+    </select>
+    <select class="form-input hours-open" style="flex:1;" onchange="updateHoursPreview()"></select>
+    <span style="align-self:center;color:var(--text-muted);flex-shrink:0;">–</span>
+    <select class="form-input hours-close" style="flex:1;" onchange="updateHoursPreview()"></select>
+    <select class="form-input hours-status" style="flex:0.8;" onchange="updateHoursPreview()">
+      <option value="">正常</option>
+      <option value="休息">休息 Closed</option>
+    </select>`;
+  container.appendChild(div);
+  populateTimeSelects(div);
+}
+
 // ===== Report 2-Step Form =====
 function goToStep2() {
   const name_zh = document.getElementById('r_name_zh').value.trim();
@@ -2412,6 +2560,7 @@ function goToStep2() {
   document.getElementById('report-step2').style.display = 'block';
   document.getElementById('step1-indicator').classList.remove('active');
   document.getElementById('step2-indicator').classList.add('active');
+  initHoursBuilder(); // 영업시간 드롭다운 초기화
 }
 
 function goToStep1() {
@@ -2483,10 +2632,11 @@ async function submitReport() {
     category: document.getElementById('r_category').value,
     price_min,
     price_max: parseInt(document.getElementById('r_price_max').value) || null,
-    signature_dish: document.getElementById('r_dish').value.trim() || null,
+    signature_dish: (document.getElementById('r_dish_zh')?.value?.trim() || '') || null,
+    signature_dish_en: document.getElementById('r_dish_en')?.value?.trim() || null,
     summary: document.getElementById('r_summary').value.trim() || null,
     payment,
-    open_hours: document.getElementById('r_hours').value.trim() || null,
+    open_hours: buildHoursString() || null,
   };
 
   if (db) {
@@ -2501,7 +2651,7 @@ async function submitReport() {
   showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : '多謝提報！審核後上線 🙏');
   closeReport();
   // Reset form
-  ['r_name_zh','r_name_en','r_address','r_dish','r_hours','r_price_min','r_price_max','r_summary'].forEach(id => {
+  ['r_name_zh','r_name_en','r_address','r_dish_zh','r_dish_en','r_price_min','r_price_max','r_summary'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
