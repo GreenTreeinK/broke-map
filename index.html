@@ -1372,7 +1372,7 @@ body {
     </div>
 
     <!-- STEP 2: Optional Details -->
-    <div id="report-step2" style="display:none;">
+    <div id="report-step2" style="display:none !important;">
       <div class="form-row">
         <label class="form-label" data-zh="地址" data-en="Address">地址 (選填)</label>
         <input class="form-input" id="r_address" placeholder="e.g. 47 Parkes St, Jordan" type="text">
@@ -2459,16 +2459,16 @@ function goToStep2() {
   if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : '請輸入食肆名稱'); return; }
   if (!district) { showToast(currentLang === 'en' ? 'Select a district' : '請選擇地區'); return; }
   if (!price_min) { showToast(currentLang === 'en' ? 'Enter minimum price' : '請輸入最低價'); return; }
-  document.getElementById('report-step1').style.display = 'none';
-  document.getElementById('report-step2').style.display = 'block';
+  document.getElementById('report-step1').style.cssText='display:none';
+  const s2=document.getElementById('report-step2'); s2.style.cssText='display:block !important';
   document.getElementById('step1-indicator').classList.remove('active');
   document.getElementById('step2-indicator').classList.add('active');
   initHoursBuilder();
 }
 
 function goToStep1() {
-  document.getElementById('report-step2').style.display = 'none';
-  document.getElementById('report-step1').style.display = 'block';
+  const s2b=document.getElementById('report-step2'); s2b.style.cssText='display:none !important';
+  document.getElementById('report-step1').style.cssText='display:block';
   document.getElementById('step2-indicator').classList.remove('active');
   document.getElementById('step1-indicator').classList.add('active');
 }
