@@ -1970,9 +1970,9 @@ function openDetail(id) {
 
       <div class="detail-section">
         <div class="detail-section-title">${currentLang === 'en' ? 'INFO' : '資料'}</div>
-        <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${place.district_zh ? ' · '+place.district_zh : ''}${place.address ? '<br><small style="color:var(--text-muted)">' + place.address + '</small>' : ''}</span></div>
-        ${place.signature_dish ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${place.signature_dish}</span></div>` : ''}
-        ${place.open_hours ? `<div class="detail-info-row"><span class="detail-info-icon">🕐</span><span>${place.open_hours}</span></div>` : ''}
+        <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${place.district_zh ? ' · '+place.district_zh : ''}${(currentLang === 'en' ? place.address : (place.address_zh || place.address)) ? '<br><small style="color:var(--text-muted)">' + (currentLang === 'en' ? place.address : (place.address_zh || place.address)) + '</small>' : ''}</span></div>
+        ${(currentLang === 'en' ? (place.signature_dish_en || place.signature_dish) : place.signature_dish) ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${currentLang === 'en' ? (place.signature_dish_en || place.signature_dish) : place.signature_dish}</span></div>` : ''}
+        ${place.open_hours ? `<div class="detail-info-row"><span class="detail-info-icon">🕐</span><span>${currentLang === 'en' ? place.open_hours.replace(/週一/g,'Mon').replace(/週二/g,'Tue').replace(/週三/g,'Wed').replace(/週四/g,'Thu').replace(/週五/g,'Fri').replace(/週六/g,'Sat').replace(/週日/g,'Sun') : place.open_hours}</span></div>` : ''}
         <div class="detail-info-row"><span class="detail-info-icon">🗓</span><span>${getConfirmedLabel(place)}</span></div>
         ${place.is_solo_friendly ? `<div class="detail-info-row"><span class="detail-info-icon">👤</span><span>${currentLang === 'en' ? 'Solo friendly' : '可以一個人食'}</span></div>` : ''}
       </div>
