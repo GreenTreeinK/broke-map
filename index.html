@@ -1346,13 +1346,14 @@ body {
         <div>
           <label class="form-label" data-zh="類型" data-en="Category">類型</label>
           <select class="form-input" id="r_category">
-            <option value="cha_chaan_teng">茶餐廳</option>
-            <option value="noodle">麵食</option>
-            <option value="rice">飯類</option>
-            <option value="bakery">烘焙</option>
-            <option value="dessert">甜品</option>
-            <option value="hot_pot">火鍋</option>
-            <option value="other">其他</option>
+            <option value="cha_chaan_teng">茶餐廳 ChaChaan</option>
+            <option value="noodle">麵食 Noodle</option>
+            <option value="rice">飯類 Rice</option>
+            <option value="bakery">烘焙 Bakery</option>
+            <option value="dessert">甜品 Dessert</option>
+            <option value="hot_pot">火鍋 Hot Pot</option>
+            <option value="drinks">飲品 Drinks</option>
+            <option value="other">其他 Other</option>
           </select>
         </div>
       </div>
@@ -1374,8 +1375,17 @@ body {
     <!-- STEP 2: Optional Details -->
     <div id="report-step2" style="display:none !important;">
       <div class="form-row">
-        <label class="form-label" data-zh="地址" data-en="Address">地址 (選填)</label>
-        <input class="form-input" id="r_address" placeholder="e.g. 47 Parkes St, Jordan" type="text">
+        <label class="form-label">📍 地址 Address (選填)</label>
+        <div style="display:flex;gap:8px;flex-direction:column;">
+          <div style="position:relative;">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-muted);pointer-events:none;">EN</span>
+            <input class="form-input" id="r_address" placeholder="e.g. 47 Parkes St, Jordan" type="text" style="padding-left:32px;">
+          </div>
+          <div style="position:relative;">
+            <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-muted);pointer-events:none;">中</span>
+            <input class="form-input" id="r_address_zh" placeholder="e.g. 佐敦砵蘭街47號" type="text" style="padding-left:26px;">
+          </div>
+        </div>
       </div>
       <!-- 招牌菜 중문/영문 분리 -->
       <div class="form-row">
@@ -2532,6 +2542,7 @@ async function submitReport() {
     district_en: district,
     district_zh: districtZhMap[district] || district,
     address: document.getElementById('r_address').value.trim() || null,
+    address_zh: document.getElementById('r_address_zh')?.value.trim() || null,
     lat, lng,
     category: document.getElementById('r_category').value,
     price_min,
@@ -2554,7 +2565,7 @@ async function submitReport() {
   showToast(currentLang === 'en' ? 'Thanks for reporting! 🙏' : '多謝提報！審核後上線 🙏');
   closeReport();
   // Reset form
-  ['r_name_zh','r_name_en','r_address','r_dish_zh','r_dish_en','r_price_min','r_price_max','r_summary'].forEach(id => {
+  ['r_name_zh','r_name_en','r_address','r_address_zh','r_dish_zh','r_dish_en','r_price_min','r_price_max','r_summary'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.value = '';
   });
