@@ -2558,10 +2558,11 @@ async function submitReport() {
     category: document.getElementById('r_category').value,
     price_min,
     price_max: parseInt(document.getElementById('r_price_max').value) || null,
-    signature_dish: document.getElementById('r_dish').value.trim() || null,
+    signature_dish: (document.getElementById('r_dish_zh')?.value?.trim()) || null,
+    signature_dish_en: document.getElementById('r_dish_en')?.value?.trim() || null,
     summary: document.getElementById('r_summary').value.trim() || null,
     payment,
-    open_hours: document.getElementById('r_hours').value.trim() || null,
+    open_hours: buildHoursString() || null,
   };
 
   if (db) {
@@ -2569,7 +2570,9 @@ async function submitReport() {
       const { error } = await db.from('brokemap_reports').insert(reportData);
       if (error) throw error;
     } catch(e) {
-      console.log('DB save failed, local only:', e.message);
+      console.error('DB save failed:', e.message);
+      showToast('❌ 提交失敗: ' + e.message);
+      return;
     }
   }
 
