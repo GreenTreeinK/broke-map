@@ -292,7 +292,6 @@ body {
   color: var(--text-muted);
   letter-spacing: 0.1px;
   line-height: 1.2;
-  display: none; /* 기본 숨김 - 모바일만 표시 */
 }
 @keyframes panelHintBounce {
   0% { transform: translateY(0); }
@@ -402,38 +401,13 @@ body {
 .detail-panel {
   display: none;
   position: fixed;
-  top: 102px; /* 헤더(56px) + 필터바(46px) */
-  left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: var(--surface);
   z-index: 4000;
   overflow-y: auto;
-  overflow-x: hidden;
   padding-bottom: 60px;
-  -webkit-overflow-scrolling: touch;
 }
 .detail-panel.open { display: block; }
-
-/* 데스크탑: side-panel 너비에 맞춤 */
-@media (min-width: 769px) {
-  .detail-panel {
-    top: 106px; /* 헤더(60px) + 필터바(46px) */
-    width: 300px;
-    right: auto;
-  }
-}
-@media (min-width: 1200px) {
-  .detail-panel { width: 320px; }
-}
-
-/* 모바일: 전체화면 */
-@media (max-width: 768px) {
-  .detail-panel {
-    top: 0;
-    width: 100%;
-    right: 0;
-  }
-  .detail-panel .detail-hero { padding-top: 44px; }
-}
 
 .detail-hero {
   background: linear-gradient(135deg, var(--red) 0%, var(--red-dark) 100%);
@@ -1119,9 +1093,9 @@ body {
     </div>
     <!-- Desktop tabs (hidden on mobile via CSS) -->
     <div class="desktop-tabs" style="display:none;">
-      <button class="desktop-tab active" id="dtabMap" onclick="switchTab('map')">🗺 <span data-zh="地圖" data-en="Map">地圖</span></button>
-      <button class="desktop-tab" id="dtabHotdeal" onclick="switchTab('hotdeal')">🔥 <span data-zh="熱賣" data-en="Hot Deals">熱賣</span></button>
-      <button class="desktop-tab" id="dtabCommunity" onclick="switchTab('community')">💬 <span data-zh="慳錢版" data-en="Tips">慳錢版</span></button>
+      <button class="desktop-tab active" id="dtabMap" onclick="switchTab('map')">🗺 地圖</button>
+      <button class="desktop-tab" id="dtabHotdeal" onclick="switchTab('hotdeal')">🔥 熱賣</button>
+      <button class="desktop-tab" id="dtabCommunity" onclick="switchTab('community')">💬 慳錢版</button>
     </div>
   </div>
   <div class="header-btns">
@@ -1372,13 +1346,13 @@ body {
         <div>
           <label class="form-label" data-zh="類型" data-en="Category">類型</label>
           <select class="form-input" id="r_category">
-            <option value="cha_chaan_teng">茶餐廳 ChaChaan</option>
-            <option value="noodle">麵食 Noodle</option>
-            <option value="rice">飯類 Rice</option>
-            <option value="bakery">烘焙 Bakery</option>
-            <option value="dessert">甜品 Dessert</option>
-            <option value="hot_pot">火鍋 Hot Pot</option>
-            <option value="other">其他 Other</option>
+            <option value="cha_chaan_teng">茶餐廳</option>
+            <option value="noodle">麵食</option>
+            <option value="rice">飯類</option>
+            <option value="bakery">烘焙</option>
+            <option value="dessert">甜品</option>
+            <option value="hot_pot">火鍋</option>
+            <option value="other">其他</option>
           </select>
         </div>
       </div>
@@ -1403,16 +1377,21 @@ body {
         <label class="form-label" data-zh="地址" data-en="Address">地址 (選填)</label>
         <input class="form-input" id="r_address" placeholder="e.g. 47 Parkes St, Jordan" type="text">
       </div>
-
-      <!-- 招牌菜 중문/영문 분리 -->
-      <div class="form-row">
-        <label class="form-label">🍽 招牌菜 Signature Dish (選填)</label>
-        <div style="display:flex;gap:8px;">
-          <input class="form-input" id="r_dish_zh" placeholder="中文 e.g. 炒蛋多士" type="text" style="flex:1;">
-          <input class="form-input" id="r_dish_en" placeholder="English e.g. Scrambled Egg Toast" type="text" style="flex:1;">
+        <!-- 招牌菜 중문/영문 분리 -->
+        <div class="form-row">
+          <label class="form-label">🍽 招牌菜 Signature Dish (選填)</label>
+          <div style="display:flex;gap:8px;">
+            <div style="flex:1;position:relative;">
+              <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-muted);pointer-events:none;">中</span>
+              <input class="form-input" id="r_dish_zh" placeholder="炒蛋多士" type="text" style="padding-left:26px;">
+            </div>
+            <div style="flex:1;position:relative;">
+              <span style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text-muted);pointer-events:none;">EN</span>
+              <input class="form-input" id="r_dish_en" placeholder="Scrambled Egg Toast" type="text" style="padding-left:28px;">
+            </div>
+          </div>
         </div>
       </div>
-
       <div class="form-row">
         <label class="form-label" data-zh="一句話推薦" data-en="One-line tip">一句推薦 (選填)</label>
         <input class="form-input" id="r_summary" placeholder="e.g. 早餐 $25, 快出餐" type="text">
@@ -1432,38 +1411,12 @@ body {
       <!-- 영업시간 드롭다운 -->
       <div class="form-row">
         <label class="form-label">🕐 營業時間 Hours (選填)</label>
-        <div class="hours-builder" id="hoursBuilder">
-          <div class="hours-row" id="hoursRows">
-            <div class="hours-day-row">
-              <select class="form-input hours-days" style="flex:1.2;">
-                <option value="平日">平日 Mon–Fri</option>
-                <option value="週一至五">週一至五 Mon–Fri</option>
-                <option value="週六">週六 Sat</option>
-                <option value="週日">週日 Sun</option>
-                <option value="週六至日">週六至日 Sat–Sun</option>
-                <option value="每日">每日 Daily</option>
-                <option value="公眾假期">公眾假期 PH</option>
-              </select>
-              <select class="form-input hours-open" style="flex:1;">
-                <option value="">開店 Open</option>
-              </select>
-              <span style="align-self:center;color:var(--text-muted);flex-shrink:0;">–</span>
-              <select class="form-input hours-close" style="flex:1;">
-                <option value="">關門 Close</option>
-              </select>
-              <select class="form-input hours-status" style="flex:0.8;">
-                <option value="">正常</option>
-                <option value="休息">休息 Closed</option>
-              </select>
-            </div>
-          </div>
-          <button type="button" class="add-menu-btn" onclick="addHoursRow()" style="margin-top:6px;">+ 加時段 Add period</button>
-          <div style="margin-top:8px;padding:8px 10px;background:var(--surface3);border-radius:8px;font-size:11px;color:var(--text-muted);" id="hoursPreview">
-            預覽 Preview: —
-          </div>
-        </div>
+        <div id="hoursRows" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <button type="button" onclick="addHoursRow()" style="margin-top:8px;width:100%;padding:8px;border:1.5px dashed var(--border);border-radius:10px;background:none;color:var(--text-muted);font-size:12px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--yellow)';this.style.color='var(--yellow)'" onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text-muted)'">
+          + 加時段 Add period
+        </button>
+        <div id="hoursPreview" style="margin-top:8px;padding:8px 12px;background:var(--surface3);border-radius:8px;font-size:11px;color:var(--text-muted);display:none;"></div>
       </div>
-
       <div style="display:flex;gap:8px;margin-top:8px;">
         <button class="submit-btn" onclick="goToStep1()" style="background:var(--surface3);color:var(--text);flex:0 0 80px;">← Back</button>
         <button class="submit-btn" onclick="submitReport()" style="flex:1;">
@@ -1479,34 +1432,6 @@ body {
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
-
-<!-- Issue Report Modal -->
-<div class="report-overlay" id="issueOverlay" onclick="closeIssueIfBg(event)" style="z-index:5000;">
-  <div class="report-sheet" style="max-width:420px;">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-      <div style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:900;color:var(--red);">⚠️ <span id="issueTitle">報告問題</span></div>
-      <button onclick="closeIssue()" style="background:var(--surface3);border:none;color:var(--text-muted);width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;">✕</button>
-    </div>
-    <input type="hidden" id="issuePlaceId">
-    <div class="form-row">
-      <label class="form-label">問題類型 Issue Type*</label>
-      <select class="form-input" id="issueType">
-        <option value="closed">🚫 已結業 Permanently Closed</option>
-        <option value="price_changed">💰 價錢已更改 Price Changed</option>
-        <option value="hours_changed">🕐 營業時間已更改 Hours Changed</option>
-        <option value="wrong_location">📍 位置不正確 Wrong Location</option>
-        <option value="other">📝 其他 Other</option>
-      </select>
-    </div>
-    <div class="form-row">
-      <label class="form-label">詳情 Details (選填)</label>
-      <textarea class="form-input" id="issueDetail" rows="3" placeholder="e.g. 新價錢係 $45-60 / New price is $45-60..." style="resize:vertical;min-height:70px;font-family:inherit;"></textarea>
-    </div>
-    <button class="submit-btn" onclick="submitIssue()" style="width:100%;">
-      📤 <span id="issueSubmitLabel">提交</span>
-    </button>
-  </div>
-</div>
 
 <style>
 @keyframes spin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
@@ -1880,7 +1805,7 @@ function renderMarkers() {
       .addTo(map)
       .bindPopup(`
         <div class="popup-name">${place.name_zh}</div>
-        <div class="popup-district">${place.district_en}${currentLang === 'zh' && place.district_zh ? ' · '+place.district_zh : ''}</div>
+        <div class="popup-district">${place.district_en} · ${place.district_zh || ''}</div>
         <div class="popup-price">HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'}</div>
         <button class="popup-btn" onclick="openDetail('${place.id}')">
           ${currentLang === 'en' ? 'View Details' : '查看詳情'} →
@@ -1979,8 +1904,8 @@ function renderList() {
             </div>
             <button class="favorite-btn compact ${isFavorite(p.id) ? 'active' : ''}" data-fav-id="${p.id}" onclick="toggleFavorite('${p.id}', event)">${isFavorite(p.id) ? '⭐' : '☆'} ${isFavorite(p.id) ? (currentLang === 'en' ? 'Saved' : '已收藏') : (currentLang === 'en' ? 'Save' : '收藏')}</button>
           </div>
-          <div class="card-district">${p.district_en} ${currentLang === 'zh' && p.district_zh ? '· '+p.district_zh : ''}</div>
-          ${p.signature_dish && currentLang === 'zh' ? `<div class="card-dish">🍽 ${p.signature_dish}</div>` : ''}
+          <div class="card-district">${p.district_en} ${p.district_zh ? '· '+p.district_zh : ''}</div>
+          ${p.signature_dish ? `<div class="card-dish">🍽 ${p.signature_dish}</div>` : ''}
           <div class="card-tags">${tags}</div>
           <div class="card-meta"><span class="card-confirmed">🗓 ${getConfirmedLabel(p, true)}</span></div>
         </div>
@@ -2035,8 +1960,8 @@ function openDetail(id) {
 
       <div class="detail-section">
         <div class="detail-section-title">${currentLang === 'en' ? 'INFO' : '資料'}</div>
-        <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${currentLang === 'zh' && place.district_zh ? ' · '+place.district_zh : ''}${place.address ? '<br><small style="color:var(--text-muted)">' + place.address + '</small>' : ''}</span></div>
-        ${place.signature_dish && currentLang === 'zh' ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${place.signature_dish}</span></div>` : ''}
+        <div class="detail-info-row"><span class="detail-info-icon">📍</span><span>${place.district_en}${place.district_zh ? ' · '+place.district_zh : ''}${place.address ? '<br><small style="color:var(--text-muted)">' + place.address + '</small>' : ''}</span></div>
+        ${place.signature_dish ? `<div class="detail-info-row"><span class="detail-info-icon">🍽</span><span>${place.signature_dish}</span></div>` : ''}
         ${place.open_hours ? `<div class="detail-info-row"><span class="detail-info-icon">🕐</span><span>${place.open_hours}</span></div>` : ''}
         <div class="detail-info-row"><span class="detail-info-icon">🗓</span><span>${getConfirmedLabel(place)}</span></div>
         ${place.is_solo_friendly ? `<div class="detail-info-row"><span class="detail-info-icon">👤</span><span>${currentLang === 'en' ? 'Solo friendly' : '可以一個人食'}</span></div>` : ''}
@@ -2057,16 +1982,6 @@ function openDetail(id) {
       </button>
       <button class="map-link-btn" style="background:var(--surface2);color:var(--text);" onclick="openGoogleMaps(${place.lat}, ${place.lng}, '${encodeURIComponent(place.name_zh)}')">
         🔗 ${currentLang === 'en' ? 'Open in Google Maps' : '喺Google Maps開啟'}
-      </button>
-
-      <!-- SNS 공유 버튼 -->
-      <button class="map-link-btn" style="background:#25D366;color:#fff;" onclick="sharePlace('${place.id}')">
-        📤 ${currentLang === 'en' ? 'Share' : '分享'}
-      </button>
-
-      <!-- 문제 신고 버튼 -->
-      <button class="map-link-btn" style="background:var(--surface2);color:#e8002d;border:1px solid #e8002d;" onclick="openIssueReport('${place.id}', '${place.name_zh.replace(/'/g,"\\'")}')">
-        ⚠️ ${currentLang === 'en' ? 'Report Issue' : '報告問題'}
       </button>
 
       <!-- Vote Section -->
@@ -2111,14 +2026,6 @@ function openDetail(id) {
   `;
 
   document.getElementById('detailPanel').classList.add('open');
-  document.getElementById('detailPanel').scrollTop = 0;
-  // 데스크탑: 헤더+필터바 정확한 높이 계산
-  if (window.innerWidth >= 769) {
-    const header = document.querySelector('.app-header');
-    const filterBar = document.querySelector('.filter-bar');
-    const topOffset = (header?.offsetHeight || 60) + (filterBar?.offsetHeight || 46);
-    document.getElementById('detailPanel').style.top = topOffset + 'px';
-  }
   loadComments(place.id);
 
   // Scroll to card
@@ -2128,9 +2035,7 @@ function openDetail(id) {
 }
 
 function closeDetail() {
-  const dp = document.getElementById('detailPanel');
-  dp.classList.remove('open');
-  dp.style.top = '';
+  document.getElementById('detailPanel').classList.remove('open');
   activeMarkerId = null;
   renderList();
 }
@@ -2439,113 +2344,112 @@ function timeAgo(dateStr) {
 }
 
 // ===== Hours Builder =====
-const TIMES = (() => {
+const HOUR_TIMES = (() => {
   const t = [];
   for (let h = 0; h < 24; h++) {
     for (let m of [0, 30]) {
-      const hh = String(h).padStart(2,'0');
-      const mm = String(m).padStart(2,'0');
-      t.push(`${hh}:${mm}`);
+      t.push(`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`);
     }
   }
-  t.push('24:00'); // 자정
+  t.push('24:00');
   return t;
 })();
 
-function populateTimeSelects(row) {
-  const opens = row.querySelector('.hours-open');
-  const closes = row.querySelector('.hours-close');
-  [opens, closes].forEach((sel, idx) => {
-    sel.innerHTML = `<option value="">${idx===0?'開店 Open':'關門 Close'}</option>`;
-    TIMES.forEach(t => {
-      const opt = document.createElement('option');
-      opt.value = t; opt.textContent = t;
-      sel.appendChild(opt);
-    });
+const DAY_OPTIONS = [
+  { val: '每日', label: '每日 Daily' },
+  { val: '平日', label: '平日 Mon–Fri' },
+  { val: '週六', label: '週六 Sat' },
+  { val: '週日', label: '週日 Sun' },
+  { val: '週六至日', label: '週六至日 Sat–Sun' },
+  { val: '公眾假期', label: '公眾假期 PH' },
+];
+
+function makeTimeSelect(cls, defaultVal, label) {
+  const sel = document.createElement('select');
+  sel.className = 'form-input ' + cls;
+  sel.style.cssText = 'flex:1;min-width:0;font-size:12px;padding:6px 4px;';
+  sel.onchange = updateHoursPreview;
+  const placeholder = document.createElement('option');
+  placeholder.value = ''; placeholder.textContent = label;
+  sel.appendChild(placeholder);
+  HOUR_TIMES.forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t; opt.textContent = t;
+    if (t === defaultVal) opt.selected = true;
+    sel.appendChild(opt);
   });
-  // 기본값
-  opens.value = '08:00';
-  closes.value = '22:00';
+  return sel;
+}
+
+function addHoursRow(defaultDay = '每日', defaultOpen = '08:00', defaultClose = '22:00') {
+  const container = document.getElementById('hoursRows');
+
+  const row = document.createElement('div');
+  row.style.cssText = 'display:grid;grid-template-columns:1.4fr 1fr auto 1fr auto;gap:6px;align-items:center;background:var(--surface3);border-radius:10px;padding:8px 10px;';
+
+  // 요일 선택
+  const daySel = document.createElement('select');
+  daySel.className = 'form-input';
+  daySel.style.cssText = 'font-size:12px;padding:6px 4px;min-width:0;';
+  daySel.onchange = updateHoursPreview;
+  DAY_OPTIONS.forEach(d => {
+    const opt = document.createElement('option');
+    opt.value = d.val; opt.textContent = d.label;
+    if (d.val === defaultDay) opt.selected = true;
+    daySel.appendChild(opt);
+  });
+
+  const openSel = makeTimeSelect('hours-open', defaultOpen, '開店');
+  const dash = document.createElement('span');
+  dash.textContent = '–';
+  dash.style.cssText = 'color:var(--text-muted);text-align:center;font-size:14px;';
+  const closeSel = makeTimeSelect('hours-close', defaultClose, '關門');
+
+  const delBtn = document.createElement('button');
+  delBtn.type = 'button';
+  delBtn.textContent = '×';
+  delBtn.style.cssText = 'background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;padding:0;line-height:1;width:20px;text-align:center;flex-shrink:0;';
+  delBtn.onclick = () => { row.remove(); updateHoursPreview(); };
+
+  row.appendChild(daySel);
+  row.appendChild(openSel);
+  row.appendChild(dash);
+  row.appendChild(closeSel);
+  row.appendChild(delBtn);
+  container.appendChild(row);
   updateHoursPreview();
 }
 
-function addHoursRow() {
-  const container = document.getElementById('hoursRows');
-  const div = document.createElement('div');
-  div.className = 'hours-day-row';
-  div.style.cssText = 'display:flex;gap:4px;align-items:center;margin-bottom:6px;flex-wrap:wrap;';
-  div.innerHTML = `
-    <select class="form-input hours-days" style="flex:1.2;" onchange="updateHoursPreview()">
-      <option value="平日">平日 Mon–Fri</option>
-      <option value="週一至五">週一至五 Mon–Fri</option>
-      <option value="週六">週六 Sat</option>
-      <option value="週日">週日 Sun</option>
-      <option value="週六至日">週六至日 Sat–Sun</option>
-      <option value="每日">每日 Daily</option>
-      <option value="公眾假期">公眾假期 PH</option>
-    </select>
-    <select class="form-input hours-open" style="flex:1;" onchange="updateHoursPreview()"></select>
-    <span style="align-self:center;color:var(--text-muted);flex-shrink:0;">–</span>
-    <select class="form-input hours-close" style="flex:1;" onchange="updateHoursPreview()"></select>
-    <select class="form-input hours-status" style="flex:0.8;" onchange="updateHoursPreview()">
-      <option value="">正常</option>
-      <option value="休息">休息 Closed</option>
-    </select>
-    <button type="button" onclick="this.parentElement.remove();updateHoursPreview()" style="background:none;border:none;color:var(--text-muted);font-size:18px;cursor:pointer;flex-shrink:0;">×</button>`;
-  container.appendChild(div);
-  populateTimeSelects(div);
-}
-
 function updateHoursPreview() {
-  const rows = document.querySelectorAll('.hours-day-row');
+  const rows = document.querySelectorAll('#hoursRows > div');
   const parts = [];
   rows.forEach(row => {
-    const day = row.querySelector('.hours-days')?.value || '';
-    const open = row.querySelector('.hours-open')?.value || '';
-    const close = row.querySelector('.hours-close')?.value || '';
-    const status = row.querySelector('.hours-status')?.value || '';
-    if (status === '休息') {
-      parts.push(`${day} 休息`);
-    } else if (open && close) {
-      parts.push(`${day} ${open}–${close}`);
-    }
+    const day = row.querySelector('select')?.value || '';
+    const sels = row.querySelectorAll('select');
+    const open = sels[1]?.value || '';
+    const close = sels[2]?.value || '';
+    if (open && close) parts.push(`${day} ${open}–${close}`);
+    else if (day) parts.push(`${day} 休息`);
   });
-  const preview = parts.join(' / ') || '—';
-  const el = document.getElementById('hoursPreview');
-  if (el) el.textContent = `預覽 Preview: ${preview}`;
+  const preview = document.getElementById('hoursPreview');
+  if (preview) {
+    if (parts.length > 0) {
+      preview.style.display = 'block';
+      preview.innerHTML = `<span style="color:var(--yellow);font-weight:700;">Preview:</span> ${parts.join(' / ')}`;
+    } else {
+      preview.style.display = 'none';
+    }
+  }
   return parts.join(' / ');
 }
 
-function buildHoursString() {
-  return updateHoursPreview().replace('預覽 Preview: ', '') || null;
-}
+function buildHoursString() { return updateHoursPreview() || null; }
 
 function initHoursBuilder() {
   const container = document.getElementById('hoursRows');
   if (!container) return;
   container.innerHTML = '';
-  const div = document.createElement('div');
-  div.className = 'hours-day-row';
-  div.style.cssText = 'display:flex;gap:4px;align-items:center;margin-bottom:6px;flex-wrap:wrap;';
-  div.innerHTML = `
-    <select class="form-input hours-days" style="flex:1.2;" onchange="updateHoursPreview()">
-      <option value="每日">每日 Daily</option>
-      <option value="平日">平日 Mon–Fri</option>
-      <option value="週一至五">週一至五 Mon–Fri</option>
-      <option value="週六">週六 Sat</option>
-      <option value="週日">週日 Sun</option>
-      <option value="週六至日">週六至日 Sat–Sun</option>
-      <option value="公眾假期">公眾假期 PH</option>
-    </select>
-    <select class="form-input hours-open" style="flex:1;" onchange="updateHoursPreview()"></select>
-    <span style="align-self:center;color:var(--text-muted);flex-shrink:0;">–</span>
-    <select class="form-input hours-close" style="flex:1;" onchange="updateHoursPreview()"></select>
-    <select class="form-input hours-status" style="flex:0.8;" onchange="updateHoursPreview()">
-      <option value="">正常</option>
-      <option value="休息">休息 Closed</option>
-    </select>`;
-  container.appendChild(div);
-  populateTimeSelects(div);
+  addHoursRow('每日', '08:00', '22:00');
 }
 
 // ===== Report 2-Step Form =====
@@ -2560,7 +2464,7 @@ function goToStep2() {
   document.getElementById('report-step2').style.display = 'block';
   document.getElementById('step1-indicator').classList.remove('active');
   document.getElementById('step2-indicator').classList.add('active');
-  initHoursBuilder(); // 영업시간 드롭다운 초기화
+  initHoursBuilder();
 }
 
 function goToStep1() {
@@ -2632,11 +2536,10 @@ async function submitReport() {
     category: document.getElementById('r_category').value,
     price_min,
     price_max: parseInt(document.getElementById('r_price_max').value) || null,
-    signature_dish: (document.getElementById('r_dish_zh')?.value?.trim() || '') || null,
-    signature_dish_en: document.getElementById('r_dish_en')?.value?.trim() || null,
+    signature_dish: document.getElementById('r_dish').value.trim() || null,
     summary: document.getElementById('r_summary').value.trim() || null,
     payment,
-    open_hours: buildHoursString() || null,
+    open_hours: document.getElementById('r_hours').value.trim() || null,
   };
 
   if (db) {
@@ -2708,67 +2611,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ===== Toast =====
-// ===== SNS 공유 =====
-function sharePlace(id) {
-  const place = allPlaces.find(p => p.id === id);
-  if (!place) return;
-  const url = `https://greentreeink.github.io/broke-map/`;
-  const text = currentLang === 'en'
-    ? `${place.name_en || place.name_zh} — HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'} | Broke Map HK 🗺`
-    : `${place.name_zh} — HKD $${place.price_min}${place.price_max ? '–'+place.price_max : '+'} | 窮鬼地圖 🗺`;
-
-  if (navigator.share) {
-    // 모바일 네이티브 공유
-    navigator.share({ title: place.name_zh, text, url }).catch(() => {});
-  } else {
-    // 데스크탑: 클립보드 복사
-    const copyText = `${text}\n${url}`;
-    navigator.clipboard.writeText(copyText).then(() => {
-      showToast(currentLang === 'en' ? '📋 Copied to clipboard!' : '📋 已複製到剪貼板！');
-    }).catch(() => {
-      // fallback: 새 탭으로 WhatsApp 공유
-      window.open(`https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`, '_blank');
-    });
-  }
-}
-
-// ===== 문제 신고 =====
-function openIssueReport(placeId, placeName) {
-  document.getElementById('issuePlaceId').value = placeId;
-  document.getElementById('issueTitle').textContent = currentLang === 'en' ? `Report Issue` : `報告問題`;
-  document.getElementById('issueSubmitLabel').textContent = currentLang === 'en' ? 'Submit' : '提交';
-  document.getElementById('issueDetail').value = '';
-  document.getElementById('issueOverlay').classList.add('active');
-}
-function closeIssue() {
-  document.getElementById('issueOverlay').classList.remove('active');
-}
-function closeIssueIfBg(e) {
-  if (e.target === document.getElementById('issueOverlay')) closeIssue();
-}
-async function submitIssue() {
-  const placeId = document.getElementById('issuePlaceId').value;
-  const issueType = document.getElementById('issueType').value;
-  const detail = document.getElementById('issueDetail').value.trim();
-
-  const issueData = {
-    place_id: placeId,
-    issue_type: issueType,
-    detail: detail || null,
-    created_at: new Date().toISOString(),
-  };
-
-  if (db) {
-    try {
-      await db.from('brokemap_issues').insert(issueData);
-    } catch(e) {
-      console.log('Issue DB save failed:', e.message);
-    }
-  }
-  closeIssue();
-  showToast(currentLang === 'en' ? '✅ Thanks for reporting!' : '✅ 多謝報告！我們會盡快處理');
-}
-
 let toastTimer;
 function showToast(msg) {
   const t = document.getElementById('toast');
