@@ -1403,6 +1403,7 @@ body {
           <div class="pcheck" onclick="togglePay(this)" data-val="alipay_hk">📱 AlipayHK</div>
           <div class="pcheck" onclick="togglePay(this)" data-val="wechat_pay">💬 WeChat</div>
           <div class="pcheck" onclick="togglePay(this)" data-val="visa">💳 Visa</div>
+          <div class="pcheck" onclick="togglePay(this)" data-val="mastercard">💳 Master</div>
           <div class="pcheck" onclick="togglePay(this)" data-val="fps">🔄 FPS</div>
         </div>
       </div>
@@ -1922,7 +1923,7 @@ function openDetail(id) {
   const paymentMap = {
     cash: 'Cash 現金', octopus: 'Octopus 八達通',
     alipay_hk: 'AlipayHK', wechat_pay: 'WeChat Pay HK',
-    visa: 'Visa/Master', fps: 'FPS 轉數快'
+    visa: 'Visa', mastercard: 'Mastercard', fps: 'FPS 轉數快'
   };
   const categoryMap = {
     cha_chaan_teng: '茶餐廳', noodle: '麵食', rice: '飯類',
