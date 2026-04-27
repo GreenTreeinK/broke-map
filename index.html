@@ -2599,6 +2599,8 @@ function setLang(lang) {
     if (txt) el.textContent = txt;
   });
   renderPlaces();
+  // Re-render detail panel if it's currently open
+  if (activeMarkerId) openDetail(activeMarkerId);
 }
 
 // ===== Mobile Panel =====
