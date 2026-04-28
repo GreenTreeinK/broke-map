@@ -1129,6 +1129,7 @@ body {
   <div class="fchip cat-chip" onclick="setCategory(this, 'bakery')" data-zh="烘焙" data-en="Bakery">烘焙</div>
   <div class="fchip cat-chip" onclick="setCategory(this, 'dessert')" data-zh="甜品" data-en="Sweet">甜品</div>
   <div class="fchip cat-chip" onclick="setCategory(this, 'hot_pot')" data-zh="火鍋" data-en="HotPot">火鍋</div>
+  <div class="fchip cat-chip" onclick="setCategory(this, 'grill')" data-zh="鐵板" data-en="Grill">鐵板</div>
   <div class="filter-sep"></div>
   <span class="filter-label" data-zh="付款" data-en="💳">付款</span>
   <div class="fchip pay-chip" onclick="setPayment(this, 'cash')" data-zh="現金" data-en="Cash">現金</div>
@@ -1770,7 +1771,7 @@ function updateFilterStatus() {
     parts.push(tMap[timeFilter]);
   }
   if (categoryFilter) {
-    const cMap = { cha_chaan_teng:'茶餐廳', noodle:'麵食', rice:'飯類', bakery:'烘焙', dessert:'甜品', hot_pot:'火鍋' };
+    const cMap = { cha_chaan_teng:'茶餐廳', noodle:'麵食', rice:'飯類', bakery:'烘焙', dessert:'甜品', hot_pot:'火鍋', grill:'鐵板' };
     parts.push(cMap[categoryFilter] || categoryFilter);
   }
   if (paymentFilter) {
