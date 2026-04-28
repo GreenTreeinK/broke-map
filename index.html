@@ -2500,7 +2500,7 @@ function openReport() {
   document.getElementById('reportOverlay').classList.add('active');
 }
 function closeReportIfBg(e) {
-  if (e.target === document.getElementById('reportOverlay')) closeReport();
+  // Disabled: prevent closing report modal on background click
 }
 function closeReport() {
   document.getElementById('reportOverlay').classList.remove('active');
