@@ -2009,7 +2009,7 @@ function openDetail(id) {
       <button class="map-link-btn" onclick="flyToPlace('${place.id}')">
         🗺 ${currentLang === 'en' ? 'Show on Map' : '喺地圖查看'}
       </button>
-      <button class="map-link-btn" style="background:var(--surface2);color:var(--text);" onclick="${place.gmaps_url ? `window.open('${place.gmaps_url}', '_blank')` : `openGoogleMaps(${place.lat}, ${place.lng}, '${encodeURIComponent(place.name_en || place.name_zh)}')`}">
+      <button class="map-link-btn" style="background:var(--surface2);color:var(--text);" onclick="${place.gmaps_url ? `window.open('${place.gmaps_url}', '_blank')` : `openGoogleMaps(${place.lat}, ${place.lng}, '${(place.name_en || place.name_zh).replace(/'/g, '')}')`}">
         🔗 ${currentLang === 'en' ? 'Open in Google Maps' : '喺Google Maps開啟'}
       </button>
 
@@ -2079,7 +2079,6 @@ function flyToPlace(id) {
 }
 
 function openGoogleMaps(lat, lng, name) {
-  // Search by name near coordinates for accurate restaurant result
   const query = encodeURIComponent(name);
   window.open(`https://www.google.com/maps/search/${query}/@${lat},${lng},17z`, '_blank');
 }
