@@ -1362,18 +1362,21 @@ body {
           </select>
         </div>
       </div>
-      <div class="form-row-2">
-        <div>
-          <label class="form-label" data-zh="最低價 (HKD)*" data-en="Min Price*">最低價 (HKD)*</label>
-          <select class="form-input" id="r_price_mode" onchange="togglePriceInput()" style="margin-bottom:6px;">
-            <option value="exact" data-zh="直接輸入價格" data-en="Enter exact price">直接輸入價格</option>
-            <option value="unknown" data-zh="價格未能確認" data-en="Price unknown">價格未能確認</option>
-          </select>
-          <input class="form-input" id="r_price_min" placeholder="e.g. 25" type="number" min="1" max="500">
-        </div>
-        <div>
-          <label class="form-label" data-zh="最高價" data-en="Max Price">最高價</label>
-          <input class="form-input" id="r_price_max" placeholder="e.g. 60" type="number" min="1" max="500">
+      <div>
+        <label class="form-label" data-zh="價格 (HKD)*" data-en="Price (HKD)*">價格 (HKD)*</label>
+        <select class="form-input" id="r_price_mode" onchange="togglePriceInput()" style="width:100%;margin-bottom:8px;">
+          <option value="exact" data-zh="直接輸入價格" data-en="Enter exact price">直接輸入價格</option>
+          <option value="unknown" data-zh="價格未能確認" data-en="Price unknown">價格未能確認</option>
+        </select>
+        <div id="r_price_inputs" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div>
+            <label class="form-label" data-zh="最低價*" data-en="Min*">最低價*</label>
+            <input class="form-input" id="r_price_min" placeholder="e.g. 25" type="number" min="1" max="500" style="width:100%;">
+          </div>
+          <div>
+            <label class="form-label" data-zh="最高價" data-en="Max">最高價</label>
+            <input class="form-input" id="r_price_max" placeholder="e.g. 60" type="number" min="1" max="500" style="width:100%;">
+          </div>
         </div>
       </div>
       <button class="submit-btn" onclick="goToStep2()" style="background:var(--dark);">
@@ -2498,19 +2501,20 @@ function initHoursBuilder() {
 }
 
 // ===== Report 2-Step Form =====
+function togglePriceMaxInput() {}
+
 function togglePriceInput() {
   const mode = document.getElementById('r_price_mode').value;
+  const inputs = document.getElementById('r_price_inputs');
   const minInput = document.getElementById('r_price_min');
   const maxInput = document.getElementById('r_price_max');
   if (mode === 'unknown') {
+    inputs.style.display = 'none';
     minInput.value = '0';
-    minInput.style.display = 'none';
     maxInput.value = '';
-    maxInput.style.display = 'none';
   } else {
+    inputs.style.display = 'grid';
     minInput.value = '';
-    minInput.style.display = '';
-    maxInput.style.display = '';
   }
 }
 
@@ -2555,6 +2559,7 @@ async function submitReport() {
   const district = document.getElementById('r_district').value;
   const priceMode2 = document.getElementById('r_price_mode')?.value;
   const price_min = priceMode2 === 'unknown' ? 0 : parseInt(document.getElementById('r_price_min').value);
+  const maxMode = document.getElementById('r_price_mode')?.value;
 
   if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : '請輸入食肆名稱'); return; }
   if (!district) { showToast(currentLang === 'en' ? 'Select a district' : '請選擇地區'); return; }
@@ -2599,7 +2604,7 @@ async function submitReport() {
     lat, lng,
     category: document.getElementById('r_category').value,
     price_min,
-    price_max: parseInt(document.getElementById('r_price_max').value) || null,
+    price_max: maxMode === 'unknown' ? null : (parseInt(document.getElementById('r_price_max').value) || null),
     signature_dish: (document.getElementById('r_dish_zh')?.value?.trim()) || null,
     signature_dish_en: document.getElementById('r_dish_en')?.value?.trim() || null,
     summary: document.getElementById('r_summary').value.trim() || null,
