@@ -2563,7 +2563,7 @@ async function submitReport() {
 
   if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : '請輸入食肆名稱'); return; }
   if (!district) { showToast(currentLang === 'en' ? 'Select a district' : '請選擇地區'); return; }
-  if (!price_min) { showToast(currentLang === 'en' ? 'Enter minimum price' : '請輸入最低價'); return; }
+  if (!price_min && priceMode2 !== 'unknown') { showToast(currentLang === 'en' ? 'Enter minimum price' : '請輸入最低價'); return; }
 
   const payment = Array.from(document.querySelectorAll('.pcheck.sel')).map(el => el.dataset.val);
 
