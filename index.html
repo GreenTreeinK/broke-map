@@ -1365,6 +1365,10 @@ body {
       <div class="form-row-2">
         <div>
           <label class="form-label" data-zh="最低價 (HKD)*" data-en="Min Price*">最低價 (HKD)*</label>
+          <select class="form-input" id="r_price_mode" onchange="togglePriceInput()" style="margin-bottom:6px;">
+            <option value="exact" data-zh="直接輸入價格" data-en="Enter exact price">直接輸入價格</option>
+            <option value="unknown" data-zh="價格未能確認" data-en="Price unknown">價格未能確認</option>
+          </select>
           <input class="form-input" id="r_price_min" placeholder="e.g. 25" type="number" min="1" max="500">
         </div>
         <div>
@@ -2494,13 +2498,30 @@ function initHoursBuilder() {
 }
 
 // ===== Report 2-Step Form =====
+function togglePriceInput() {
+  const mode = document.getElementById('r_price_mode').value;
+  const minInput = document.getElementById('r_price_min');
+  const maxInput = document.getElementById('r_price_max');
+  if (mode === 'unknown') {
+    minInput.value = '0';
+    minInput.style.display = 'none';
+    maxInput.value = '';
+    maxInput.style.display = 'none';
+  } else {
+    minInput.value = '';
+    minInput.style.display = '';
+    maxInput.style.display = '';
+  }
+}
+
 function goToStep2() {
   const name_zh = document.getElementById('r_name_zh').value.trim();
   const district = document.getElementById('r_district').value;
   const price_min = document.getElementById('r_price_min').value;
   if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : '請輸入食肆名稱'); return; }
   if (!district) { showToast(currentLang === 'en' ? 'Select a district' : '請選擇地區'); return; }
-  if (!price_min) { showToast(currentLang === 'en' ? 'Enter minimum price' : '請輸入最低價'); return; }
+  const priceMode = document.getElementById('r_price_mode')?.value;
+  if (!price_min && priceMode !== 'unknown') { showToast(currentLang === 'en' ? 'Enter minimum price' : '請輸入最低價'); return; }
   document.getElementById('report-step1').style.cssText='display:none';
   const s2=document.getElementById('report-step2'); s2.style.cssText='display:block !important';
   document.getElementById('step1-indicator').classList.remove('active');
@@ -2532,7 +2553,8 @@ function togglePay(el) {
 async function submitReport() {
   const name_zh = document.getElementById('r_name_zh').value.trim();
   const district = document.getElementById('r_district').value;
-  const price_min = parseInt(document.getElementById('r_price_min').value);
+  const priceMode2 = document.getElementById('r_price_mode')?.value;
+  const price_min = priceMode2 === 'unknown' ? 0 : parseInt(document.getElementById('r_price_min').value);
 
   if (!name_zh) { showToast(currentLang === 'en' ? 'Enter restaurant name' : '請輸入食肆名稱'); return; }
   if (!district) { showToast(currentLang === 'en' ? 'Select a district' : '請選擇地區'); return; }
