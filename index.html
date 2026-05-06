@@ -11,19 +11,19 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
-  --red: #e8002d;
-  --red-dark: #b5001e;
-  --red-light: #fff0f3;
-  --yellow: #f5c400;
-  --yellow-light: #fffbe6;
-  --dark: #1a0a0a;
-  --dark2: #2d1515;
-  --text: #1a0a0a;
-  --text-muted: #8a6060;
-  --text-soft: #5a3535;
+  --red: #0d5c55;
+  --red-dark: #0a4a44;
+  --red-light: #e8f8f5;
+  --yellow: #d4600a;
+  --yellow-light: #fef0e4;
+  --dark: #0a3d39;
+  --dark2: #0a3d39;
+  --text: #0a3d39;
+  --text-muted: #3d6460;
+  --text-soft: #185550;
   --surface: #ffffff;
-  --surface2: #fdf5f5;
-  --surface3: #f5e8e8;
+  --surface2: #e8f8f5;
+  --surface3: #b2f0e5;
   --border: #f0d8d8;
   --shadow: 0 2px 16px rgba(232,0,45,0.10);
   --radius: 16px;
@@ -98,7 +98,7 @@ body {
   border-color: var(--yellow);
   color: var(--dark);
 }
-.header-btn.primary:hover { background: #e6b800; }
+.header-btn.primary:hover { background: #b85208; }
 
 /* ===== LANG TOGGLE ===== */
 .lang-toggle {
@@ -1616,7 +1616,7 @@ function initMap() {
   });
 
   // OpenStreetMap tile (free)
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
     attribution: '© OpenStreetMap © CARTO',
     maxZoom: 19
   }).addTo(map);
