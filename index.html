@@ -1094,8 +1094,8 @@ body {
     <!-- Desktop tabs (hidden on mobile via CSS) -->
     <div class="desktop-tabs" style="display:none;">
       <button class="desktop-tab active" id="dtabMap" onclick="switchTab('map')">🗺 地圖</button>
-      <button class="desktop-tab" id="dtabHotdeal" onclick="switchTab('hotdeal')">🔥 熱賣</button>
-      <button class="desktop-tab" id="dtabCommunity" onclick="switchTab('community')">💬 慳錢版</button>
+      <button class="desktop-tab" id="dtabHotdeal" onclick="switchTab('hotdeal')">🔥 <span data-zh="熱賣" data-en="Hot Deals">熱賣</span></button>
+      <button class="desktop-tab" id="dtabCommunity" onclick="switchTab('community')">💬 <span data-zh="慳錢版" data-en="Tips">慳錢版</span></button>
     </div>
   </div>
   <div class="header-btns">
@@ -2370,7 +2370,7 @@ function timeAgo(dateStr) {
     if (mins < 60) return `${mins}分鐘前`;
     const hrs = Math.floor(mins / 60);
     if (hrs < 24) return `${hrs}小時前`;
-    return `${Math.floor(hrs / 24)}日前`;
+    return currentLang==='en'?`${Math.floor(hrs/24)}d ago`:`${Math.floor(hrs/24)}日前`;
   } else {
     if (mins < 1) return 'just now';
     if (mins < 60) return `${mins}m ago`;
@@ -2715,17 +2715,17 @@ function showToast(msg) {
   <div class="comm-header">
     <button class="comm-back-btn" onclick="switchTab('map')" title="Back to map">←</button>
     <div class="comm-header-text">
-      <div class="comm-title">🔥 熱賣 HOT DEALS</div>
-      <div class="comm-subtitle">香港超市、餐廳特價情報</div>
+      <div class="comm-title">🔥 <span data-zh="熱賣 HOT DEALS" data-en="Hot Deals">熱賣 HOT DEALS</span></div>
+      <div class="comm-subtitle"><span data-zh="香港超市、餐廳特價情報" data-en="HK supermarket & restaurant deals">香港超市、餐廳特價情報</span></div>
     </div>
   </div>
   <div class="comm-cat-bar" id="hotdealCatBar">
-    <button class="comm-cat active" onclick="filterComm('hotdeal','all',this)">全部</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','supermarket',this)">🛒 超市</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','restaurant',this)">🍽 食肆</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','coupon',this)">🎟 優惠券</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','snack',this)">🍿 零食</button>
-    <button class="comm-cat" onclick="filterComm('hotdeal','other',this)">其他</button>
+    <button class="comm-cat active" onclick="filterComm('hotdeal','all',this)"><span data-zh="全部" data-en="All">全部</span></button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','supermarket',this)">🛒 <span data-zh="超市" data-en="Supermarket">超市</span></button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','restaurant',this)">🍽 <span data-zh="食肆" data-en="Restaurant">食肆</span></button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','coupon',this)">🎟 <span data-zh="優惠券" data-en="Coupon">優惠券</span></button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','snack',this)">🍿 <span data-zh="零食" data-en="Snacks">零食</span></button>
+    <button class="comm-cat" onclick="filterComm('hotdeal','other',this)"><span data-zh="其他" data-en="Other">其他</span></button>
   </div>
   <div class="comm-body" id="hotdealList"></div>
 </div>
@@ -2735,16 +2735,16 @@ function showToast(msg) {
   <div class="comm-header">
     <button class="comm-back-btn" onclick="switchTab('map')" title="Back to map">←</button>
     <div class="comm-header-text">
-      <div class="comm-title">💬 慳錢版</div>
-      <div class="comm-subtitle">慳錢攻略、生活節省貼士</div>
+      <div class="comm-title">💬 <span data-zh="慳錢版" data-en="Tips">慳錢版</span></div>
+      <div class="comm-subtitle"><span data-zh="慳錢攻略、生活節省貼士" data-en="Money-saving tips & life hacks">慳錢攻略、生活節省貼士</span></div>
     </div>
   </div>
   <div class="comm-cat-bar" id="commCatBar">
-    <button class="comm-cat active" onclick="filterComm('community','all',this)">全部</button>
-    <button class="comm-cat" onclick="filterComm('community','tip',this)">💡 慳錢貼士</button>
-    <button class="comm-cat" onclick="filterComm('community','food',this)">🍜 平食推介</button>
-    <button class="comm-cat" onclick="filterComm('community','transport',this)">🚇 交通</button>
-    <button class="comm-cat" onclick="filterComm('community','misc',this)">🗂 雜項</button>
+    <button class="comm-cat active" onclick="filterComm('community','all',this)"><span data-zh="全部" data-en="All">全部</span></button>
+    <button class="comm-cat" onclick="filterComm('community','tip',this)">💡 <span data-zh="慳錢貼士" data-en="Tips">慳錢貼士</span></button>
+    <button class="comm-cat" onclick="filterComm('community','food',this)">🍜 <span data-zh="平食推介" data-en="Cheap Eats">平食推介</span></button>
+    <button class="comm-cat" onclick="filterComm('community','transport',this)">🚇 <span data-zh="交通" data-en="Transport">交通</span></button>
+    <button class="comm-cat" onclick="filterComm('community','misc',this)">🗂 <span data-zh="雜項" data-en="Misc">雜項</span></button>
   </div>
   <div class="comm-body" id="communityList"></div>
 </div>
@@ -2819,12 +2819,12 @@ function switchTab(tab) {
   // Leaflet 지도 리사이즈 (CSS 변경 후 지도가 새 크기를 인식하도록)
   setTimeout(() => { if (typeof map !== 'undefined' && map) map.invalidateSize(); }, 50);
   if (tab === 'hotdeal') {
-    document.getElementById('commWriteTitle').textContent = '🔥 提交熱賣情報';
+    document.getElementById('commWriteTitle').textContent = currentLang==='en'?'🔥 Submit a Hot Deal':'🔥 提交熱賣情報';
     document.getElementById('cw_cat').value = 'supermarket';
     document.getElementById('cwPriceRow').style.display = '';
     if (commPosts.hotdeal.length === 0) loadCommPosts('hotdeal');
   } else if (tab === 'community') {
-    document.getElementById('commWriteTitle').textContent = '💬 分享慳錢攻略';
+    document.getElementById('commWriteTitle').textContent = currentLang==='en'?'💬 Share a Tip':'💬 分享慳錢攻略';
     document.getElementById('cw_cat').value = 'tip';
     document.getElementById('cwPriceRow').style.display = 'none';
     if (commPosts.community.length === 0) loadCommPosts('community');
@@ -2880,7 +2880,7 @@ function renderCommPosts(type) {
         ${p.price ? `<div class="comm-card-price">HKD $${p.price}</div>` : ''}
         <div class="comm-card-meta">
           <span class="comm-card-cat">${catEmoji[p.cat]||''} ${p.cat}</span>
-          <span>👤 ${p.nick||'匿名'}</span>
+          <span>👤 ${(p.nick==='匿名'&&currentLang==='en')?'Anon':(p.nick||(currentLang==='en'?'Anon':'匿名'))}</span>
           <span>🕐 ${timeAgo(p.created_at)}</span>
         </div>
         ${p.body ? `<div style="font-size:12px;color:var(--text-muted);margin-top:5px;line-height:1.4;">${p.body}</div>` : ''}
@@ -2923,7 +2923,7 @@ async function submitCommPost() {
     price: parseFloat(document.getElementById('cw_price').value) || null,
     body: document.getElementById('cw_body').value.trim() || null,
     link: document.getElementById('cw_link').value.trim() || null,
-    nick: '匿名',
+    nick: currentLang === 'en' ? 'Anon' : '匿名',
     votes_up: 0, votes_down: 0,
     created_at: new Date().toISOString(),
     id: 'new_' + Date.now(),
