@@ -516,8 +516,10 @@ function renderReports() {
       <td style="font-size:12px;">${r.open_hours||'-'}</td>
       <td style="font-size:11px;color:var(--text-muted)">${r.created_at ? new Date(r.created_at).toLocaleDateString('ko-KR') : '-'}</td>
       <td style="white-space:nowrap;">
-        <button class="btn btn-approve" onclick="approveReport('${r.id}')">✅ 승인</button>
-        <button class="btn btn-reject" onclick="rejectReport('${r.id}')">❌ 거절</button>
+        <span data-report-id="${r.id}">
+          <button class="btn btn-approve" onclick="approveReport('${r.id}')">✅ 승인</button>
+          <button class="btn btn-reject" onclick="rejectReport('${r.id}')">❌ 거절</button>
+        </span>
       </td>
     </tr>`).join('');
 }
@@ -538,8 +540,9 @@ async function approveReport(id) {
   });
   if (error) { alert('승인 실패: ' + error.message); return; }
   await db.from('brokemap_reports').delete().eq('id', id);
-  await loadReports();
   await loadPlaces();
+  const cell = document.querySelector(`[data-report-id="${id}"]`);
+  if (cell) cell.innerHTML = '<span style="color:#22c55e;font-weight:700;">✅ 승인됨</span>';
   showToast('✅ 승인 완료! 식당 목록에 추가됐어요');
 }
 
@@ -547,7 +550,8 @@ async function rejectReport(id) {
   const r = allReports.find(x => x.id === id);
   if (!confirm(`"${r?.name_zh}" 제보를 거절할까요?`)) return;
   await db.from('brokemap_reports').delete().eq('id', id);
-  await loadReports();
+  const cell = document.querySelector(`[data-report-id="${id}"]`);
+  if (cell) cell.innerHTML = '<span style="color:#ef4444;font-weight:700;">❌ 거절됨</span>';
   showToast('🗑 제보 거절됨');
 }
 
@@ -587,8 +591,10 @@ function renderEditReports() {
       <td style="font-size:12px;">${changes.map(c=>`<div>• ${c}</div>`).join('')}</td>
       <td style="font-size:11px;color:var(--text-muted)">${r.created_at ? new Date(r.created_at).toLocaleDateString('ko-KR') : '-'}</td>
       <td style="white-space:nowrap;">
-        <button class="btn btn-approve" onclick="approveEditReport('${r.id}')">✅ 승인</button>
-        <button class="btn btn-reject" onclick="rejectEditReport('${r.id}')">❌ 거절</button>
+        <span data-edit-id="${r.id}">
+          <button class="btn btn-approve" onclick="approveEditReport('${r.id}')">✅ 승인</button>
+          <button class="btn btn-reject" onclick="rejectEditReport('${r.id}')">❌ 거절</button>
+        </span>
       </td>
     </tr>`;
   }).join('');
@@ -611,8 +617,9 @@ async function approveEditReport(id) {
   const { error } = await db.from('brokemap_places').update(updates).eq('id', r.source_place_id);
   if (error) { alert('반영 실패: ' + error.message); return; }
   await db.from('brokemap_reports').delete().eq('id', id);
-  await loadEditReports();
   await loadPlaces();
+  const cell2 = document.querySelector(`[data-edit-id="${id}"]`);
+  if (cell2) cell2.innerHTML = '<span style="color:#22c55e;font-weight:700;">✅ 승인됨</span>';
   showToast('✅ 수정 반영 완료!');
 }
 
@@ -620,7 +627,8 @@ async function rejectEditReport(id) {
   const r = allEditReports.find(x => x.id === id);
   if (!confirm('이 수정 제보를 거절할까요?')) return;
   await db.from('brokemap_reports').delete().eq('id', id);
-  await loadEditReports();
+  const cell2 = document.querySelector(`[data-edit-id="${id}"]`);
+  if (cell2) cell2.innerHTML = '<span style="color:#ef4444;font-weight:700;">❌ 거절됨</span>';
   showToast('🗑 수정 제보 거절됨');
 }
 
