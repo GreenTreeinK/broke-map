@@ -427,9 +427,10 @@ function renderPlaces(places) {
       <td>${catMap[p.category]||p.category||'-'}</td>
       <td style="font-size:12px;">${p.open_hours||'-'}</td>
       <td><span class="badge ${p.is_verified?'badge-green':'badge-red'}">${p.is_verified?'✅ 검증':'❌ 미검증'}</span></td>
-      <td style="white-space:nowrap;">
+      <td style="white-space:nowrap;" id="place-actions-${p.id}">
         <button class="btn btn-edit" onclick="openEdit('${p.id}')">수정</button>
         <button class="btn btn-delete" onclick="deletePlace('${p.id}','${p.name_zh}')">삭제</button>
+        <span id="place-status-${p.id}" style="font-size:11px;color:var(--text-muted);margin-left:6px;"></span>
       </td>
     </tr>`).join('');
 }
@@ -483,6 +484,15 @@ async function saveEdit() {
   if (error) { alert('저장 실패: ' + error.message); return; }
   closeEdit();
   await loadPlaces();
+  // Show edit timestamp next to 수정 button
+  setTimeout(() => {
+    const statusEl = document.getElementById('place-status-' + id);
+    if (statusEl) {
+      const now = new Date().toLocaleString('ko-KR');
+      statusEl.textContent = `최종 수정: ${now}`;
+      statusEl.style.color = '#22c55e';
+    }
+  }, 500);
   showToast('✅ 저장 완료!');
 }
 
@@ -490,7 +500,11 @@ async function deletePlace(id, name) {
   if (!confirm(`"${name}" 을(를) 삭제할까요?\n되돌릴 수 없어요!`)) return;
   const { error } = await db.from('brokemap_places').delete().eq('id', id);
   if (error) { alert('삭제 실패: ' + error.message); return; }
-  await loadPlaces();
+  const cell = document.getElementById('place-actions-' + id);
+  if (cell) {
+    const now = new Date().toLocaleString('ko-KR');
+    cell.innerHTML = `<span style="color:#ef4444;font-weight:700;">🗑 삭제됨</span><span style="font-size:11px;color:var(--text-muted);margin-left:6px;">${now}</span>`;
+  }
   showToast('🗑 삭제 완료');
 }
 
@@ -541,8 +555,10 @@ async function approveReport(id) {
   if (error) { alert('승인 실패: ' + error.message); return; }
   await db.from('brokemap_reports').delete().eq('id', id);
   await loadPlaces();
-  const cell = document.querySelector(`[data-report-id="${id}"]`);
-  if (cell) cell.innerHTML = '<span style="color:#22c55e;font-weight:700;">✅ 승인됨</span>';
+  const row = document.querySelector(`[data-report-id="${id}"]`)?.closest('tr');
+  if (row) row.remove();
+  allReports = allReports.filter(x => x.id !== id);
+  document.getElementById('reportCount').textContent = `총 ${allReports.length}개`;
   showToast('✅ 승인 완료! 식당 목록에 추가됐어요');
 }
 
@@ -550,8 +566,10 @@ async function rejectReport(id) {
   const r = allReports.find(x => x.id === id);
   if (!confirm(`"${r?.name_zh}" 제보를 거절할까요?`)) return;
   await db.from('brokemap_reports').delete().eq('id', id);
-  const cell = document.querySelector(`[data-report-id="${id}"]`);
-  if (cell) cell.innerHTML = '<span style="color:#ef4444;font-weight:700;">❌ 거절됨</span>';
+  const row = document.querySelector(`[data-report-id="${id}"]`)?.closest('tr');
+  if (row) row.remove();
+  allReports = allReports.filter(x => x.id !== id);
+  document.getElementById('reportCount').textContent = `총 ${allReports.length}개`;
   showToast('🗑 제보 거절됨');
 }
 
@@ -618,8 +636,10 @@ async function approveEditReport(id) {
   if (error) { alert('반영 실패: ' + error.message); return; }
   await db.from('brokemap_reports').delete().eq('id', id);
   await loadPlaces();
-  const cell2 = document.querySelector(`[data-edit-id="${id}"]`);
-  if (cell2) cell2.innerHTML = '<span style="color:#22c55e;font-weight:700;">✅ 승인됨</span>';
+  const row2 = document.querySelector(`[data-edit-id="${id}"]`)?.closest('tr');
+  if (row2) row2.remove();
+  allEditReports = allEditReports.filter(x => x.id !== id);
+  document.getElementById('editReportCount').textContent = `총 ${allEditReports.length}개`;
   showToast('✅ 수정 반영 완료!');
 }
 
@@ -627,8 +647,10 @@ async function rejectEditReport(id) {
   const r = allEditReports.find(x => x.id === id);
   if (!confirm('이 수정 제보를 거절할까요?')) return;
   await db.from('brokemap_reports').delete().eq('id', id);
-  const cell2 = document.querySelector(`[data-edit-id="${id}"]`);
-  if (cell2) cell2.innerHTML = '<span style="color:#ef4444;font-weight:700;">❌ 거절됨</span>';
+  const row2 = document.querySelector(`[data-edit-id="${id}"]`)?.closest('tr');
+  if (row2) row2.remove();
+  allEditReports = allEditReports.filter(x => x.id !== id);
+  document.getElementById('editReportCount').textContent = `총 ${allEditReports.length}개`;
   showToast('🗑 수정 제보 거절됨');
 }
 
