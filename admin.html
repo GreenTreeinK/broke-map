@@ -497,7 +497,7 @@ async function deletePlace(id, name) {
 
 // ===== REPORTS =====
 async function loadReports() {
-  const { data } = await db.from('brokemap_reports').select('*').order('created_at', { ascending: false });
+  const { data } = await db.from('brokemap_reports').select('*').or('report_type.is.null,report_type.eq.new').order('created_at', { ascending: false });
   allReports = data || [];
   document.getElementById('reportCount').textContent = `총 ${allReports.length}개`;
   renderReports();
