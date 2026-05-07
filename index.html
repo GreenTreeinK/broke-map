@@ -3019,6 +3019,14 @@ function openEditReport(placeId, nameZh, nameEn) {
   ['edit_address','edit_address_zh','edit_open_hours','edit_price_min','edit_price_max','edit_signature_dish','edit_signature_dish_en','edit_note'].forEach(id => {
     document.getElementById(id).value = '';
   });
+  // Set language-aware placeholders
+  document.getElementById('edit_note').placeholder = currentLang === 'en' ? 'Other changes or notes...' : '其他修改事項...';
+  // Update all data-zh/en spans inside modal
+  document.querySelectorAll('#editReportOverlay [data-zh]').forEach(el => {
+    const txt = el.dataset[currentLang] || el.dataset.zh;
+    if (txt) el.textContent = txt;
+  });
+  document.getElementById('editReportTitle').textContent = currentLang === 'en' ? '✏️ Suggest an Edit' : '✏️ 建議修改資料';
   const overlay = document.getElementById('editReportOverlay');
   overlay.style.display = 'flex';
 }
