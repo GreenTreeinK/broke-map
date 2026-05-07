@@ -3021,13 +3021,8 @@ function openEditReport(placeId, nameZh, nameEn) {
   });
   // Set language-aware placeholders
   document.getElementById('edit_note').placeholder = currentLang === 'en' ? 'Other changes or notes...' : '其他修改事項...';
-  document.getElementById('edit_address').placeholder = currentLang === 'en' ? 'e.g. Shop 1, G/F, 123 Nathan Rd' : 'e.g. 地下1號舖，彌敦道123號';
-  document.getElementById('edit_address_zh').placeholder = currentLang === 'en' ? 'e.g. 彌敦道123號地下1號舖' : 'e.g. 彌敦道123號地下1號舖';
   document.getElementById('edit_open_hours').placeholder = currentLang === 'en' ? 'e.g. Mon–Fri 11:00–22:00' : 'e.g. 週一–五 11:00–22:00';
-  document.getElementById('edit_price_min').placeholder = currentLang === 'en' ? 'e.g. 25' : 'e.g. 25';
-  document.getElementById('edit_price_max').placeholder = currentLang === 'en' ? 'e.g. 60' : 'e.g. 60';
   document.getElementById('edit_signature_dish').placeholder = currentLang === 'en' ? 'e.g. BBQ Pork Rice' : 'e.g. 叉燒飯';
-  document.getElementById('edit_signature_dish_en').placeholder = currentLang === 'en' ? 'e.g. BBQ Pork Rice' : 'e.g. BBQ Pork Rice';
   // Update all data-zh/en spans inside modal
   document.querySelectorAll('#editReportOverlay [data-zh]').forEach(el => {
     const txt = el.dataset[currentLang] || el.dataset.zh;
