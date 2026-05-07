@@ -2020,6 +2020,10 @@ function openDetail(id) {
         🔗 ${currentLang === 'en' ? 'Open in Google Maps' : '喺Google Maps開啟'}
       </button>
 
+      <button class="map-link-btn" style="background:var(--surface2);color:var(--text);border:1.5px dashed var(--text-muted);" onclick="openEditReport('${place.id}', '${(place.name_zh||'').replace(/'/g,'')}', '${(place.name_en||'').replace(/'/g,'')}')" >
+        ✏️ ${currentLang === 'en' ? 'Suggest an Edit' : '建議修改'}
+      </button>
+
       <!-- Vote Section -->
       <div class="vote-section">
         <div class="vote-label">${currentLang === 'en' ? 'Value for money?' : '抵唔抵食？'}</div>
@@ -2944,5 +2948,119 @@ async function submitCommPost() {
 // pad body for bottom nav
 document.body.style.paddingBottom = '56px';
 </script>
+
+<!-- Edit Report Modal -->
+<div class="report-overlay" id="editReportOverlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:3000;display:none;align-items:center;justify-content:center;">
+  <div class="report-modal" style="background:var(--surface);border-radius:16px;padding:24px;width:90%;max-width:480px;max-height:85vh;overflow-y:auto;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <div>
+        <div style="font-size:18px;font-weight:700;" id="editReportTitle">✏️ 建議修改</div>
+        <div style="font-size:12px;color:var(--text-muted);" id="editReportSubtitle"></div>
+      </div>
+      <button onclick="closeEditReport()" style="background:var(--surface3);border:none;color:var(--text-muted);width:32px;height:32px;border-radius:50%;font-size:18px;cursor:pointer;">✕</button>
+    </div>
+    <div style="font-size:12px;color:var(--text-muted);margin-bottom:16px;padding:10px;background:var(--surface2);border-radius:8px;">
+      <span data-zh="💡 빈칸으로 두면 해당 항목은 변경되지 않아요" data-en="💡 Leave blank to keep existing info">💡 수정할 항목만 입력해주세요. 관리자 승인 후 반영돼요.</span>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label class="form-label">📍 주소 (영문)</label>
+        <input class="form-input" id="edit_address" placeholder="e.g. Shop 1, G/F, 123 Nathan Rd">
+      </div>
+      <div>
+        <label class="form-label">📍 주소 (중문)</label>
+        <input class="form-input" id="edit_address_zh" placeholder="e.g. 彌敦道123號地下1號舖">
+      </div>
+      <div>
+        <label class="form-label">🕐 영업시간</label>
+        <input class="form-input" id="edit_open_hours" placeholder="e.g. 週一–五 11:00–22:00">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div>
+          <label class="form-label">💰 최저가 (HKD)</label>
+          <input class="form-input" id="edit_price_min" type="number" placeholder="e.g. 25">
+        </div>
+        <div>
+          <label class="form-label">💰 최고가 (HKD)</label>
+          <input class="form-input" id="edit_price_max" type="number" placeholder="e.g. 60">
+        </div>
+      </div>
+      <div>
+        <label class="form-label">🍽 대표 메뉴 (중문)</label>
+        <input class="form-input" id="edit_signature_dish" placeholder="e.g. 叉燒飯">
+      </div>
+      <div>
+        <label class="form-label">🍽 대표 메뉴 (영문)</label>
+        <input class="form-input" id="edit_signature_dish_en" placeholder="e.g. BBQ Pork Rice">
+      </div>
+      <div>
+        <label class="form-label">📝 기타 메모</label>
+        <textarea class="form-input" id="edit_note" rows="2" placeholder="기타 수정 사항이나 메모"></textarea>
+      </div>
+    </div>
+
+    <button onclick="submitEditReport()" style="width:100%;margin-top:16px;padding:14px;background:var(--red);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">
+      📨 <span data-zh="수정 제보 제출" data-en="Submit Edit">수정 제보 제출</span>
+    </button>
+    <div style="text-align:center;font-size:12px;color:var(--text-muted);margin-top:8px;" data-zh="관리자 확인 후 반영됩니다" data-en="Will be reviewed before applying">관리자 확인 후 반영됩니다</div>
+  </div>
+</div>
+
+// ===== Edit Report =====
+let editTargetPlaceId = null;
+
+function openEditReport(placeId, nameZh, nameEn) {
+  editTargetPlaceId = placeId;
+  document.getElementById('editReportTitle').textContent = currentLang === 'en' ? '✏️ Suggest an Edit' : '✏️ 建議修改';
+  document.getElementById('editReportSubtitle').textContent = nameZh + (nameEn ? ' / ' + nameEn : '');
+  // Clear fields
+  ['edit_address','edit_address_zh','edit_open_hours','edit_price_min','edit_price_max','edit_signature_dish','edit_signature_dish_en','edit_note'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  const overlay = document.getElementById('editReportOverlay');
+  overlay.style.display = 'flex';
+}
+
+function closeEditReport() {
+  document.getElementById('editReportOverlay').style.display = 'none';
+}
+
+async function submitEditReport() {
+  if (!editTargetPlaceId) return;
+  const fields = {
+    address: document.getElementById('edit_address').value.trim(),
+    address_zh: document.getElementById('edit_address_zh').value.trim(),
+    open_hours: document.getElementById('edit_open_hours').value.trim(),
+    price_min: document.getElementById('edit_price_min').value ? parseInt(document.getElementById('edit_price_min').value) : null,
+    price_max: document.getElementById('edit_price_max').value ? parseInt(document.getElementById('edit_price_max').value) : null,
+    signature_dish: document.getElementById('edit_signature_dish').value.trim(),
+    signature_dish_en: document.getElementById('edit_signature_dish_en').value.trim(),
+    note: document.getElementById('edit_note').value.trim(),
+  };
+  // Check at least one field filled
+  const hasContent = Object.values(fields).some(v => v !== null && v !== '' && v !== 0);
+  if (!hasContent) {
+    showToast(currentLang === 'en' ? 'Please fill in at least one field' : '최소 한 항목을 입력해주세요');
+    return;
+  }
+  // Remove empty fields
+  Object.keys(fields).forEach(k => { if (fields[k] === '' || fields[k] === null) delete fields[k]; });
+
+  const { error } = await supabase.from('brokemap_reports').insert({
+    ...fields,
+    source_place_id: editTargetPlaceId,
+    report_type: 'edit',
+    status: 'pending',
+    created_at: new Date().toISOString(),
+  });
+
+  if (error) {
+    showToast('❌ ' + error.message);
+    return;
+  }
+  closeEditReport();
+  showToast(currentLang === 'en' ? '✅ Edit submitted! Thank you 🙏' : '✅ 수정 제보 완료! 감사합니다 🙏');
+}
 </body>
 </html>
