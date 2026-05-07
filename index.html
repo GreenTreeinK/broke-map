@@ -2995,7 +2995,7 @@ document.body.style.paddingBottom = '56px';
       </div>
       <div>
         <label class="form-label"><span data-zh="📝 備註" data-en="📝 Notes">📝 備註</span></label>
-        <textarea class="form-input" id="edit_note" rows="2" placeholder="其他修改事項..."></textarea>
+        <textarea class="form-input" id="edit_note" rows="2"></textarea>
       </div>
     </div>
     <button onclick="submitEditReport()" style="width:100%;margin-top:16px;padding:14px;background:var(--red);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;">
@@ -3056,12 +3056,17 @@ async function submitEditReport() {
   // Remove empty fields
   Object.keys(fields).forEach(k => { if (fields[k] === '' || fields[k] === null) delete fields[k]; });
 
+  // Get source place info for required fields
+  const { data: placeData } = await db.from('brokemap_places').select('district_en, district_zh, name_zh').eq('id', editTargetPlaceId).single();
   const { error } = await db.from('brokemap_reports').insert({
     ...fields,
     source_place_id: editTargetPlaceId,
     report_type: 'edit',
     status: 'pending',
-    name_zh: document.getElementById('editReportSubtitle').textContent.split(' / ')[0] || '수정제보',
+    name_zh: placeData?.name_zh || document.getElementById('editReportSubtitle').textContent.split(' / ')[0] || 'Edit',
+    district_en: placeData?.district_en || 'Unknown',
+    district_zh: placeData?.district_zh || '',
+    lat: 0, lng: 0,
     created_at: new Date().toISOString(),
   });
 
