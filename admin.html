@@ -555,10 +555,11 @@ async function rejectReport(id) {
 let allEditReports = [];
 
 async function loadEditReports() {
-  const { data } = await db.from('brokemap_reports')
-    .select('*, brokemap_places!source_place_id(name_zh, name_en)')
+  const { data, error } = await db.from('brokemap_reports')
+    .select('*')
     .eq('report_type', 'edit')
     .order('created_at', { ascending: false });
+  if (error) { console.error('Edit reports error:', error); }
   allEditReports = data || [];
   document.getElementById('editReportCount').textContent = `총 ${allEditReports.length}개`;
   renderEditReports();
@@ -571,7 +572,7 @@ function renderEditReports() {
     return;
   }
   tbody.innerHTML = allEditReports.map(r => {
-    const place = r.brokemap_places;
+    const place = allPlaces.find(p => p.id === r.source_place_id) || {};
     const changes = [];
     if (r.address) changes.push(`주소(EN): ${r.address}`);
     if (r.address_zh) changes.push(`주소(ZH): ${r.address_zh}`);
